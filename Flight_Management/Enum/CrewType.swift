@@ -1,4 +1,4 @@
-enum CrewType {
+enum CrewType: CaseIterable {
     case pilot
     case captain
     case flightCrew

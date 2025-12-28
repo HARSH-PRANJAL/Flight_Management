@@ -10,7 +10,7 @@ protocol User {
     var idProof: String? { get set }
     var idProofType: IdProofType? { get set }
     var address: String? { get set }
-    var phone: String? { get set }
+    var phone: String { get set }
     var email: String { get set }
     var password: String { get set }
 
