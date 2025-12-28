@@ -13,6 +13,11 @@ class Passenger: User {
     var phone: String?
     var email: String
     var password: String
+    
+    var ticketIds: [Int] = []
+    var luggageId: Int? = nil
+    var mealPreferences: MealPreference = .veg
+    var seatPreferences: SeatPreference = .any
 
     init(
         id: Int,
@@ -24,7 +29,8 @@ class Passenger: User {
         idProof: String? = nil,
         idProofType: IdProofType? = nil,
         address: String? = nil,
-        phone: String? = nil
+        phone: String? = nil,
+        role: String? = nil
     ) {
         self.id = id
         self.createdAt = Date()

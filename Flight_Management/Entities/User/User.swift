@@ -14,7 +14,7 @@ protocol User {
     var email: String { get set }
     var password: String { get set }
 
-    func updateUser(
+    mutating func updateUser(
         name: String?,
         idProof: String?,
         idProofType: IdProofType?,
