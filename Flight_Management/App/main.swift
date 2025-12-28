@@ -33,6 +33,7 @@ func main() {
         switch option {
         case .crewLogin:
         case .passengerLogin:
+        case .registerUser:
         }
     }
 }
