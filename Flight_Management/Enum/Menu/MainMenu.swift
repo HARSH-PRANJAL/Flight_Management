@@ -1,6 +1,7 @@
 enum MainMenu: String, CaseIterable {
     case passengerLogin
     case crewLogin
+    case registerUser
     
     var description: String {
         switch self {
@@ -8,6 +9,8 @@ enum MainMenu: String, CaseIterable {
             return "Passenger Login"
         case .crewLogin:
             return "Crew Login"
+        case .registerUser:
+            return "Register User"
         }
     }
 }

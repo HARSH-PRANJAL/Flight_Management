@@ -1,6 +1,7 @@
 import Foundation
 
 class Crew: User {
+    static var nextId = 1
     let id: Int
     let createdAt: Date
     let dob: Date
@@ -10,37 +11,36 @@ class Crew: User {
     var idProof: String?
     var idProofType: IdProofType?
     var address: String?
-    var phone: String?
+    var phone: String
     var email: String
     var password: String
-    var role: String?
-    
+
     var managerId: Int? = nil
-    var airHourlyRate: Double? = 0.0
-    var groundHourlyRate: Double? = 0.0
+    var inAirPayRatePerHour: Double = 0.0
+    var groundDutyPayRatePerHour: Double = 0.0
     var resignDate: Date? = nil
     var totalGroundHours: Double? = 0.0
     var totalFlightHours: Double? = 0.0
-    var crewType: CrewType = .groundedCrew
-    
+    var crewType: CrewType
+
     var joiningDate: Date {
         return createdAt
     }
-    
+
     init(
-        id: Int,
         dob: Date,
         gender: Gender,
         name: String,
         email: String,
         password: String,
+        phone: String,
+        address: String,
+        crewType: CrewType,
         idProof: String? = nil,
-        idProofType: IdProofType? = nil,
-        address: String? = nil,
-        phone: String? = nil,
-        role: String? = nil
+        idProofType: IdProofType? = nil
     ) {
-        self.id = id
+        self.id = Crew.nextId
+        Crew.nextId += 1
         self.createdAt = Date()
         self.dob = dob
         self.gender = gender
@@ -52,6 +52,6 @@ class Crew: User {
         self.phone = phone
         self.email = email
         self.password = String(password.hashValue)
-        self.role = role
+        self.crewType = crewType
     }
 }
