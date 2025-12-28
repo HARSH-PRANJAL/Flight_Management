@@ -1,10 +1,10 @@
 func authenticateUser(userId: Int, password: String) throws -> Bool {
-    guard let user = findUser(by: userId) else {
-        throw UserError.userNotFound
+    guard let user = findUserById(by: userId) else {
+        throw AuthError.userNotFound
     }
     
     if !user.verifyPassword(password) {
-        throw UserError.invalidPassword
+        throw AuthError.invalidPassword
     }
     
     tokens.insert(userId)
@@ -15,6 +15,6 @@ func authenticateToken(token: Int) throws -> Bool {
     if tokens.contains(token) {
         return true
     } else {
-        throw UserError.authenticationFailed
+        throw AuthError.authenticationFailed
     }
 }

@@ -1,13 +1,10 @@
-enum UserError: Error {
-    case invalidEmail
+enum AuthError: Error {
     case invalidPassword
     case authenticationFailed
     case userNotFound
     
     var description: String {
         switch self {
-        case .invalidEmail:
-            return "Invalid email"
         case .invalidPassword:
             return "Invalid password"
         case .authenticationFailed:
