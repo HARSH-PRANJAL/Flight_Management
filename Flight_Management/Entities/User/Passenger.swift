@@ -1,6 +1,7 @@
 import Foundation
 
 class Passenger: User {
+    static var nextId: Int = 1
     let id: Int
     let createdAt: Date
     let dob: Date
@@ -10,29 +11,28 @@ class Passenger: User {
     var idProof: String?
     var idProofType: IdProofType?
     var address: String?
-    var phone: String?
+    var phone: String
     var email: String
     var password: String
-    
+
     var ticketIds: [Int] = []
     var luggageId: Int? = nil
     var mealPreferences: MealPreference = .veg
     var seatPreferences: SeatPreference = .any
 
     init(
-        id: Int,
         dob: Date,
         gender: Gender,
         name: String,
         email: String,
         password: String,
+        phone: String,
         idProof: String? = nil,
         idProofType: IdProofType? = nil,
-        address: String? = nil,
-        phone: String? = nil,
-        role: String? = nil
+        address: String? = nil
     ) {
-        self.id = id
+        self.id = Passenger.nextId
+        Passenger.nextId += 1
         self.createdAt = Date()
         self.dob = dob
         self.gender = gender
