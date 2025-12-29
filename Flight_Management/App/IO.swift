@@ -66,21 +66,15 @@ struct IO {
         }
     }
 
-    static func readEnumOption<T: CaseIterable & CustomStringConvertible>(
-        enumType: T.Type
+    static func readEnumOption(
+        enumSize: Int
     ) -> Int {
-        let menu = enumType.allCases
-
-        for (i, option) in menu.enumerated() {
-            print("\(i+1) \(option.description)")
-        }
-
         var choice: Int
 
         while true {
             choice = IO.readInt(prompt: "Enter the choice : ", terminator: " ")
 
-            if choice <= 0 || choice > menu.count {
+            if choice <= 0 || choice > enumSize {
                 print(" Wrong choice ‼️ ")
                 print(" Try again \n")
             } else {
@@ -89,28 +83,24 @@ struct IO {
         }
     }
 
-    static func readOptional<T>(
-        prompt: String,
-        terminator: String = "\n",
-        type: T.Type
-    ) -> T? {
-        print(prompt, terminator: terminator)
+    static func readOptional<T>(msg: String, readValue: () -> T) -> T? {
+        let answer = IO.readString(
+            prompt: "Do you want to provide \(msg) : (y/n)",
+            terminator: " "
+        ).lowercased()
+        
+        return answer == "y" ? readValue() : nil
+    }
 
-        print("Y -> Provide value\nN -> No value")
-        let choice = readString(prompt: "Enter your choice : ", terminator: " ").lowercased()
-        if choice == "n" {
-            return nil
-        }
-
-        switch type {
-        case is String.Type:
-            return readString(prompt: "", terminator: "") as? T
-        case is Int.Type:
-            return readInt(prompt: "", terminator: "") as? T
-        case is Double.Type:
-            return readDouble(prompt: "", terminator: "") as? T
-        default:
-            return nil
+    static func displayEnumOptions<T: CaseIterable & CustomStringConvertible>(
+        enumType: T.Type, msg: String = ""
+    ) {
+        print("\n\(msg)")
+        
+        let menu = enumType.allCases
+        
+        for (i, option) in menu.enumerated() {
+            print("\(i+1) \(option.description)")
         }
     }
 }
