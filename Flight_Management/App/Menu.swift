@@ -23,8 +23,6 @@ func flightManagerMenu() {
     let choice = IO.readEnumOption(enumSize: FlightManagerMenu.allCases.count)
     let option = FlightManagerMenu.allCases[choice - 1]
 
-    let flightRepo = DefaultFlightRepo()
-
     switch option {
     case .viewFlights:
 
@@ -32,13 +30,13 @@ func flightManagerMenu() {
             msg: "Select N to view all flights",
             readValue: { IO.readInt(prompt: "Enter flight id : ") }
         ) {
-            if let flight = flightRepo.findFlightById(flightId) {
+            if let flight = findFlightById(flightId) {
                 print(flight)
             } else {
                 print("\n🚨 Error: Flight not found ‼️\n")
             }
         } else {
-            let allFlights = flightRepo.getAllFlights()
+            let allFlights = getAllFlights()
 
             for flight in allFlights {
                 print(flight, terminator: "\n")
@@ -46,23 +44,23 @@ func flightManagerMenu() {
         }
 
     case .scheduleFlight:
-        <#code#>
+        print("not implemented")
     case .cancelFlight:
         let flightId = IO.readInt(prompt: "Enter flight id to cancel : ")
 
-        if let flight = flightRepo.findFlightById(flightId) {
+        if let flight = findFlightById(flightId) {
             flight.isCancelled = true
         } else {
             print("\n🚨 Error: Flight not found ‼️\n")
         }
     case .createJourney:
-        <#code#>
+        print("not implemented")
     case .addAirport:
         initiateAirportRegistration()
     case .addAircraft:
         let aircraftId = initiateAircraftRegistration()
         print("Aircraft registered with id :  \(aircraftId) ✅")
     case .scheduleMaintenance:
-        <#code#>
+        print("not implemented")
     }
 }

@@ -4,7 +4,7 @@ func findUserById(by id: Int) -> User? {
     if let passenger = passengers[id] {
         return passenger
     }
-    
+
     if let crew = crews[id] {
         return crew
     }
@@ -39,15 +39,15 @@ func registerUser(
             address: crewAddress,
             crewType: crewType
         )
-        
+
         if let crew = newUser as? Crew {
             crews[crew.id] = crew
         } else {
             return nil
         }
-        
+
     } else {
-        
+
         newUser = Passenger(
             dob: dob,
             gender: gender,
@@ -57,14 +57,14 @@ func registerUser(
             phone: phone,
             address: address
         )
-        
+
         if let passenger = newUser as? Passenger {
             passengers[passenger.id] = passenger
         } else {
             return nil
         }
     }
-    
+
     return newUser.id
 }
 

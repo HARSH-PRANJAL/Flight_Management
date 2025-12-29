@@ -1,12 +1,15 @@
 // caching authenticated users token
 var tokens: Set<Int> = []
-// caching all passengers
-var passengers: [Int: Passenger] = [:]
-// caching all crew members (pilot, cabin crew, ground staff)
-var crews: [Int: Crew] = [:]
 // store user role after auth for role based menu options
 var userRole: CrewType?
 var authenticatedUser: User?
+
+// cached data
+var crews: [Int: Crew] = [:]
+var passengers: [Int: Passenger] = [:]
+var flights: [Int: Flight] = [:]
+var airports: [Int: Airport] = [:]
+var aircrafts: [Int: Aircraft] = [:]
 
 func main() {
     while true {
@@ -30,16 +33,21 @@ func main() {
 
             do {
                 if try authenticateUser(userId: userID, password: password) {
-                    authenticatedUser = userRole != nil ? crews[userID]! : passengers[userID]!
+                    authenticatedUser =
+                        userRole != nil
+                        ? crews[userID]!
+                        : passengers[userID]!
                 }
             } catch let error as UserError {
                 print("\n🚨 Error: \(error.description) ‼️\n")
             } catch let error as AuthError {
                 print("\n🚨 Error: \(error.description) ‼️\n")
             } catch {
-                print("\n🚨 An unexpected error occurred. Please try again later. ‼️\n")
+                print(
+                    "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
+                )
             }
-            
+
             crewMenu()
         case .passengerLogin:
             print("Passenger login not implemented yet.")

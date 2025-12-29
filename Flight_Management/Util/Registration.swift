@@ -92,8 +92,18 @@ func readCorrectDOB() throws(UserError) -> Date {
     return dob
 }
 
-func initiateAirportRegistration() {
+func initiateAirportRegistration() -> Int {
+    let airportCode = IO.readString(prompt: "Enter airport code : ")
+    let name = IO.readString(prompt: "Enter airport name : ")
+    let city = IO.readString(prompt: "Enter city name : ")
+    let country = IO.readString(prompt: "Enter country name")
 
+    return registerAirport(
+        airportCode: airportCode,
+        name: name,
+        city: city,
+        country: country
+    )
 }
 
 func initiateAircraftRegistration() -> Int {
@@ -102,9 +112,7 @@ func initiateAircraftRegistration() -> Int {
     let seatingCapacity = IO.readInt(prompt: "Enter total number of seats : ")
     let fuelCapacity = IO.readDouble(prompt: "Enter total fuel capacity : ")
 
-    let aircraftRepo = DefaultAircraftRepo()
-
-    return aircraftRepo.registerAircraft(
+    return registerAircraft(
         model: model,
         manufacturer: manufacturer,
         seatingCapacity: seatingCapacity,
