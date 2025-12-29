@@ -30,22 +30,23 @@ func main() {
 
             do {
                 if try authenticateUser(userId: userID, password: password) {
-                    if userRole != nil {
-                        authenticatedUser = crews[userID]!
-                    } else {
-                        authenticatedUser = passengers[userID]!
-                    }
+                    authenticatedUser = userRole != nil ? crews[userID]! : passengers[userID]!
                 }
-            } catch let error {
+            } catch let error as UserError {
                 print("\n🚨 Error: \(error.description) ‼️\n")
+            } catch let error as AuthError {
+                print("\n🚨 Error: \(error.description) ‼️\n")
+            } catch {
+                print("\n🚨 An unexpected error occurred. Please try again later. ‼️\n")
             }
+            
             crewMenu()
         case .passengerLogin:
             print("Passenger login not implemented yet.")
         case .registerUser:
             do {
                 let newId = try initiateUserRegistration()
-                print("\nUser registered with ID: \(newId) ✅")
+                print("\nUser registered with id : \(newId) ✅")
             } catch let error {
                 print("\n🚨 Error: \(error.description) ‼️\n")
             }

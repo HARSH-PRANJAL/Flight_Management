@@ -17,7 +17,7 @@ func initiateUserRegistration() throws(UserError) -> Int {
     ]
 
     let crewOption: Int? = IO.readOptional(
-        msg: "crew type",
+        msg: "Do you want to provide crew type",
         readValue: {
             IO.displayEnumOptions(
                 enumType: CrewType.self,
@@ -36,7 +36,7 @@ func initiateUserRegistration() throws(UserError) -> Int {
         crewType != nil
         ? readAddress()
         : IO.readOptional(
-            msg: "address",
+            msg: "Do you want to provide address",
             readValue: readAddress
         )
 
@@ -90,4 +90,24 @@ func readCorrectDOB() throws(UserError) -> Date {
     }
 
     return dob
+}
+
+func initiateAirportRegistration() {
+
+}
+
+func initiateAircraftRegistration() -> Int {
+    let model = IO.readString(prompt: "Enter aircraft model : ")
+    let manufacturer = IO.readString(prompt: "Enter manufacturer name : ")
+    let seatingCapacity = IO.readInt(prompt: "Enter total number of seats : ")
+    let fuelCapacity = IO.readDouble(prompt: "Enter total fuel capacity : ")
+
+    let aircraftRepo = DefaultAircraftRepo()
+
+    return aircraftRepo.registerAircraft(
+        model: model,
+        manufacturer: manufacturer,
+        seatingCapacity: seatingCapacity,
+        fuelCapacity: fuelCapacity
+    )
 }

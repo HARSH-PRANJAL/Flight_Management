@@ -85,7 +85,7 @@ struct IO {
 
     static func readOptional<T>(msg: String, readValue: () -> T) -> T? {
         let answer = IO.readString(
-            prompt: "Do you want to provide \(msg) : (y/n)",
+            prompt: "\(msg) : (y/n)",
             terminator: " "
         ).lowercased()
 
