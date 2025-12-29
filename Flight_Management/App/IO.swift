@@ -88,17 +88,18 @@ struct IO {
             prompt: "Do you want to provide \(msg) : (y/n)",
             terminator: " "
         ).lowercased()
-        
+
         return answer == "y" ? readValue() : nil
     }
 
     static func displayEnumOptions<T: CaseIterable & CustomStringConvertible>(
-        enumType: T.Type, msg: String = ""
+        enumType: T.Type,
+        msg: String = ""
     ) {
         print("\n\(msg)")
-        
+
         let menu = enumType.allCases
-        
+
         for (i, option) in menu.enumerated() {
             print("\(i+1) \(option.description)")
         }

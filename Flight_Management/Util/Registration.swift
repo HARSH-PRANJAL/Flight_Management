@@ -11,22 +11,24 @@ func initiateUserRegistration() throws(UserError) -> Int {
     let email: String = readCorrectEmail()
     let dob = try readCorrectDOB()
 
-    IO.displayEnumOptions(enumType: Gender.self,msg: "Select gender")
+    IO.displayEnumOptions(enumType: Gender.self, msg: "Select gender")
     let gender = Gender.allCases[
         IO.readEnumOption(enumSize: Gender.allCases.count) - 1
     ]
-    
-    print("\n")
+
     let crewOption: Int? = IO.readOptional(
         msg: "crew type",
         readValue: {
-            IO.displayEnumOptions(enumType: CrewType.self, msg: "Select crew type")
+            IO.displayEnumOptions(
+                enumType: CrewType.self,
+                msg: "Select crew type"
+            )
             return IO.readEnumOption(enumSize: CrewType.allCases.count)
         }
     )
     let crewType: CrewType? =
         crewOption != nil ? CrewType.allCases[crewOption! - 1] : nil
-    
+
     let readAddress = {
         IO.readString(prompt: "Enter address : ", terminator: " ")
     }
@@ -89,4 +91,3 @@ func readCorrectDOB() throws(UserError) -> Date {
 
     return dob
 }
-

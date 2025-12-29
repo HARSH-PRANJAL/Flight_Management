@@ -73,7 +73,7 @@ func setCrewPerHourSalary(
     flightSalary: Double,
     groundSalary: Double
 ) -> Bool {
-    guard var crew = crews[crewId] else {
+    guard let crew = crews[crewId] else {
         return false
     }
 
