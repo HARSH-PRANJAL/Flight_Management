@@ -14,20 +14,8 @@ func main() {
             ===============================
             """
         )
-
-        for (i, option) in MainMenu.allCases.enumerated() {
-            print("\(i+1) \(option.description)")
-        }
-
-        print("Enter choice : ", terminator: " ")
-        let choice = IO.readInt()
-
-        if choice <= 0 || choice > MainMenu.allCases.count {
-            print(" Wrong choice ‼️ ")
-            print(" Try again ")
-            continue
-        }
-
+        
+        let choice = IO.readEnumOption(enumType: MainMenu.self)
         let option = MainMenu.allCases[choice - 1]
 
         switch option {
