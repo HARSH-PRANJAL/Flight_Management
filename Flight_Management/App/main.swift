@@ -4,22 +4,42 @@ var tokens: Set<Int> = []
 var passengers: [Int: Passenger] = [:]
 // caching all crew members (pilot, cabin crew, ground staff)
 var crews: [Int: Crew] = [:]
+// store user role after auth for role based menu options
+var userRole: CrewType?
+var authenticatedUser: User?
 
 func main() {
     while true {
-        IO.displayEnumOptions(enumType: MainMenu.self, msg:
-            """
-            ===============================
-                       Main Menu
-            ===============================
-            """)
-        
+        IO.displayEnumOptions(
+            enumType: MainMenu.self,
+            msg:
+                """
+                ===============================
+                           Main Menu
+                ===============================
+                """
+        )
+
         let choice = IO.readEnumOption(enumSize: MainMenu.allCases.count)
         let option = MainMenu.allCases[choice - 1]
 
         switch option {
         case .crewLogin:
-            print("Crew login not implemented yet.")
+            let userID = IO.readInt(prompt: "Enter your ID : ")
+            let password = IO.readString(prompt: "Enter your password : ")
+
+            do {
+                if try authenticateUser(userId: userID, password: password) {
+                    if userRole != nil {
+                        authenticatedUser = crews[userID]!
+                    } else {
+                        authenticatedUser = passengers[userID]!
+                    }
+                }
+            } catch let error {
+                print("\n🚨 Error: \(error.description) ‼️\n")
+            }
+            crewMenu()
         case .passengerLogin:
             print("Passenger login not implemented yet.")
         case .registerUser:

@@ -1,7 +1,7 @@
 import Foundation
 
 struct IO {
-    static func readInt(prompt: String, terminator: String = "\n") -> Int {
+    static func readInt(prompt: String, terminator: String = " ") -> Int {
         print(prompt, terminator: terminator)
 
         while true {
@@ -15,7 +15,7 @@ struct IO {
         }
     }
 
-    static func readDouble(prompt: String, terminator: String = "\n") -> Double
+    static func readDouble(prompt: String, terminator: String = " ") -> Double
     {
         print(prompt, terminator: terminator)
 
@@ -30,7 +30,7 @@ struct IO {
         }
     }
 
-    static func readString(prompt: String, terminator: String = "\n") -> String
+    static func readString(prompt: String, terminator: String = " ") -> String
     {
         print(prompt, terminator: terminator)
 
@@ -45,7 +45,7 @@ struct IO {
         }
     }
 
-    static func readDate(prompt: String, terminator: String = "\n") -> Date {
+    static func readDate(prompt: String, terminator: String = " ") -> Date {
         print(prompt, terminator: terminator)
 
         let dateFormatter = DateFormatter()
