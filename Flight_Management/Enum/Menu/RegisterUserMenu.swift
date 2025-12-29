@@ -1,4 +1,4 @@
-enum RegisterUserMenu: CaseIterable {
+enum RegisterUserMenu: CaseIterable, CustomStringConvertible {
     case registerCrew
     case registerPassenger
     

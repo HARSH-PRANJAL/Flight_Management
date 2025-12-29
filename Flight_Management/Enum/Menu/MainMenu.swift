@@ -1,4 +1,4 @@
-enum MainMenu: String, CaseIterable {
+enum MainMenu: CaseIterable, CustomStringConvertible {
     case passengerLogin
     case crewLogin
     case registerUser
