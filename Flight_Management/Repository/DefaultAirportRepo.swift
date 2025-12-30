@@ -6,6 +6,10 @@ func isAirportExist(withId id: Int) -> Bool {
     return airports.keys.contains(id)
 }
 
+func getAllAirports() -> [Airport] {
+    return Array(airports.values)
+}
+
 func registerAirport(
     airportCode: String,
     name: String,

@@ -1,8 +1,8 @@
 import Foundation
 
 func initiateUserRegistration() throws(UserError) -> Int {
-    let userName = IO.readString(prompt: "Enter user name : ", terminator: " ")
-    let password = IO.readString(prompt: "Enter password : ", terminator: " ")
+    let userName = IO.readString(prompt: "Enter user name : ")
+    let password = IO.readString(prompt: "Enter password : ")
     let phone = IO.readString(
         prompt: "Enter phone number : ",
         terminator: " "
@@ -61,8 +61,7 @@ func initiateUserRegistration() throws(UserError) -> Int {
 func readCorrectEmail() -> String {
     while true {
         let rawEmail = IO.readString(
-            prompt: "Enter email : ",
-            terminator: " "
+            prompt: "Enter email : "
         )
 
         let pattern = #"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.com$"#
@@ -77,7 +76,7 @@ func readCorrectEmail() -> String {
 }
 
 func readCorrectDOB() throws(UserError) -> Date {
-    let dob = IO.readDate(prompt: "Enter date of birth : ", terminator: " ")
+    let dob = IO.readDate(prompt: "Enter date of birth : ")
     let upperLimit: Date = Calendar.current.date(
         byAdding: .year,
         value: -10,
@@ -96,7 +95,7 @@ func initiateAirportRegistration() -> Int {
     let airportCode = IO.readString(prompt: "Enter airport code : ")
     let name = IO.readString(prompt: "Enter airport name : ")
     let city = IO.readString(prompt: "Enter city name : ")
-    let country = IO.readString(prompt: "Enter country name")
+    let country = IO.readString(prompt: "Enter country name : ")
 
     return registerAirport(
         airportCode: airportCode,
@@ -118,4 +117,30 @@ func initiateAircraftRegistration() -> Int {
         seatingCapacity: seatingCapacity,
         fuelCapacity: fuelCapacity
     )
+}
+
+func initiateRouteRegistration() throws -> Bool {
+    let sourceId = IO.readInt(prompt: "Enter source airport id : ")
+    let destinationId = IO.readInt(prompt: "Enter destination airport id : ")
+
+    if !isAirportExist(withId: sourceId)
+        || !isAircraftExist(witId: destinationId)
+    {
+        throw DataError.dataNotFound
+    }
+
+    let duration: Double = IO.readDouble(
+        prompt: "Enter estimated flight duration in hours : "
+    )
+    let basePrice: Double = IO.readDouble(prompt: "Enter base fare price : ")
+
+    let route = AirportRouteGraph()
+    route.addRoute(
+        from: sourceId,
+        to: destinationId,
+        fare: basePrice,
+        durationHours: duration
+    )
+
+    return true
 }

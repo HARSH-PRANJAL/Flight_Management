@@ -48,15 +48,30 @@ func flightManagerMenu() {
     case .cancelFlight:
         let flightId = IO.readInt(prompt: "Enter flight id to cancel : ")
 
-        if let flight = findFlightById(flightId) {
+        if var flight = findFlightById(flightId) {
             flight.isCancelled = true
         } else {
             print("\n🚨 Error: Flight not found ‼️\n")
         }
-    case .createJourney:
-        print("not implemented")
+    case .addRoute:
+        let allAirports = getAllAirports()
+        
+        for airport in allAirports {
+            print(airport, terminator: "\n")
+        }
+        
+        do {
+            let isCompleted = try initiateRouteRegistration()
+        } catch let error as DataError {
+            print("\n🚨 Error: \(error.description) ‼️\n")
+        } catch {
+            print(
+                "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
+            )
+        }
     case .addAirport:
-        initiateAirportRegistration()
+        let airportId = initiateAirportRegistration()
+        print("Airport registered with id :  \(airportId) ✅")
     case .addAircraft:
         let aircraftId = initiateAircraftRegistration()
         print("Aircraft registered with id :  \(aircraftId) ✅")

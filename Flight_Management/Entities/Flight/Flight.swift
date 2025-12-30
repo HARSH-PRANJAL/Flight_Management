@@ -1,13 +1,13 @@
 import Foundation
 
-class Flight {
+struct Flight {
     static var nextId: Int = 1
     let id: Int
     let aircraftId: Int
     let sourceAirportId: Int
-    var destinationAirportId: Int
-    var scheduledDeparture: Date
-    var scheduledArrival: Date
+    let destinationAirportId: Int
+    let scheduledDeparture: Date
+    let scheduledArrival: Date
     var isCancelled: Bool = false
 
     init(
@@ -30,7 +30,7 @@ class Flight {
         return """
             id: \(id)
             aircraftId: \(aircraftId)
-            sourceAirportId: \(sourceAirportId), destinationAirportId: \(destinationAirportId)
+            sourceAirportId: \(airports[sourceAirportId]!), destinationAirportId: \(airports[destinationAirportId]!)
             scheduledDeparture: \(scheduledDeparture), scheduledArrival: \(scheduledArrival)
             """
     }

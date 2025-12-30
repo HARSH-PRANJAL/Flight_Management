@@ -14,4 +14,8 @@ struct Airport {
         self.city = city
         self.country = country
     }
+    
+    var description: String {
+        return "Airport id: \(id), name: \(name)"
+    }
 }
