@@ -2,6 +2,14 @@ func isAircraftExist(witId id: Int) -> Bool {
     return aircrafts.keys.contains(id)
 }
 
+func isAircraftAvailable(withId id: Int) -> Bool {
+    if let aircraft = aircrafts[id] {
+        return aircraft.isAvailable
+    }
+    
+    return false
+}
+
 func registerAircraft(
     model: String,
     manufacturer: String,

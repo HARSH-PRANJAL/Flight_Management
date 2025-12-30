@@ -144,3 +144,29 @@ func initiateRouteRegistration() throws -> Bool {
 
     return true
 }
+
+func initiateFlightRegistration(route: Route) throws -> Int {
+    let aircraftId = IO.readInt(prompt: "Enter aircraft id for this flight : ")
+
+    if !isAircraftExist(witId: aircraftId) {
+        throw DataError.dataNotFound(msg: "Aircraft dose not exist.")
+    }
+
+    let earliestAllowedDeparture: Date? = Calendar.current.date(
+        byAdding: .day,
+        value: 1,
+        to: Date()
+    )
+    let latestAllowedDeparture: Date? = Calendar.current.date(
+        byAdding: .day,
+        value: 30,
+        to: Date()
+    )
+    let departureTime: Date = try checkDateTime(
+        dateTime: IO.readDateTime(prompt: "Enter departure time : "),
+        lowerLimit: earliestAllowedDeparture,
+        upperLimit: latestAllowedDeparture
+    )
+    
+    return registerFlight(airCraftId: aircraftId, scheduledDeparture: departureTime, route: route)
+}

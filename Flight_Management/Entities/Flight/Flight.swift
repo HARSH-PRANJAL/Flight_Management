@@ -4,29 +4,29 @@ struct Flight {
     static var nextId: Int = 1
     let id: Int
     let aircraftId: Int
-    let sourceAirportId: Int
-    let destinationAirportId: Int
     let scheduledDeparture: Date
     let scheduledArrival: Date
-    var isCancelled: Bool = false
+    var route: Route
 
     init(
         aircraftId: Int,
-        sourceAirportId: Int,
-        destinationAirportId: Int,
         scheduledDeparture: Date,
-        scheduledArrival: Date
+        route: Route
     ) {
         self.id = Flight.nextId
         Flight.nextId += 1
         self.aircraftId = aircraftId
-        self.sourceAirportId = sourceAirportId
-        self.destinationAirportId = destinationAirportId
         self.scheduledDeparture = scheduledDeparture
-        self.scheduledArrival = scheduledArrival
+        self.route = route
+        self.scheduledArrival = scheduledDeparture.addingTimeInterval(route.totalDuration * 3600)
     }
 
     var description: String {
+        guard let sourceAirportId = route.airportPath.first,
+              let destinationAirportId = route.airportPath.last else {
+            return "No airports in route. Flight can not be described."
+        }
+        
         return """
             id: \(id)
             aircraftId: \(aircraftId)

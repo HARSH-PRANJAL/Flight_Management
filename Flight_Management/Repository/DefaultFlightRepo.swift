@@ -2,18 +2,14 @@ import Foundation
 
 func registerFlight(
     airCraftId: Int,
-    sourceId: Int,
-    destinationId: Int,
     scheduledDeparture: Date,
-    scheduledArrival: Date
+    route: Route
 ) -> Int {
 
     let newFlight = Flight(
         aircraftId: airCraftId,
-        sourceAirportId: sourceId,
-        destinationAirportId: destinationId,
         scheduledDeparture: scheduledDeparture,
-        scheduledArrival: scheduledArrival
+        route: route
     )
 
     flights[newFlight.id] = newFlight

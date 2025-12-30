@@ -5,6 +5,7 @@ struct Aircraft {
     let manufacturer: String
     let SeatingCapacity: Int
     let fuelCapacity: Double
+    let isAvailable: Bool = true
     
     init(model: String, manufacturer: String, SeatingCapacity: Int, fuelCapacity: Double) {
         self.id = Aircraft.nextId
