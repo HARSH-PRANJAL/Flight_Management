@@ -55,11 +55,19 @@ func main() {
             do {
                 let newId = try initiateUserRegistration()
                 print("\nUser registered with id : \(newId) ✅")
-            } catch let error {
+            } catch let error as UserError {
                 print("\n🚨 Error: \(error.description) ‼️\n")
+            } catch {
+                print(
+                    "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
+                )
             }
         }
     }
 }
 
-main()
+//main()
+loadMockAirports()
+loadMockAircrafts()
+loadMockRoutes()
+flightManagerMenu()

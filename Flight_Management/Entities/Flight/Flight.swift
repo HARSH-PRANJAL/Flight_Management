@@ -1,6 +1,6 @@
 import Foundation
 
-struct Flight {
+struct Flight: CustomStringConvertible {
     static var nextId: Int = 1
     let id: Int
     let aircraftId: Int
@@ -28,10 +28,12 @@ struct Flight {
         }
         
         return """
-            id: \(id)
-            aircraftId: \(aircraftId)
-            sourceAirportId: \(airports[sourceAirportId]!), destinationAirportId: \(airports[destinationAirportId]!)
-            scheduledDeparture: \(scheduledDeparture), scheduledArrival: \(scheduledArrival)
+            Flight id : \(id)
+            Aircraft id : \(aircraftId)
+            Source Airport : \(airports[sourceAirportId]!)
+            destination Airport : \(airports[destinationAirportId]!)
+            Scheduled Departure : \(scheduledDeparture)
+            Scheduled Arrival : \(scheduledArrival)
             """
     }
 }

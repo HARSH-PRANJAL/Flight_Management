@@ -6,6 +6,7 @@ enum FlightManagerMenu: CaseIterable, CustomStringConvertible {
     case addAircraft
     case addRoute
     case scheduleMaintenance
+    case exit
 
     var description: String {
         switch self {
@@ -23,6 +24,8 @@ enum FlightManagerMenu: CaseIterable, CustomStringConvertible {
             return "Add new route"
         case .scheduleMaintenance:
             return "Schedule maintenance"
+        case .exit:
+            return "Exit"
         }
     }
 }

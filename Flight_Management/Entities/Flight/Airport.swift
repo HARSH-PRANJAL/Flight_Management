@@ -1,4 +1,4 @@
-struct Airport {
+struct Airport: CustomStringConvertible {
     static var nextId: Int = 1
     let id: Int
     let airportCode: String

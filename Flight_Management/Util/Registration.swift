@@ -1,6 +1,6 @@
 import Foundation
 
-func initiateUserRegistration() throws(UserError) -> Int {
+func initiateUserRegistration() throws -> Int {
     let userName = IO.readString(prompt: "Enter user name : ")
     let password = IO.readString(prompt: "Enter password : ")
     let phone = IO.readString(
@@ -9,7 +9,14 @@ func initiateUserRegistration() throws(UserError) -> Int {
     )
 
     let email: String = readCorrectEmail()
-    let dob = try readCorrectDOB()
+    let dob = try checkDateTime(
+        dateTime: IO.readDate(prompt: "Enter DOB : "),
+        lowerLimit: Calendar.current.date(
+            byAdding: .year,
+            value: -10,
+            to: Date()
+        )
+    )
 
     IO.displayEnumOptions(enumType: Gender.self, msg: "Select gender")
     let gender = Gender.allCases[
@@ -75,20 +82,25 @@ func readCorrectEmail() -> String {
     }
 }
 
-func readCorrectDOB() throws(UserError) -> Date {
-    let dob = IO.readDate(prompt: "Enter date of birth : ")
-    let upperLimit: Date = Calendar.current.date(
-        byAdding: .year,
-        value: -10,
-        to: Date()
-    )!
-
-    if dob >= upperLimit {
-        print("User should be older then 10years.")
-        throw UserError.dobBelowMinimum
+func checkDateTime(
+    dateTime: Date,
+    lowerLimit: Date? = nil,
+    upperLimit: Date? = nil
+)
+    throws(DataError) -> Date
+{
+    if let lower = lowerLimit, dateTime < lower {
+        throw DataError.invalidData(
+            msg: "Date/time is earlier than the allowed limit."
+        )
+    }
+    if let upper = upperLimit, dateTime > upper {
+        throw DataError.invalidData(
+            msg: "Date/time is later than the allowed limit."
+        )
     }
 
-    return dob
+    return dateTime
 }
 
 func initiateAirportRegistration() -> Int {
@@ -124,9 +136,9 @@ func initiateRouteRegistration() throws -> Bool {
     let destinationId = IO.readInt(prompt: "Enter destination airport id : ")
 
     if !isAirportExist(withId: sourceId)
-        || !isAircraftExist(witId: destinationId)
+        || !isAirportExist(withId: destinationId)
     {
-        throw DataError.dataNotFound
+        throw DataError.dataNotFound(msg: "Airport dose not exist.")
     }
 
     let duration: Double = IO.readDouble(
