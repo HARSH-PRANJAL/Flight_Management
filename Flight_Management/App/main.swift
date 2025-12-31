@@ -23,10 +23,11 @@ func main() {
                 """
         )
 
-        let choice = IO.readEnumOption(enumSize: MainMenu.allCases.count)
+        let choice = IO.readOptionNumber(size: MainMenu.allCases.count)
         let option = MainMenu.allCases[choice - 1]
 
         switch option {
+            
         case .crewLogin:
             let userID = IO.readInt(prompt: "Enter your ID : ")
             let password = IO.readString(prompt: "Enter your password : ")
@@ -49,8 +50,10 @@ func main() {
             }
 
             crewMenu()
+            
         case .passengerLogin:
             print("Passenger login not implemented yet.")
+            
         case .registerUser:
             do {
                 let newId = try initiateUserRegistration()
@@ -71,3 +74,4 @@ loadMockAirports()
 loadMockAircrafts()
 loadMockRoutes()
 flightManagerMenu()
+loadMockMaintenance()

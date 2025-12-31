@@ -32,8 +32,8 @@ struct Flight: CustomStringConvertible {
             Aircraft id : \(aircraftId)
             Source Airport : \(airports[sourceAirportId]!)
             destination Airport : \(airports[destinationAirportId]!)
-            Scheduled Departure : \(scheduledDeparture)
-            Scheduled Arrival : \(scheduledArrival)
+            Scheduled Departure : \(IO.displayDateTime(date: scheduledDeparture))
+            Scheduled Arrival : \(IO.displayDateTime(date:scheduledArrival))
             """
     }
 }
