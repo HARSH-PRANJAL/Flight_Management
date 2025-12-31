@@ -1,6 +1,7 @@
 enum AuthError: Error {
     case invalidPassword
     case authenticationFailed
+    case unauthorised
     
     var description: String {
         switch self {
@@ -8,6 +9,8 @@ enum AuthError: Error {
             return "Invalid password"
         case .authenticationFailed:
             return "Authentication failed"
+        case .unauthorised:
+            return "Not authorised for this action"
         }
     }
 }

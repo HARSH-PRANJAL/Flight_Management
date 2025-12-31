@@ -1,6 +1,6 @@
 import Foundation
 
-protocol User {
+protocol User: CustomStringConvertible {
     var id: Int { get }
     var createdAt: Date { get }
     var dob: Date { get }
@@ -25,6 +25,8 @@ protocol User {
     ) -> Bool
 
     func verifyPassword(_ password: String) -> Bool
+    
+    var description: String { get }
 }
 
 extension User {

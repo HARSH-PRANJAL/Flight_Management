@@ -54,3 +54,18 @@ func displayRoute(routes: [Route]) {
         print("\(i+1). \(route)", terminator: "\n")
     }
 }
+
+func displayAllCrew() {
+    let allCrew: [Crew] = getAllCrew()
+    
+    if allCrew.isEmpty {
+        print("🚨 No Crew Available ‼️")
+        return
+    }
+    
+    print("\n")
+    for (i,crew) in allCrew.enumerated() {
+            print("\(i+1). \(crew)", terminator: "\n")
+    }
+}
+

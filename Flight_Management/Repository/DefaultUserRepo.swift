@@ -12,6 +12,10 @@ func findUserById(by id: Int) -> User? {
     return nil
 }
 
+func getAllCrew() -> [Crew] {
+    return Array(crews.values)
+}
+
 func registerUser(
     dob: Date,
     gender: Gender,
@@ -73,13 +77,13 @@ func setCrewPerHourSalary(
     flightSalary: Double,
     groundSalary: Double
 ) -> Bool {
-    guard let crew = crews[crewId] else {
+    guard let user = findUserById(by: crewId),
+        let crew = user as? Crew
+    else {
         return false
     }
 
     crew.inAirPayRatePerHour = flightSalary
     crew.groundDutyPayRatePerHour = groundSalary
-
-    crews[crewId] = crew
     return true
 }

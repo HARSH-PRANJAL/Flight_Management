@@ -124,6 +124,17 @@ struct IO {
             print("\(i+1) \(option.description)")
         }
     }
+    
+    static func displayTable<T: CustomStringConvertible>(_ data: [T]) {
+        if data.isEmpty {
+            print("No data available")
+            return
+        }
+        
+        for (i,item) in data.enumerated() {
+            print("\(i+1). \(item)")
+        }
+    }
 
     static func displayDateTime(date: Date) {
         let formatter = DateFormatter()

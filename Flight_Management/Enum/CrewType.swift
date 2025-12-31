@@ -5,6 +5,7 @@ enum CrewType: CaseIterable, CustomStringConvertible {
     case flightCrew
     case groundStaff
     case groundedCrew
+    case hr
 
     var description: String {
         switch self {
@@ -20,6 +21,8 @@ enum CrewType: CaseIterable, CustomStringConvertible {
             return "Ground Staff"
         case .groundedCrew: 
             return "Grounded Crew"
+        case .hr:
+            return "HR"
         }
     }
 }

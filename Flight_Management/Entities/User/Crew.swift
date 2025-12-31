@@ -15,13 +15,13 @@ class Crew: User {
     var email: String
     var password: String
 
-    var managerId: Int? = nil
     var inAirPayRatePerHour: Double = 0.0
     var groundDutyPayRatePerHour: Double = 0.0
     var resignDate: Date? = nil
     var totalGroundHours: Double? = 0.0
     var totalFlightHours: Double? = 0.0
     var crewType: CrewType
+    var isAvailable: Bool = true
 
     var joiningDate: Date {
         return createdAt
@@ -54,4 +54,20 @@ class Crew: User {
         self.password = String(password.hashValue)
         self.crewType = crewType
     }
+    
+    var description: String {
+        return """
+            Crew id : \(id)
+            Name : \(name)
+            Joined on : \(IO.displayDateTime(date: joiningDate))
+            Designation : \(crewType)
+            Total flight hours : \(totalFlightHours ?? 0)
+            Total ground hours : \(totalGroundHours ?? 0)
+            """
+    }
+    
+    func requestForResignation() {
+        resignationRequests.insert(self.id)
+    }
+    
 }

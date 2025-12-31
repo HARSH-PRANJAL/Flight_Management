@@ -45,4 +45,8 @@ class Passenger: User {
         self.email = email
         self.password = String(password.hashValue)
     }
+    
+    var description: String {
+        return "Passenger data display"
+    }
 }

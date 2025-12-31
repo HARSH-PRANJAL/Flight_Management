@@ -11,6 +11,8 @@ var flights: [Int: Flight] = [:]
 var airports: [Int: Airport] = [:]
 var aircrafts: [Int: Aircraft] = [:]
 var maintenanceLogs: [Int: MaintenanceLog] = [:]
+var resignationRequests: Set<Int> = []
+var leaveRequests: [Int : String] = [:]
 
 func main() {
     while true {
