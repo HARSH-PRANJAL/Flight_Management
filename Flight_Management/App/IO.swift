@@ -130,7 +130,7 @@ struct IO {
         formatter.dateFormat = "dd-MM-yyyy HH:mm"
         formatter.timeZone = TimeZone.current
         formatter.locale = Locale.current
-        
+
         print(formatter.string(from: date), terminator: "")
     }
 }

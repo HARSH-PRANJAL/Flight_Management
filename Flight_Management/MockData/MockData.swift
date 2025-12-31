@@ -113,7 +113,6 @@ func loadMockPassengers() {
     formatter.locale = Locale(identifier: "hi_IN")
 
     guard let dob = formatter.date(from: "12-03-2003") else {
-        assertionFailure("Failed to parse date for mock passenger")
         return
     }
 
@@ -156,4 +155,44 @@ func loadMockPassengers() {
         passengers[passenger.id] = passenger
     }
 
+}
+
+func loadMockMaintenance() {
+    let allAircrafts = getAllAircrafts()
+    let size = allAircrafts.count
+
+    guard size > 0 else { return }
+
+    let formatter = DateFormatter()
+    formatter.dateFormat = "dd-MM-yyyy"
+    formatter.locale = Locale(identifier: "hi_IN")
+
+    var maintenanceRecords: [MaintenanceLog] = []
+    var i = 0
+    while i < size {
+        let aircraft = allAircrafts[i]
+        if aircraft.isAvailable {
+
+            guard let scheduledDate = formatter.date(from: "01/01/2026"),
+                let expectedCompletionDate = formatter.date(from: "02/02/2026")
+            else {
+                continue
+            }
+
+            maintenanceRecords.append(
+                MaintenanceLog(
+                    aircraftId: aircraft.id,
+                    scheduledDate: scheduledDate,
+                    expectedCompletionDate: expectedCompletionDate
+                )
+            )
+        }
+        
+        // every one of five aircrafts are scheduled for maintenance
+        i += 5
+    }
+
+    for record in maintenanceRecords {
+        maintenanceLogs[record.id] = record
+    }
 }

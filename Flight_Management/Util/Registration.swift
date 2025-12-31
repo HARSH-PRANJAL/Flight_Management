@@ -20,7 +20,7 @@ func initiateUserRegistration() throws -> Int {
 
     IO.displayEnumOptions(enumType: Gender.self, msg: "Select gender")
     let gender = Gender.allCases[
-        IO.readEnumOption(enumSize: Gender.allCases.count) - 1
+        IO.readOptionNumber(size: Gender.allCases.count) - 1
     ]
 
     let crewOption: Int? = IO.readOptional(
@@ -30,7 +30,7 @@ func initiateUserRegistration() throws -> Int {
                 enumType: CrewType.self,
                 msg: "Select crew type"
             )
-            return IO.readEnumOption(enumSize: CrewType.allCases.count)
+            return IO.readOptionNumber(size: CrewType.allCases.count)
         }
     )
     let crewType: CrewType? =
@@ -179,6 +179,41 @@ func initiateFlightRegistration(route: Route) throws -> Int {
         lowerLimit: earliestAllowedDeparture,
         upperLimit: latestAllowedDeparture
     )
-    
-    return registerFlight(airCraftId: aircraftId, scheduledDeparture: departureTime, route: route)
+
+    if let newId = registerFlight(
+        aircraftId: aircraftId,
+        scheduledDeparture: departureTime,
+        route: route
+    ) {
+        return newId
+    } else {
+        throw DataError.invalidData(msg: "Aircraft is not available.")
+    }
+}
+
+func initiateFlightMaintenanceLogRegistration() throws -> Int {
+    let aircraftId = IO.readInt(prompt: "Enter aircraft id : ")
+
+    if !isAircraftExist(witId: aircraftId) {
+        throw DataError.dataNotFound(msg: "Aircraft dose not exist.")
+    }
+
+    let scheduledDate: Date = try checkDateTime(
+        dateTime: IO.readDateTime(prompt: "Enter scheduled date : "),
+        lowerLimit: Date()
+    )
+    let expectedCompletionDate: Date = try checkDateTime(
+        dateTime: IO.readDateTime(prompt: "Enter expected completion date : "),
+        lowerLimit: scheduledDate
+    )
+
+    if let newLogID = registerMaintenanceLog(
+        aircraftId: aircraftId,
+        scheduledDate: scheduledDate,
+        expectedCompletionDate: expectedCompletionDate
+    ) {
+        return newLogID
+    } else {
+        throw DataError.invalidData(msg: "Aircraft is not available.")
+    }
 }

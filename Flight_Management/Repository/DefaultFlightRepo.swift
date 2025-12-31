@@ -1,13 +1,22 @@
 import Foundation
 
 func registerFlight(
-    airCraftId: Int,
+    aircraftId: Int,
     scheduledDeparture: Date,
     route: Route
-) -> Int {
-
+) -> Int? {
+    guard var aircraft = findAircraftById(withId: aircraftId) else {
+        return nil
+    }
+    
+    if !aircraft.isAvailable {
+        return nil
+    } else {
+        aircraft.isAvailable = false
+    }
+    
     let newFlight = Flight(
-        aircraftId: airCraftId,
+        aircraftId: aircraftId,
         scheduledDeparture: scheduledDeparture,
         route: route
     )
@@ -22,4 +31,12 @@ func findFlightById(_ id: Int) -> Flight? {
 
 func getAllFlights() -> [Flight] {
     return Array(flights.values)
+}
+
+func deleteFlightById(id: Int) -> Int? {
+    if let flight = flights.removeValue(forKey: id) {
+        return flight.id
+    } else {
+        return nil
+    }
 }

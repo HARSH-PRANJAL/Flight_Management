@@ -104,7 +104,18 @@ func flightManagerMenu() {
             print("Aircraft registered with id :  \(aircraftId) ✅")
 
         case .scheduleMaintenance:
-            print("not implemented")
+            do {
+                let newLogId = try initiateFlightMaintenanceLogRegistration()
+                print("Maintenance log created with id :  \(newLogId) ✅")
+
+            } catch let error as DataError {
+                print("\n🚨 Error: \(error) ‼️\n")
+            } catch {
+                print(
+                    "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
+                )
+            }
+
         case .exit:
             return
         }

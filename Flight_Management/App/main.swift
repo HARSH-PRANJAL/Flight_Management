@@ -10,6 +10,7 @@ var passengers: [Int: Passenger] = [:]
 var flights: [Int: Flight] = [:]
 var airports: [Int: Airport] = [:]
 var aircrafts: [Int: Aircraft] = [:]
+var maintenanceLogs: [Int: MaintenanceLog] = [:]
 
 func main() {
     while true {
