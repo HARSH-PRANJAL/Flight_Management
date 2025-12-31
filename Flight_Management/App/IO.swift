@@ -15,8 +15,7 @@ struct IO {
         }
     }
 
-    static func readDouble(prompt: String, terminator: String = " ") -> Double
-    {
+    static func readDouble(prompt: String, terminator: String = " ") -> Double {
         print(prompt, terminator: terminator)
 
         while true {
@@ -30,8 +29,7 @@ struct IO {
         }
     }
 
-    static func readString(prompt: String, terminator: String = " ") -> String
-    {
+    static func readString(prompt: String, terminator: String = " ") -> String {
         print(prompt, terminator: terminator)
 
         while true {
@@ -65,7 +63,7 @@ struct IO {
             }
         }
     }
-    
+
     static func readDateTime(prompt: String, terminator: String = " ") -> Date {
         print(prompt, terminator: terminator)
 
@@ -87,15 +85,16 @@ struct IO {
         }
     }
 
-    static func readEnumOption(
-        enumSize: Int
+    static func readOptionNumber(
+        size: Int,
+        msg: String = "Enter your choice : "
     ) -> Int {
         var choice: Int
 
         while true {
-            choice = IO.readInt(prompt: "Enter the choice : ", terminator: " ")
+            choice = IO.readInt(prompt: msg, terminator: " ")
 
-            if choice <= 0 || choice > enumSize {
+            if choice <= 0 || choice > size {
                 print(" Wrong choice ‼️ ")
                 print(" Try again \n")
             } else {
@@ -124,5 +123,14 @@ struct IO {
         for (i, option) in menu.enumerated() {
             print("\(i+1) \(option.description)")
         }
+    }
+
+    static func displayDateTime(date: Date) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd-MM-yyyy HH:mm"
+        formatter.timeZone = TimeZone.current
+        formatter.locale = Locale.current
+        
+        print(formatter.string(from: date), terminator: "")
     }
 }
