@@ -16,6 +16,10 @@ func getAllCrew() -> [Crew] {
     return Array(crews.values)
 }
 
+func getAllPassengers() -> [Passenger] {
+    return Array(passengers.values)
+}
+
 func registerUser(
     dob: Date,
     gender: Gender,

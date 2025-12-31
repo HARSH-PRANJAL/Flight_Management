@@ -173,7 +173,7 @@ func hrMenu() {
             let crewId = IO.readInt(prompt: "Enter the ID of the crew member to approve a leave request for: ")
             if leaveRequests.keys.contains(crewId) {
                 guard let user = findUserById(by: crewId),
-                        var crew = user as? Crew
+                        let crew = user as? Crew
                 else {
                     print("Crew Id is invalid")
                     leaveRequests.removeValue(forKey: crewId)
