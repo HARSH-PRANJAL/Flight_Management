@@ -29,7 +29,7 @@ func registerAircraft(
     let newAircraft = Aircraft(
         model: model,
         manufacturer: manufacturer,
-        SeatingCapacity: seatingCapacity,
+        seatingCapacity: seatingCapacity,
         fuelCapacity: fuelCapacity
     )
 
