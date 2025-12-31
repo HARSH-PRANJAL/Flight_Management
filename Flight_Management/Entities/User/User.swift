@@ -1,6 +1,6 @@
 import Foundation
 
-protocol User: CustomStringConvertible {
+protocol User: CustomStringConvertible, TableRepresentable {
     var id: Int { get }
     var createdAt: Date { get }
     var dob: Date { get }

@@ -1,23 +1,23 @@
-struct Aircraft {
+struct Aircraft: CustomStringConvertible,TableRepresentable {
     static var nextId: Int = 1
     let id: Int
     let model: String
     let manufacturer: String
-    let SeatingCapacity: Int
+    let seatingCapacity: Int
     let fuelCapacity: Double
     var isAvailable: Bool = true
 
     init(
         model: String,
         manufacturer: String,
-        SeatingCapacity: Int,
+        seatingCapacity: Int,
         fuelCapacity: Double
     ) {
         self.id = Aircraft.nextId
         Aircraft.nextId += 1
         self.model = model
         self.manufacturer = manufacturer
-        self.SeatingCapacity = SeatingCapacity
+        self.seatingCapacity = seatingCapacity
         self.fuelCapacity = fuelCapacity
     }
 
@@ -25,7 +25,21 @@ struct Aircraft {
         return """
             Aircraft id : \(id)
             Model: \(model), Manufacturer: \(manufacturer)
-            SeatingCapacity: \(SeatingCapacity), FuelCapacity: \(fuelCapacity)
+            SeatingCapacity: \(seatingCapacity), FuelCapacity: \(fuelCapacity)
             """
     }
+    
+    static var tableHeaders: [String] {
+            ["ID", "Model", "Manufacturer", "Capacity", "Fuel Capacity"]
+        }
+
+        var tableRow: [String] {
+            [
+                String(id),
+                model,
+                manufacturer,
+                String(seatingCapacity),
+                String(fuelCapacity)
+            ]
+        }
 }

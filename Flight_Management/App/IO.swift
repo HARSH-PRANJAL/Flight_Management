@@ -125,23 +125,32 @@ struct IO {
         }
     }
     
-    static func displayTable<T: CustomStringConvertible>(_ data: [T]) {
-        if data.isEmpty {
+    static func displayTable<T: TableRepresentable>(_ data: [T]) {
+        guard !data.isEmpty else {
             print("No data available")
             return
         }
-        
-        for (i,item) in data.enumerated() {
-            print("\(i+1). \(item)")
+
+        let headers = T.tableHeaders
+        let rows = [headers] + data.map { $0.tableRow }
+
+        let columnWidths = headers.indices.map { index in
+            rows.map { $0[index].count }.max() ?? 0
+        }
+
+        let printRow: ([String]) -> Void = { row in
+            let padded = row.enumerated().map { index, value in
+                value.padding(toLength: columnWidths[index], withPad: " ", startingAt: 0)
+            }
+            print(padded.joined(separator: " | "))
+        }
+
+        printRow(headers)
+        print(columnWidths.map { String(repeating: "-", count: $0) }.joined(separator: "-+-"))
+
+        data.forEach {
+            printRow($0.tableRow)
         }
     }
 
-    static func displayDateTime(date: Date) {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd-MM-yyyy HH:mm"
-        formatter.timeZone = TimeZone.current
-        formatter.locale = Locale.current
-
-        print(formatter.string(from: date), terminator: "")
-    }
 }

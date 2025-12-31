@@ -54,20 +54,33 @@ class Crew: User {
         self.password = String(password.hashValue)
         self.crewType = crewType
     }
-    
+
     var description: String {
         return """
             Crew id : \(id)
             Name : \(name)
-            Joined on : \(IO.displayDateTime(date: joiningDate))
+            Joined on : \(String(formatDateTime(joiningDate)))
             Designation : \(crewType)
             Total flight hours : \(totalFlightHours ?? 0)
             Total ground hours : \(totalGroundHours ?? 0)
             """
     }
-    
+
+    static var tableHeaders: [String] {
+        ["ID", "Name", "Designation", "Flight Hrs", "Ground Hrs"]
+    }
+
+    var tableRow: [String] {
+        [
+            String(id),
+            name,
+            crewType.description,
+            String(format: "%.1f", totalFlightHours ?? 0),
+            String(format: "%.1f", totalGroundHours ?? 0),
+        ]
+    }
+
     func requestForResignation() {
         resignationRequests.insert(self.id)
     }
-    
 }

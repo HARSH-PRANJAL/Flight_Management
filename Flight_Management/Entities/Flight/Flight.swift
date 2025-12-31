@@ -1,6 +1,6 @@
 import Foundation
 
-struct Flight: CustomStringConvertible {
+struct Flight: CustomStringConvertible, TableRepresentable {
     static var nextId: Int = 1
     let id: Int
     let aircraftId: Int
@@ -18,22 +18,54 @@ struct Flight: CustomStringConvertible {
         self.aircraftId = aircraftId
         self.scheduledDeparture = scheduledDeparture
         self.route = route
-        self.scheduledArrival = scheduledDeparture.addingTimeInterval(route.totalDuration * 3600)
+        self.scheduledArrival = scheduledDeparture.addingTimeInterval(
+            route.totalDuration * 3600
+        )
+    }
+
+    var sourceAirport: String {
+        guard let id = route.airportPath.first,
+            let airport = findAirportById(id: id)
+        else {
+            return ""
+        }
+
+        return airport.airportCode
+    }
+
+    var destinationAirport: String {
+        guard let id = route.airportPath.last,
+            let airport = findAirportById(id: id)
+        else {
+            return ""
+        }
+
+        return airport.airportCode
     }
 
     var description: String {
-        guard let sourceAirportId = route.airportPath.first,
-              let destinationAirportId = route.airportPath.last else {
-            return "No airports in route. Flight can not be described."
-        }
-        
         return """
             Flight id : \(id)
             Aircraft id : \(aircraftId)
-            Source Airport : \(airports[sourceAirportId]!)
-            destination Airport : \(airports[destinationAirportId]!)
-            Scheduled Departure : \(IO.displayDateTime(date: scheduledDeparture))
-            Scheduled Arrival : \(IO.displayDateTime(date:scheduledArrival))
+            Source Airport : \(sourceAirport)
+            destination Airport : \(destinationAirport)
+            Scheduled Departure : \(String(formatDateTime(scheduledDeparture)))
+            Scheduled Arrival : \(String(formatDateTime(scheduledArrival)))
             """
+    }
+
+    static var tableHeaders: [String] {
+        ["ID", "Aircraft ID", "Departure", "Source", "Arrival", "Destination"]
+    }
+
+    var tableRow: [String] {
+        [
+            String(id),
+            String(aircraftId),
+            String(formatDateTime(scheduledDeparture)),
+            sourceAirport,
+            String(formatDateTime(scheduledArrival)),
+            destinationAirport,
+        ]
     }
 }

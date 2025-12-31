@@ -45,8 +45,21 @@ class Passenger: User {
         self.email = email
         self.password = String(password.hashValue)
     }
-    
+
     var description: String {
         return "Passenger data display"
+    }
+
+    static var tableHeaders: [String] {
+        ["ID", "Name", "Gender", "Phone number"]
+    }
+
+    var tableRow: [String] {
+        [
+            String(id),
+            name,
+            gender.description,
+            phone,
+        ]
     }
 }
