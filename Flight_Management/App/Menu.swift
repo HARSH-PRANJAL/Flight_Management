@@ -52,8 +52,8 @@ func flightManagerMenu() {
         case .scheduleFlight:
             let allAirports = getAllAirports()
             let allAircrafts = getAllAircrafts()
-            
-            IO.displayTable(allAirports,heading: "Airports")
+
+            IO.displayTable(allAirports, heading: "Airports")
             IO.displayTable(allAircrafts, heading: "Aircrafts")
 
             let sourceId = IO.readInt(prompt: "Enter source airport id : ")
@@ -145,71 +145,77 @@ func hrMenu() {
                 ===============================
                 """
         )
-        
+
         let menu = HRMenu.allCases
         let choice = IO.readOptionNumber(size: menu.count)
         let option = menu[choice - 1]
-        
+
         switch option {
-            
+
         case .viewAllEmployees:
             let allCrew = getAllCrew()
             IO.displayTable(allCrew, heading: "Crew")
-            
+
         case .viewAllResignationRequests:
             for request in resignationRequests {
                 guard let user = findUserById(by: request),
-                let crew = user as? Crew
+                    let crew = user as? Crew
                 else {
                     continue
                 }
-                
-                print(crew,terminator: "\n\n")
+
+                print(crew, terminator: "\n\n")
             }
-            
+
         case .viewAllLeaveRequests:
             for request in leaveRequests {
                 guard let user = findUserById(by: request.key),
-                let crew = user as? Crew
+                    let crew = user as? Crew
                 else {
                     continue
                 }
-                
-                print("\(crew.name) - \(request.value)",terminator: "\n")
+
+                print("\(crew.name) - \(request.value)", terminator: "\n")
             }
-            
+
         case .approveLeaveRequest:
-            let crewId = IO.readInt(prompt: "Enter the ID of the crew member to approve a leave request for: ")
+            let crewId = IO.readInt(
+                prompt:
+                    "Enter the ID of the crew member to approve a leave request for: "
+            )
             if leaveRequests.keys.contains(crewId) {
                 guard let user = findUserById(by: crewId),
-                        let crew = user as? Crew
+                    let crew = user as? Crew
                 else {
                     print("Crew Id is invalid")
                     leaveRequests.removeValue(forKey: crewId)
                     continue
                 }
-                
+
                 crew.isAvailable = false
             }
-            
+
         case .approveResignationRequest:
-            let crewId = IO.readInt(prompt: "Enter the ID of the crew member to approve a resignation request for: ")
+            let crewId = IO.readInt(
+                prompt:
+                    "Enter the ID of the crew member to approve a resignation request for: "
+            )
             if resignationRequests.contains(crewId) {
                 guard let user = findUserById(by: crewId),
-                      let crew = user as? Crew
+                    let crew = user as? Crew
                 else {
                     print("Crew Id is invalid")
                     resignationRequests.remove(crewId)
                     continue
                 }
-                
+
                 crew.isAvailable = false
                 crew.resignDate = Date()
             }
-        
+
         case .addSalaryToCrew:
             print("To be implemented")
-            
+
         case .exit:
             return
         }
@@ -227,12 +233,13 @@ func groundStaffMenu() {
                 ===============================
                 """
         )
-        
+
         let menu = GroundStaffMenu.allCases
         let choice = IO.readOptionNumber(size: menu.count)
         let option = menu[choice - 1]
-        
+
         switch option {
+
         case .addPassenger:
             do {
                 let passengerId = try initiateUserRegistration(true)
@@ -243,15 +250,130 @@ func groundStaffMenu() {
                     "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
                 )
             }
+
         case .cancelBooking:
             print("Not implemented")
+
         case .viewAvailableFlights:
             let allFlights = getAllFlights()
             IO.displayTable(allFlights, heading: "Flights")
+
         case .viewAvailableSeats:
-            print("Not implemented")
+            let ops1 = IO.readOptional(
+                msg:
+                    "Select Y to find seats by flightId or N to find seats by source and destination",
+                readValue: { IO.readInt(prompt: "Enter source Id") }
+            )
+            let ops2: Int
+            var currFlights: [Flight] = []
+
+            if ops1 == nil {
+                ops2 = IO.readInt(prompt: "Enter flight Id : ")
+                if let flight = findFlightById(ops2) {
+                    currFlights.append(flight)
+                } else {
+                    print("\n🚨 Error: No flights available ‼️\n")
+                }
+            } else {
+                ops2 = IO.readInt(prompt: "Enter destination Id : ")
+                let flights = getFlightsBetween(
+                    sourceId: ops1!,
+                    destinationId: ops2
+                )
+                currFlights.append(contentsOf: flights)
+            }
+
+            for flight in currFlights {
+                guard let aircraft = findAircraftById(withId: flight.aircraftId)
+                else {
+                    continue
+                }
+
+                print(aircraft.describeRemainingSeats)
+            }
+
         case .viewPassengerBookings:
+            let userId = IO.readInt(prompt: "Enter passenger Id : ")
+            if !passengers.keys.contains(userId) {
+                print("\n🚨 Error: Passenger not found ‼️\n")
+                continue
+            }
+
+            let allBookings = getBookingsForPassenger(id: userId)
+            IO.displayTable(allBookings, heading: "Passenger Bookings")
+
+        case .exit:
+            return
+        }
+    }
+}
+
+func passengerMenu() {
+    guard let user = authenticatedUser,
+        let passenger = user as? Passenger
+    else {
+        print("You are not authenticated to access this menu. 🔐")
+        return
+    }
+    while true {
+        IO.displayEnumOptions(
+            enumType: PassengerMenu.self,
+            msg:
+                """
+                ===============================
+                       Passenger Menu
+                ===============================
+                """
+        )
+
+        let menu = PassengerMenu.allCases
+        let choice = IO.readOptionNumber(size: menu.count)
+        let option = menu[choice - 1]
+
+        switch option {
+        case .bookTicket:
+            let allAirports = getAllAirports()
+            IO.displayTable(allAirports, heading: "Available Airports")
+
+            let sourceId = IO.readInt(prompt: "Enter the source airport Id: ")
+            let destinationId = IO.readInt(
+                prompt: "Enter the destination airport Id: "
+            )
+
+            do {
+                let isCompleted = try initiateTktBooking(
+                    sourceId: sourceId,
+                    destinationId: destinationId
+                )
+                if isCompleted {
+                    print("Booking Completed. ✅")
+                }
+            } catch let error as UserError {
+                print("\n🚨 Error: \(error.description) ‼️\n")
+            } catch let error as AuthError {
+                print("\n🚨 Error: \(error) ‼️\n")
+            } catch {
+                print(
+                    "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
+                )
+            }
+
+        case .cancelTicket:
+            let bookingId = IO.readInt(prompt: "Enter the booking Id : ")
+            guard let user = authenticatedUser,
+            let passenger = user as? Passenger
+            else {
+                print("You are not authorised for this action. 🔐")
+                continue
+            }
+            
+//            passenger.cancelTicket(bookingId: bookingId)
             print("Not implemented")
+            
+        case .viewBookings:
+            let allBookings = getBookingsForPassenger(id: passenger.id)
+            IO.displayTable(allBookings, heading: "Your bookings")
+
         case .exit:
             return
         }

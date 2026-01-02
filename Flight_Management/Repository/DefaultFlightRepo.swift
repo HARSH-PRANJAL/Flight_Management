@@ -8,13 +8,13 @@ func registerFlight(
     guard var aircraft = findAircraftById(withId: aircraftId) else {
         return nil
     }
-    
+
     if !aircraft.isAvailable {
         return nil
     } else {
         aircraft.isAvailable = false
     }
-    
+
     let newFlight = Flight(
         aircraftId: aircraftId,
         scheduledDeparture: scheduledDeparture,
@@ -39,4 +39,24 @@ func deleteFlightById(id: Int) -> Int? {
     } else {
         return nil
     }
+}
+
+func getFlightsBetween(sourceId: Int, destinationId: Int) -> [Flight] {
+
+    let result = getAllFlights().filter({
+        flight in
+        guard let source = flight.route.airportPath.first else {
+            return false
+        }
+        guard let destination = flight.route.airportPath.last else {
+            return false
+        }
+        if sourceId == source && destination == destinationId {
+            return true
+        } else {
+            return false
+        }
+    })
+
+    return result
 }

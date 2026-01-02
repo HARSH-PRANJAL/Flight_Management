@@ -17,9 +17,8 @@ class Passenger: User {
 
     var ticketIds: [Int] = []
     var luggageId: Int? = nil
-    var mealPreferences: MealPreference = .veg
-    var seatPreferences: SeatPreference = .any
-
+    var mealPreference: MealPreference = .veg
+    
     init(
         dob: Date,
         gender: Gender,
@@ -62,4 +61,39 @@ class Passenger: User {
             phone,
         ]
     }
+
+    func bookTkt(
+        flight: Flight,
+        bookingDate: Date?,
+        mealPreference: MealPreference?,
+        seatPreference: SeatPreference,
+        sourceId: Int,
+        destinationId: Int
+    ) -> Booking {
+        let totalAmount = flight.route.totalFare * seatPreference.rawValue + (mealPreference?.rawValue ?? 0.0)
+        
+        let transaction = Transaction(amount: totalAmount, type: .payment, userId: self.id)
+        transactions[transaction.id] = transaction
+        
+        let booking = Booking(
+            passengerId: self.id,
+            flightId: flight.id,
+            bookingDate: bookingDate ?? Date(),
+            mealPreference: mealPreference ?? self.mealPreference,
+            seatPreference: seatPreference,
+            sourceAirportId: sourceId,
+            destinationAirportId: destinationId
+        )
+
+        bookings[booking.tktNumber] = booking
+        return booking
+    }
+    
+//    func cancelTkt(bookingId: Int) throws -> Bool {
+//        guard let bill = findBillById(id: bookingId) else {
+//            throw DataError.dataNotFound(msg: "Booking is not availabel")
+//        }
+//        let transaction = Transaction(amount: bill.total, type: .payment, userId: self.id)
+//        transactions[transaction.id] = transaction
+//    }
 }
