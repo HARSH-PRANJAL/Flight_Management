@@ -9,6 +9,8 @@ func crewMenu() {
         flightManagerMenu()
     } else if role == .hr {
         hrMenu()
+    } else if role == .groundStaff {
+        groundStaffMenu()
     }
 }
 
@@ -43,19 +45,24 @@ func flightManagerMenu() {
                     print("\n🚨 Error: Flight not found ‼️\n")
                 }
             } else {
-                displayAllFlights()
+                let allFlights = getAllFlights()
+                IO.displayTable(allFlights, heading: "Flights")
             }
 
         case .scheduleFlight:
-            displayAllAirpots()
-            displayAllAircrafts()
+            let allAirports = getAllAirports()
+            let allAircrafts = getAllAircrafts()
+            
+            IO.displayTable(allAirports,heading: "Airports")
+            IO.displayTable(allAircrafts, heading: "Aircrafts")
 
             let sourceId = IO.readInt(prompt: "Enter source airport id : ")
             let destinationId = IO.readInt(
                 prompt: "Enter destination airport id : "
             )
             let allRoutes = route.getRoutes(from: sourceId, to: destinationId)
-            displayRoute(routes: allRoutes)
+            print("\n")
+            IO.displayTable(allRoutes, heading: "Routes")
 
             let routeChoice = IO.readOptionNumber(
                 size: allRoutes.count,
@@ -84,7 +91,8 @@ func flightManagerMenu() {
             }
 
         case .addRoute:
-            displayAllAirpots()
+            let allAirports = getAllAirports()
+            IO.displayTable(allAirports, heading: "Airports")
 
             do {
                 let isCompleted = try initiateRouteRegistration()
@@ -145,7 +153,8 @@ func hrMenu() {
         switch option {
             
         case .viewAllEmployees:
-            displayAllCrew()
+            let allCrew = getAllCrew()
+            IO.displayTable(allCrew, heading: "Crew")
             
         case .viewAllResignationRequests:
             for request in resignationRequests {
@@ -199,13 +208,14 @@ func hrMenu() {
             }
         
         case .addSalaryToCrew:
-            let allCrew = getAllCrew().filter({$0.inAirPayRatePerHour == 0.0 || $0.groundDutyPayRatePerHour == 0.0})
-            IO.displayTable(allCrew)
-            
             print("To be implemented")
             
         case .exit:
             return
         }
     }
+}
+
+func groundStaffMenu() {
+    
 }

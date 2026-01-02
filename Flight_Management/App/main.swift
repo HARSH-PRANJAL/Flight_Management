@@ -73,10 +73,10 @@ func main() {
 }
 
 //main()
-//loadMockAirports()
-//loadMockAircrafts()
-//loadMockRoutes()
-////flightManagerMenu()
+loadMockAirports()
+loadMockAircrafts()
+loadMockRoutes()
+flightManagerMenu()
 //loadMockMaintenance()
 //loadMockPassengers()
 //loadMockCrew()

@@ -20,7 +20,7 @@ struct IO {
 
         while true {
             if let input = readLine(), let number = Double(input) {
-                return number
+                return (number*100).rounded()/100
             } else {
                 print(
                     "\nYour input is not a number provide correct input !!!!\n"
@@ -125,7 +125,7 @@ struct IO {
         }
     }
     
-    static func displayTable<T: TableRepresentable>(_ data: [T]) {
+    static func displayTable<T: TableRepresentable>(_ data: [T],heading: String) {
         guard !data.isEmpty else {
             print("No data available")
             return
@@ -144,7 +144,8 @@ struct IO {
             }
             print(padded.joined(separator: " | "))
         }
-
+        
+        print("\n\t\t\(heading)\n")
         printRow(headers)
         print(columnWidths.map { String(repeating: "-", count: $0) }.joined(separator: "-+-"))
 
