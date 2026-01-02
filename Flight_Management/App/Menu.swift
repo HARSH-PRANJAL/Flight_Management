@@ -217,5 +217,43 @@ func hrMenu() {
 }
 
 func groundStaffMenu() {
-    
+    while true {
+        IO.displayEnumOptions(
+            enumType: HRMenu.self,
+            msg:
+                """
+                ===============================
+                       Front Desk Menu
+                ===============================
+                """
+        )
+        
+        let menu = GroundStaffMenu.allCases
+        let choice = IO.readOptionNumber(size: menu.count)
+        let option = menu[choice - 1]
+        
+        switch option {
+        case .addPassenger:
+            do {
+                let passengerId = try initiateUserRegistration(true)
+            } catch let error as UserError {
+                print("\n🚨 Error: \(error.description) ‼️\n")
+            } catch {
+                print(
+                    "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
+                )
+            }
+        case .cancelBooking:
+            print("Not implemented")
+        case .viewAvailableFlights:
+            let allFlights = getAllFlights()
+            IO.displayTable(allFlights, heading: "Flights")
+        case .viewAvailableSeats:
+            print("Not implemented")
+        case .viewPassengerBookings:
+            print("Not implemented")
+        case .exit:
+            return
+        }
+    }
 }

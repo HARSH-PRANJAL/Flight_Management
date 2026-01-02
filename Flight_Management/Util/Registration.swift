@@ -1,6 +1,6 @@
 import Foundation
 
-func initiateUserRegistration() throws -> Int {
+func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
     let userName = IO.readString(prompt: "Enter user name : ")
     let password = IO.readString(prompt: "Enter password : ")
     let phone = IO.readString(
@@ -33,8 +33,13 @@ func initiateUserRegistration() throws -> Int {
             return IO.readOptionNumber(size: CrewType.allCases.count)
         }
     )
-    let crewType: CrewType? =
-        crewOption != nil ? CrewType.allCases[crewOption! - 1] : nil
+    let crewType: CrewType?
+    
+    if isPassenger {
+        crewType = nil
+    } else {
+        crewType = crewOption != nil ? CrewType.allCases[crewOption! - 1] : nil
+    }
 
     let readAddress = {
         IO.readString(prompt: "Enter address : ", terminator: " ")
