@@ -1,16 +1,63 @@
 import Foundation
 
 func crewMenu() {
-    guard let role = userRole else {
+    guard let user = authenticatedUser,
+        let crew = user as? Crew,
+        let role = userRole,
+        role == crew.crewType
+    else {
+        print("Unauthorised Please login first.")
         return
     }
 
-    if role == .flightManager {
-        flightManagerMenu()
-    } else if role == .hr {
-        hrMenu()
-    } else if role == .groundStaff {
-        groundStaffMenu()
+    let ops = IO.readInt(
+        prompt:
+            "Press 1 to go to personal menu, or any other number to go to work menu : "
+    )
+
+    if ops != 1 {
+        if role == .flightManager {
+            flightManagerMenu()
+        } else if role == .hr {
+            hrMenu()
+        } else if role == .groundStaff {
+            groundStaffMenu()
+        }
+    }
+
+    let menu = ProfileMenu.allCases
+    IO.displayOptions(
+        options: menu,
+        msg:
+            """
+            ===============================
+                  Profile Menu
+            ===============================
+            """
+    )
+
+    let choice = IO.readInt(size: menu.count)
+    let option = menu[choice - 1]
+
+    switch option {
+    case .applyForLeave:
+        let reason = IO.readString(prompt: "Enter reason for leave : ")
+        if crew.applyLeave(reason: reason) {
+            print("Leave applied successfully.")
+        } else {
+            print("You have already applied for leave.\nHr will review it soon.")
+        }
+    case .resign:
+        if crew.resign() {
+            print("Resignation applied successfully. See you soon!")
+        } else {
+            print("You have already applied for resignation.\nHr will review it soon.")
+        }
+    case .logout:
+        authenticatedUser = nil
+        userRole = nil
+        print("Logged out successfully.")
+        return
     }
 }
 
@@ -58,7 +105,7 @@ func flightManagerMenu() {
         case .scheduleFlight:
             let allAirports = getAllAirports()
             let allAircrafts = getAllAircrafts()
-            
+
             IO.displayTable(
                 allAirports,
                 heading: "Airports",
@@ -446,7 +493,8 @@ func passengerMenu() {
                 failMsg: "You have no bookings."
             )
 
-        case .exit:
+        case .Logout:
+            authenticatedUser = nil
             return
         }
     }

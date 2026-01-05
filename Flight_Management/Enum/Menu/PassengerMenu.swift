@@ -2,7 +2,8 @@ enum PassengerMenu: CaseIterable, CustomStringConvertible {
     case bookTicket
     case cancelTicket
     case viewBookings
-    case exit
+    case Logout
+    
     
     var description: String {
         switch self {
@@ -12,8 +13,8 @@ enum PassengerMenu: CaseIterable, CustomStringConvertible {
             return "Cancel a ticket"
         case .viewBookings:
             return "View all bookings"
-        case .exit:
-            return "Exit"
+        case .Logout:
+            return "Logout"
         }
     }
 }

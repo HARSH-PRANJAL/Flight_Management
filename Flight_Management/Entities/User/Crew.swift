@@ -83,4 +83,12 @@ class Crew: User {
     func requestForResignation() {
         resignationRequests.insert(self.id)
     }
+
+    func applyLeave(reason: String) -> Bool {
+        return registerLeaveRequest(leave: (self.id, reason))
+    }
+    
+    func resign() -> Bool {
+        return registerResignation(crewId: self.id)
+    }
 }

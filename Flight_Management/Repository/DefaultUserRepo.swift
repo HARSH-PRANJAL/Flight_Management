@@ -77,3 +77,21 @@ func registerUser(
 
     return newUser.id
 }
+
+func registerLeaveRequest(leave: (Int,String)) -> Bool {
+    if leaveRequests.keys.contains(leave.0) {
+        return false
+    }
+    
+    leaveRequests[leave.0] = leave.1
+    return true
+}
+
+func registerResignation(crewId: Int) -> Bool {
+    if resignationRequests.contains(crewId) {
+        return false
+    }
+    
+    resignationRequests.insert(crewId)
+    return true
+}
