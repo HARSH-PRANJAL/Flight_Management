@@ -14,7 +14,7 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
     let flights = getAllFlights()
     var allFlights: [Flight] = []
 
-    for flight in allFlights {
+    for flight in flights {
         if flight.route.airportPath.first == sourceId
             && flight.route.airportPath.last == destinationId
         {
@@ -36,7 +36,7 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
 
     let bookingDate = IO.readOptional(
         msg: "Select Y to enter a specific booking date",
-        readValue: { IO.readDate(prompt: "Enter the booking date : ") }
+        readValue: { IO.readDate(dateFormat: "dd-mm-yyyy",prompt: "Enter the booking date : ") }
     )
 
     let mealMenu = MealPreference.allCases

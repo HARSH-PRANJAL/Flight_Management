@@ -51,6 +51,7 @@ func registerMaintenanceLog(
         return nil
     } else {
         aircraft.isAvailable = false
+        aircrafts[aircraft.id] = aircraft
     }
 
     let newMaintenanceLog = MaintenanceLog(

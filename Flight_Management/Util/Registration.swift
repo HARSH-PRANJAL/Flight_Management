@@ -10,7 +10,7 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
 
     let email: String = readCorrectEmail()
     let dob = try checkDateTime(
-        dateTime: IO.readDate(prompt: "Enter DOB : "),
+        dateTime: IO.readDate(dateFormat: "dd-MM-yyyy", prompt: "Enter DOB : "),
         lowerLimit: Calendar.current.date(
             byAdding: .year,
             value: -10,
@@ -94,12 +94,12 @@ func checkDateTime(
 )
     throws(DataError) -> Date
 {
-    if let lower = lowerLimit, dateTime < lower {
+    if let lower = lowerLimit, dateTime >= lower {
         throw DataError.invalidData(
             msg: "Date/time is earlier than the allowed limit."
         )
     }
-    if let upper = upperLimit, dateTime > upper {
+    if let upper = upperLimit, dateTime <= upper {
         throw DataError.invalidData(
             msg: "Date/time is later than the allowed limit."
         )
@@ -180,7 +180,7 @@ func initiateFlightRegistration(route: Route) throws -> Int {
         to: Date()
     )
     let departureTime: Date = try checkDateTime(
-        dateTime: IO.readDateTime(prompt: "Enter departure time : "),
+        dateTime: IO.readDate(dateFormat: "dd-MM-yyyy HH:mm", prompt: "Enter departure time : "),
         lowerLimit: earliestAllowedDeparture,
         upperLimit: latestAllowedDeparture
     )
@@ -204,11 +204,11 @@ func initiateFlightMaintenanceLogRegistration() throws -> Int {
     }
 
     let scheduledDate: Date = try checkDateTime(
-        dateTime: IO.readDateTime(prompt: "Enter scheduled date : "),
+        dateTime: IO.readDate(dateFormat: "dd-MM-yyyy HH:mm", prompt: "Enter scheduled date : "),
         lowerLimit: Date()
     )
     let expectedCompletionDate: Date = try checkDateTime(
-        dateTime: IO.readDateTime(prompt: "Enter expected completion date : "),
+        dateTime: IO.readDate(dateFormat: "dd-MM-yyyy HH:mm", prompt: "Enter expected completion date : "),
         lowerLimit: scheduledDate
     )
 

@@ -1,3 +1,5 @@
+import Foundation
+
 struct Route: TableRepresentable {
     let airportPath: [Int]
     let totalDuration: Double
@@ -10,8 +12,8 @@ struct Route: TableRepresentable {
     var tableRow: [String] {
         [
             pathDescription,
-            String(totalDuration),
-            "\(totalFare)",
+            String(format:"%.2f" ,totalDuration),
+            String(format:"%.2f" ,totalFare),
         ]
     }
 
@@ -24,6 +26,8 @@ struct Route: TableRepresentable {
                 result.append(" -> ")
             }
         }
+        
+        result.removeLast(4)
         return result
     }
 

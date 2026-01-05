@@ -75,19 +75,3 @@ func registerUser(
 
     return newUser.id
 }
-
-func setCrewPerHourSalary(
-    for crewId: Int,
-    flightSalary: Double,
-    groundSalary: Double
-) -> Bool {
-    guard let user = findUserById(by: crewId),
-        let crew = user as? Crew
-    else {
-        return false
-    }
-
-    crew.inAirPayRatePerHour = flightSalary
-    crew.groundDutyPayRatePerHour = groundSalary
-    return true
-}

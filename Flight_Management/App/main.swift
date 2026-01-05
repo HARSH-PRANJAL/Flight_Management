@@ -74,16 +74,16 @@ func main() {
     }
 }
 
-main()
-//loadMockAirports()
-//loadMockAircrafts()
-//loadMockRoutes()
-//flightManagerMenu()
-//loadMockMaintenance()
-//loadMockPassengers()
-//loadMockCrew()
-//IO.displayTable(getAllAirports())
-//IO.displayTable(getAllCrew())
-//IO.displayTable(getAllPassengers())
-//IO.displayTable(getAllAircrafts())
+//main()
+loadMockAirports()
+loadMockAircrafts()
+loadMockRoutes()
+loadMockMaintenance()
+loadMockPassengers()
+loadMockCrew()
+flightManagerMenu()
+hrMenu()
+groundStaffMenu()
+authenticatedUser = passengers[1]!
+passengerMenu()
 

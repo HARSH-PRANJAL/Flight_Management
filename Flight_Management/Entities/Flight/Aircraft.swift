@@ -70,7 +70,7 @@ struct Aircraft: CustomStringConvertible, TableRepresentable {
     }
     
     mutating func allocateSeat(preference: SeatPreference, count: Int) -> Bool {
-        guard var (total, available) = self.seat[preference] else {
+        guard let (total, available) = self.seat[preference] else {
             return false
         }
         
@@ -80,5 +80,9 @@ struct Aircraft: CustomStringConvertible, TableRepresentable {
         
         self.seat[preference] = (total, available - count)
         return true
+    }
+    
+    mutating func markAsUnavailable() {
+        self.isAvailable = false
     }
 }

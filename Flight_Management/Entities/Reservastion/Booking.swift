@@ -42,7 +42,7 @@ struct Booking: TableRepresentable {
             String(destinationAirport),
             String(mealPreference.description),
             String(seatPreference.description),
-            String(totalAmount)
+            String(format: "%.2f", totalAmount)
         ]
     }
     

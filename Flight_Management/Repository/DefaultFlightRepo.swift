@@ -12,7 +12,8 @@ func registerFlight(
     if !aircraft.isAvailable {
         return nil
     } else {
-        aircraft.isAvailable = false
+        aircraft.markAsUnavailable()
+        aircrafts[aircraft.id] = aircraft
     }
 
     let newFlight = Flight(

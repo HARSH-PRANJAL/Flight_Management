@@ -27,10 +27,11 @@ func flightManagerMenu() {
         )
 
         let route = AirportRouteGraph()
+        let menu = FlightManagerMenu.allCases
         let choice = IO.readInt(
-            size: FlightManagerMenu.allCases.count
+            size: menu.count
         )
-        let option = FlightManagerMenu.allCases[choice - 1]
+        let option = menu[choice - 1]
 
         switch option {
 
@@ -50,8 +51,11 @@ func flightManagerMenu() {
             }
 
         case .scheduleFlight:
-            let allAirports = getAllAirports()
-            let allAircrafts = getAllAircrafts()
+            let allAirports = getAllAirports().sorted(by: { a, b in a.id < b.id
+                })
+            let allAircrafts = getAllAircrafts().sorted(by: { a, b in
+                a.id < b.id
+            })
 
             IO.displayTable(allAirports, heading: "Airports")
             IO.displayTable(allAircrafts, heading: "Aircrafts")
@@ -61,7 +65,6 @@ func flightManagerMenu() {
                 prompt: "Enter destination airport id : "
             )
             let allRoutes = route.getRoutes(from: sourceId, to: destinationId)
-            print("\n")
             IO.displayTable(allRoutes, heading: "Routes")
 
             let routeChoice = IO.readInt(
@@ -91,7 +94,8 @@ func flightManagerMenu() {
             }
 
         case .addRoute:
-            let allAirports = getAllAirports()
+            let allAirports = getAllAirports().sorted(by: { a, b in a.id < b.id
+                })
             IO.displayTable(allAirports, heading: "Airports")
 
             do {
@@ -153,7 +157,7 @@ func hrMenu() {
         switch option {
 
         case .viewAllEmployees:
-            let allCrew = getAllCrew()
+            let allCrew = getAllCrew().sorted(by: { a, b in a.id < b.id })
             IO.displayTable(allCrew, heading: "Crew")
 
         case .viewAllResignationRequests:
@@ -243,8 +247,11 @@ func groundStaffMenu() {
         case .addPassenger:
             do {
                 let passengerId = try initiateUserRegistration(true)
+                print("Passenger with ID \(passengerId) has been added successfully.")
             } catch let error as UserError {
                 print("\n🚨 Error: \(error.description) ‼️\n")
+            } catch let error as DataError {
+                print("\n🚨 Error: \(error) ‼️\n")
             } catch {
                 print(
                     "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
@@ -360,29 +367,28 @@ func passengerMenu() {
 
         case .cancelTicket:
             guard let user = authenticatedUser,
-            let passenger = user as? Passenger
+                let passenger = user as? Passenger
             else {
                 print("You are not authorised for this action. 🔐")
                 continue
             }
-            
+
             let bookingId = IO.readInt(prompt: "Enter the Ticket number : ")
             guard let booking = findBookingById(id: bookingId) else {
                 print("No booking found with the given id.")
                 continue
             }
-            
-//            do{
-//                let isCancelled = try passenger.cancelTkt(booking: booking)
-//                
-//                if isCancelled {
-//                    print("Ticket Cancelled. 🚫")
-//                } else {
-//
-//                }
-//            }
-            
-            
+
+        //            do{
+        //                let isCancelled = try passenger.cancelTkt(booking: booking)
+        //
+        //                if isCancelled {
+        //                    print("Ticket Cancelled. 🚫")
+        //                } else {
+        //
+        //                }
+        //            }
+
         case .viewBookings:
             let allBookings = getBookingsForPassenger(id: passenger.id)
             IO.displayTable(allBookings, heading: "Your bookings")
