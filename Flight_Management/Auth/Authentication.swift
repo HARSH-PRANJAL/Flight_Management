@@ -24,3 +24,7 @@ func authenticateToken(token: Int) throws -> Bool {
         throw AuthError.authenticationFailed
     }
 }
+
+func passwordHash(password: String) -> String {
+    return String(password.hashValue)
+}

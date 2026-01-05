@@ -51,7 +51,7 @@ class Crew: User {
         self.address = address
         self.phone = phone
         self.email = email
-        self.password = String(password.hashValue)
+        self.password = passwordHash(password: password)
         self.crewType = crewType
     }
 
