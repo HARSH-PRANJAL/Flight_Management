@@ -5,25 +5,33 @@ func loadMockAircrafts() {
         Aircraft(
             model: "Mock A30",
             manufacturer: "Airbus",
-            seatingCapacity: 150,
+            economySeat: 100,
+            businessSeat: 30,
+            firstClassSeat: 20,
             fuelCapacity: 9000
         ),
         Aircraft(
             model: "Mock A31",
             manufacturer: "Airbus",
-            seatingCapacity: 150,
+            economySeat: 100,
+            businessSeat: 30,
+            firstClassSeat: 20,
             fuelCapacity: 9000
         ),
         Aircraft(
             model: "Mock A32",
             manufacturer: "Airbus",
-            seatingCapacity: 150,
+            economySeat: 100,
+            businessSeat: 30,
+            firstClassSeat: 20,
             fuelCapacity: 9000
         ),
         Aircraft(
             model: "Mock A33",
             manufacturer: "Airbus",
-            seatingCapacity: 150,
+            economySeat: 100,
+            businessSeat: 30,
+            firstClassSeat: 20,
             fuelCapacity: 9000
         ),
     ]
