@@ -13,11 +13,13 @@ func findUserById(by id: Int) -> User? {
 }
 
 func getAllCrew() -> [Crew] {
-    return Array(crews.values)
+    return Array(crews.values).sorted(by: { a, b in a.id < b.id
+    })
 }
 
 func getAllPassengers() -> [Passenger] {
-    return Array(passengers.values)
+    return Array(passengers.values).sorted(by: { a, b in a.id < b.id
+    })
 }
 
 func registerUser(

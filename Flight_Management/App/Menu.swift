@@ -56,12 +56,9 @@ func flightManagerMenu() {
             }
 
         case .scheduleFlight:
-            let allAirports = getAllAirports().sorted(by: { a, b in a.id < b.id
-            })
-            let allAircrafts = getAllAircrafts().sorted(by: { a, b in
-                a.id < b.id
-            })
-
+            let allAirports = getAllAirports()
+            let allAircrafts = getAllAircrafts()
+            
             IO.displayTable(
                 allAirports,
                 heading: "Airports",
@@ -111,8 +108,7 @@ func flightManagerMenu() {
             }
 
         case .addRoute:
-            let allAirports = getAllAirports().sorted(by: { a, b in a.id < b.id
-            })
+            let allAirports = getAllAirports()
             IO.displayTable(
                 allAirports,
                 heading: "Airports",
@@ -179,7 +175,7 @@ func hrMenu() {
         switch option {
 
         case .viewAllEmployees:
-            let allCrew = getAllCrew().sorted(by: { a, b in a.id < b.id })
+            let allCrew = getAllCrew()
             IO.displayTable(
                 allCrew,
                 heading: "Crew",
@@ -385,7 +381,7 @@ func passengerMenu() {
                 print("No airports available for booking.")
                 continue
             }
-            
+
             IO.displayTable(
                 allAirports,
                 heading: "Available Airports"
@@ -403,6 +399,8 @@ func passengerMenu() {
                 )
                 if isCompleted {
                     print("Booking Completed. ✅")
+                } else {
+                    print("No flights available for the selected airports. 😔")
                 }
             } catch let error as UserError {
                 print("\n🚨 Error: \(error.description) ‼️\n")

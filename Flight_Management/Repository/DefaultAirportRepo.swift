@@ -7,7 +7,8 @@ func isAirportExist(id: Int) -> Bool {
 }
 
 func getAllAirports() -> [Airport] {
-    return Array(airports.values)
+    return Array(airports.values).sorted(by: { a, b in a.id < b.id
+    })
 }
 
 func registerAirport(

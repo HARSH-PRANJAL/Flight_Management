@@ -12,6 +12,11 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
     }
 
     let flights = getAllFlights()
+    
+    if flights.isEmpty {
+        return false
+    }
+    
     var allFlights: [Flight] = []
 
     for flight in flights {

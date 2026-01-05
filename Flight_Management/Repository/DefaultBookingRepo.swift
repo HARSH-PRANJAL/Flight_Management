@@ -15,7 +15,8 @@ func getBookingsForPassenger(id: Int) -> [Booking] {
         }
     }
     
-    return result
+    return result.sorted(by: { a, b in a.bookingDate > b.bookingDate
+    })
 }
 
 func deleteBookingById(id: Int) -> Booking? {

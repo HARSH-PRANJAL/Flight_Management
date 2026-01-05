@@ -13,7 +13,8 @@ func findAircraftById(id: Int) -> Aircraft? {
 }
 
 func getAllAircrafts() -> [Aircraft] {
-    return Array(aircrafts.values)
+    return Array(aircrafts.values).sorted(by: { a, b in a.id < b.id
+    })
 }
 
 func registerAircraft(
@@ -62,14 +63,4 @@ func registerMaintenanceLog(
 
     maintenanceLogs[newMaintenanceLog.id] = newMaintenanceLog
     return newMaintenanceLog.id
-}
-
-func updateCompletionDateOfLog(logId: Int, newCompletionDate: Date) -> Bool {
-    guard var log = maintenanceLogs[logId] else {
-        return false
-    }
-
-    log.completionDate = newCompletionDate
-    maintenanceLogs[logId] = log
-    return true
 }

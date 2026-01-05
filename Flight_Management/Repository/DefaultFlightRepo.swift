@@ -31,7 +31,8 @@ func findFlightById(id: Int) -> Flight? {
 }
 
 func getAllFlights() -> [Flight] {
-    return Array(flights.values)
+    return Array(flights.values).sorted(by: { a, b in a.id < b.id
+    })
 }
 
 func deleteFlightById(id: Int) -> Int? {
@@ -57,6 +58,7 @@ func getFlightsBetween(sourceId: Int, destinationId: Int) -> [Flight] {
         } else {
             return false
         }
+    }).sorted(by: { a, b in a.id < b.id
     })
 
     return result
