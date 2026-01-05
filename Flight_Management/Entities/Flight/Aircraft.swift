@@ -7,7 +7,6 @@ struct Aircraft: CustomStringConvertible, TableRepresentable {
     var seat: [SeatPreference: (Int, Int)] = [:]
     let fuelCapacity: Double
     var isAvailable: Bool = true
-    let seatingCapacity: Int
 
     init(
         model: String,
@@ -22,7 +21,6 @@ struct Aircraft: CustomStringConvertible, TableRepresentable {
         Aircraft.nextId += 1
         self.model = model
         self.manufacturer = manufacturer
-        self.seatingCapacity = max(economySeat + businessSeat + firstClassSeat,seatingCapacity)
         self.fuelCapacity = fuelCapacity
         self.createSeats(economySeat, businessSeat, firstClassSeat)
     }
@@ -49,16 +47,6 @@ struct Aircraft: CustomStringConvertible, TableRepresentable {
         ]
     }
 
-    private mutating func createSeats(
-        _ economySeat: Int,
-        _ businessSeat: Int,
-        _ firstClassSeat: Int
-    ) {
-        self.seat[.economy] = (economySeat, 0)
-        self.seat[.business] = (businessSeat, 0)
-        self.seat[.firstClass] = (firstClassSeat, 0)
-    }
-
     var describeRemainingSeats: String {
         var result = ""
         
@@ -67,6 +55,10 @@ struct Aircraft: CustomStringConvertible, TableRepresentable {
         }
         
         return result
+    }
+    
+    var seatingCapacity: Int {
+        return 0
     }
     
     mutating func allocateSeat(preference: SeatPreference, count: Int) -> Bool {
@@ -84,5 +76,15 @@ struct Aircraft: CustomStringConvertible, TableRepresentable {
     
     mutating func markAsUnavailable() {
         self.isAvailable = false
+    }
+    
+    private mutating func createSeats(
+        _ economySeat: Int,
+        _ businessSeat: Int,
+        _ firstClassSeat: Int
+    ) {
+        self.seat[.economy] = (economySeat, economySeat)
+        self.seat[.business] = (businessSeat, businessSeat)
+        self.seat[.firstClass] = (firstClassSeat, firstClassSeat)
     }
 }
