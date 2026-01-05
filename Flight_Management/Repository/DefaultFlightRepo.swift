@@ -26,7 +26,7 @@ func registerFlight(
     return newFlight.id
 }
 
-func findFlightById(_ id: Int) -> Flight? {
+func findFlightById(id: Int) -> Flight? {
     return flights[id]
 }
 

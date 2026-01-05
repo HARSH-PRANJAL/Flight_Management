@@ -67,7 +67,7 @@ extension User {
     }
 
     func verifyPassword(_ password: String) -> Bool {
-        return self.password == String(password.hashValue)
+        return self.password == passwordHash(password: password)
     }
 
 }

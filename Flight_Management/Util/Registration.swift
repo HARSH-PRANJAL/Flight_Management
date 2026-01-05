@@ -28,18 +28,11 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
     if isPassenger {
         crewType = nil
     } else {
-        let crewOption: Int? = IO.readOptional(
-            msg: "Do you want to provide crew type",
-            readValue: {
-                IO.displayOptions(
-                    options: Gender.allCases,
-                    msg: "Select crew type"
-                )
-                return IO.readInt(size: CrewType.allCases.count)
-            }
-        )
+        let crews = CrewType.allCases
+        IO.displayOptions(options: crews, msg: "Select crew type")
         
-        crewType = crewOption != nil ? CrewType.allCases[crewOption! - 1] : nil
+        let crewOption: Int = IO.readInt(size: crews.count)
+        crewType = CrewType.allCases[crewOption - 1]
     }
 
     let readAddress = {
@@ -49,7 +42,7 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
         crewType != nil
         ? readAddress()
         : IO.readOptional(
-            msg: "Do you want to provide address",
+            msg: "Do you want to provide address (y/n) : ",
             readValue: readAddress
         )
 
@@ -169,6 +162,9 @@ func initiateRouteRegistration() throws -> Bool {
 
 func initiateFlightRegistration(route: Route) throws -> Int {
     let aircraftId = IO.readInt(prompt: "Enter aircraft id for this flight : ")
+    if aircraftId == -1 {
+        throw DataError.invalidData(msg: "Exiting registration process.")
+    }
 
     if !isAircraftExist(id: aircraftId) {
         throw DataError.dataNotFound(msg: "Aircraft dose not exist.")

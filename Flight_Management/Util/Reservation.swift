@@ -24,7 +24,7 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
 
     IO.displayTable(allFlights, heading: "Available Flights")
     let flightId = IO.readInt(prompt: "Enter the flight ID : ")
-    guard let flight = findFlightById(flightId) else {
+    guard let flight = findFlightById(id: flightId) else {
         throw DataError.dataNotFound(
             msg: "No flight exists with ID : \(flightId)"
         )
@@ -35,13 +35,13 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
     }
 
     let bookingDate = IO.readOptional(
-        msg: "Select Y to enter a specific booking date",
+        msg: "Do you want to enter a booking date (y/n) : ",
         readValue: { IO.readDate(dateFormat: "dd-mm-yyyy",prompt: "Enter the booking date : ") }
     )
 
     let mealMenu = MealPreference.allCases
     let choice = IO.readOptional(
-        msg: "Select Y to provide meal preference",
+        msg: "Do you want to provide a meal preference (y/n) :",
         readValue: {
             IO.displayOptions(
                 options: mealMenu,

@@ -80,6 +80,36 @@ func loadMockAirports() {
     }
 }
 
+func loadMockFlights() {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "dd-MM-yyyy"
+    formatter.locale = Locale(identifier: "hi_IN")
+
+    guard let departure = formatter.date(from: "12-03-2003") else {
+        return
+    }
+
+    let route = AirportRouteGraph().getRoutes(from: 1, to: 5).first!
+    let flight = [
+        Flight(aircraftId: 1, scheduledDeparture: departure, route: route),
+        Flight(
+            aircraftId: 2,
+            scheduledDeparture: departure + 10000,
+            route: route
+        ),
+        Flight(
+            aircraftId: 3,
+            scheduledDeparture: departure + 5000,
+            route: route
+        ),
+    ]
+
+    for item in flight {
+        flights[item.id] = item
+    }
+
+}
+
 func loadMockRoutes() {
     let allAirports = getAllAirports()
 
@@ -195,7 +225,7 @@ func loadMockMaintenance() {
                 )
             )
         }
-        
+
         // every one of five aircrafts are scheduled for maintenance
         i += 5
     }
@@ -206,8 +236,12 @@ func loadMockMaintenance() {
 }
 
 func loadMockCrew() {
-    let makeDOB = {(year, month, day) in Calendar.current.date(from: DateComponents(year: year, month: month, day: day))!}
-    
+    let makeDOB = { (year, month, day) in
+        Calendar.current.date(
+            from: DateComponents(year: year, month: month, day: day)
+        )!
+    }
+
     let crewMembers: [Crew] = [
 
         Crew(
@@ -267,17 +301,21 @@ func loadMockCrew() {
             phone: "9988776655",
             address: "Pune, India",
             crewType: .hr
-        )
+        ),
     ]
-    
+
     for crew in crewMembers {
         crews[crew.id] = crew
     }
 }
 
 func loadMockPassenger() {
-    let makeDOB = {(year, month, day) in Calendar.current.date(from: DateComponents(year: year, month: month, day: day))!}
-    
+    let makeDOB = { (year, month, day) in
+        Calendar.current.date(
+            from: DateComponents(year: year, month: month, day: day)
+        )!
+    }
+
     let mockPassengers: [Passenger] = [
 
         Passenger(
@@ -323,9 +361,9 @@ func loadMockPassenger() {
             idProof: "TN998877665",
             idProofType: .governmentId,
             address: "Kochi, Kerala"
-        )
+        ),
     ]
-    
+
     for passenger in mockPassengers {
         passengers[passenger.id] = passenger
     }
