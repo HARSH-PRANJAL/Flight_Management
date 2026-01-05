@@ -19,13 +19,17 @@ func getAllAircrafts() -> [Aircraft] {
 func registerAircraft(
     model: String,
     manufacturer: String,
-    seatingCapacity: Int,
+    economySeat: Int,
+    businessSeat: Int,
+    firstClassSeat: Int,
     fuelCapacity: Double
 ) -> Int {
     let newAircraft = Aircraft(
         model: model,
         manufacturer: manufacturer,
-        seatingCapacity: seatingCapacity,
+        economySeat: economySeat,
+        businessSeat: businessSeat,
+        firstClassSeat: firstClassSeat,
         fuelCapacity: fuelCapacity
     )
 

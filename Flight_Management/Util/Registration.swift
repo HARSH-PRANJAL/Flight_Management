@@ -126,13 +126,18 @@ func initiateAirportRegistration() -> Int {
 func initiateAircraftRegistration() -> Int {
     let model = IO.readString(prompt: "Enter aircraft model : ")
     let manufacturer = IO.readString(prompt: "Enter manufacturer name : ")
-    let seatingCapacity = IO.readInt(prompt: "Enter total number of seats : ")
+    let economySeat = IO.readInt(prompt: "Enter number of economy seats : ")
+    let businessSeat = IO.readInt(prompt: "Enter number of business seats : ")
+    let firstClassSeat = IO.readInt(prompt: "Enter number of first class seats : ")
+    let seatingCapacity = economySeats + businessSeats + firstClassSeats
     let fuelCapacity = IO.readDouble(prompt: "Enter total fuel capacity : ")
 
     return registerAircraft(
         model: model,
         manufacturer: manufacturer,
-        seatingCapacity: seatingCapacity,
+        economySeat: economySeat,
+        businessSeat: businessSeat,
+        firstClassSeat: firstClassSeat,
         fuelCapacity: fuelCapacity
     )
 }

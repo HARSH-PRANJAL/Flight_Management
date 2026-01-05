@@ -49,7 +49,7 @@ struct Aircraft: CustomStringConvertible, TableRepresentable {
         ]
     }
 
-    mutating func createSeats(
+    private mutating func createSeats(
         _ economySeat: Int,
         _ businessSeat: Int,
         _ firstClassSeat: Int
