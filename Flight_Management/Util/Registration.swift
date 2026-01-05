@@ -11,7 +11,7 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
     let email: String = readCorrectEmail()
     let dob = try checkDateTime(
         dateTime: IO.readDate(dateFormat: "dd-MM-yyyy", prompt: "Enter DOB : "),
-        lowerLimit: Calendar.current.date(
+        upperLimit: Calendar.current.date(
             byAdding: .year,
             value: -10,
             to: Date()
@@ -23,21 +23,22 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
         IO.readInt(size: Gender.allCases.count) - 1
     ]
 
-    let crewOption: Int? = IO.readOptional(
-        msg: "Do you want to provide crew type",
-        readValue: {
-            IO.displayOptions(
-                options: Gender.allCases,
-                msg: "Select crew type"
-            )
-            return IO.readInt(size: CrewType.allCases.count)
-        }
-    )
     let crewType: CrewType?
-    
+
     if isPassenger {
         crewType = nil
     } else {
+        let crewOption: Int? = IO.readOptional(
+            msg: "Do you want to provide crew type",
+            readValue: {
+                IO.displayOptions(
+                    options: Gender.allCases,
+                    msg: "Select crew type"
+                )
+                return IO.readInt(size: CrewType.allCases.count)
+            }
+        )
+        
         crewType = crewOption != nil ? CrewType.allCases[crewOption! - 1] : nil
     }
 
@@ -94,12 +95,12 @@ func checkDateTime(
 )
     throws(DataError) -> Date
 {
-    if let lower = lowerLimit, dateTime >= lower {
+    if let lower = lowerLimit, dateTime <= lower {
         throw DataError.invalidData(
             msg: "Date/time is earlier than the allowed limit."
         )
     }
-    if let upper = upperLimit, dateTime <= upper {
+    if let upper = upperLimit, dateTime >= upper {
         throw DataError.invalidData(
             msg: "Date/time is later than the allowed limit."
         )
