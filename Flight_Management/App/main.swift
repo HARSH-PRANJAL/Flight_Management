@@ -1,5 +1,3 @@
-// caching authenticated users token
-var tokens: Set<Int> = []
 // store user role after auth for role based menu options
 var userRole: CrewType?
 var authenticatedUser: User?
@@ -59,7 +57,22 @@ func main() {
             crewMenu()
 
         case .passengerLogin:
-            print("Passenger login not implemented yet.")
+            let userID = IO.readInt(prompt: "Enter your ID : ")
+            let password = IO.readString(prompt: "Enter your password : ")
+
+            do {
+                if try authenticateUser(userId: userID, password: password) {
+                    authenticatedUser = passengers[userID]!
+                }
+            } catch let error as UserError {
+                print("\n🚨 Error: \(error.description) ‼️\n")
+            } catch let error as AuthError {
+                print("\n🚨 Error: \(error.description) ‼️\n")
+            } catch {
+                print(
+                    "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
+                )
+            }
 
         case .registerCrew:
             do {
@@ -72,6 +85,7 @@ func main() {
                     "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
                 )
             }
+            continue
 
         case .registerPassenger:
             do {
@@ -84,6 +98,7 @@ func main() {
                     "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
                 )
             }
+            continue
         }
     }
 }

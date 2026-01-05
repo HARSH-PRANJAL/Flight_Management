@@ -13,16 +13,7 @@ func authenticateUser(userId: Int, password: String) throws -> Bool {
         userRole = (user as! Crew).crewType
     }
     
-    tokens.insert(userId)
     return true
-}
-
-func authenticateToken(token: Int) throws -> Bool {
-    if tokens.contains(token) {
-        return true
-    } else {
-        throw AuthError.authenticationFailed
-    }
 }
 
 func passwordHash(password: String) -> String {
