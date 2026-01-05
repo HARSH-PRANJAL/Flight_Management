@@ -39,12 +39,10 @@ func main() {
 
             do {
                 if try authenticateUser(userId: userID, password: password) {
-                    authenticatedUser =
-                        userRole != nil
-                        ? crews[userID]!
-                        : passengers[userID]!
-
+                    authenticatedUser = crews[userID]!
                     crewMenu()
+                } else {
+                    print("Wrong credentials. Try again.")
                 }
             } catch let error as UserError {
                 print("\n🚨 Error: \(error.description) ‼️\n")
@@ -87,7 +85,6 @@ func main() {
                     "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
                 )
             }
-            continue
 
         case .registerPassenger:
             do {
@@ -100,7 +97,6 @@ func main() {
                     "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
                 )
             }
-            continue
         }
     }
 }

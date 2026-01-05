@@ -13,6 +13,10 @@ func authenticateUser(userId: Int, password: String) throws -> Bool {
         userRole = (user as! Crew).crewType
     }
     
+    if user is Crew && userRole == nil {
+        return false
+    }
+    
     return true
 }
 
