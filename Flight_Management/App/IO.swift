@@ -25,7 +25,7 @@ struct IO {
         while true {
             choice = IO.readInt(prompt: prompt, terminator: " ")
 
-            if choice <= 0 || choice > size {
+            if choice != -1 && (choice <= 0 || choice > size) {
                 print("Please select a valid option.")
             } else {
                 return choice
@@ -87,7 +87,7 @@ struct IO {
 
     static func readOptional<T>(msg: String, readValue: () -> T) -> T? {
         let answer = IO.readString(
-            prompt: "\(msg) : (y/n)",
+            prompt: "\(msg)",
             terminator: " "
         ).lowercased()
 

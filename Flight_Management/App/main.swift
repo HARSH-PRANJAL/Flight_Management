@@ -72,7 +72,7 @@ func main() {
                     "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
                 )
             }
-            
+
         case .registerPassenger:
             do {
                 let newId = try initiateUserRegistration(true)
@@ -88,15 +88,11 @@ func main() {
     }
 }
 
+loadMockAirports()
+loadMockAircrafts()
+loadMockRoutes()
+loadMockMaintenance()
+loadMockPassengers()
+loadMockCrew()
+loadMockFlights()
 main()
-//loadMockAirports()
-//loadMockAircrafts()
-//loadMockRoutes()
-//loadMockMaintenance()
-//loadMockPassengers()
-//loadMockCrew()
-//flightManagerMenu()
-//hrMenu()
-//groundStaffMenu()
-//authenticatedUser = passengers[1]!
-//passengerMenu()

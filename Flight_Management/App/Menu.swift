@@ -38,10 +38,10 @@ func flightManagerMenu() {
 
         case .viewFlights:
             if let flightId = IO.readOptional(
-                msg: "Select N to view all flights",
+                msg: "Do you want to see specific flight details? (y/n) : ",
                 readValue: { IO.readInt(prompt: "Enter flight id : ") }
             ) {
-                if let flight = findFlightById(flightId) {
+                if let flight = findFlightById(id: flightId) {
                     print(flight)
                 } else {
                     print("\n🚨 Error: Flight not found ‼️\n")
@@ -271,21 +271,21 @@ func groundStaffMenu() {
         case .viewAvailableSeats:
             let ops1 = IO.readOptional(
                 msg:
-                    "Select Y to find seats by flightId or N to find seats by source and destination",
-                readValue: { IO.readInt(prompt: "Enter source Id") }
+                    "Do you want to view seats by source id (y/n) : ",
+                readValue: { IO.readInt(prompt: "Enter source id",terminator: "") }
             )
             let ops2: Int
             var currFlights: [Flight] = []
 
             if ops1 == nil {
                 ops2 = IO.readInt(prompt: "Enter flight Id : ")
-                if let flight = findFlightById(ops2) {
+                if let flight = findFlightById(id: ops2) {
                     currFlights.append(flight)
                 } else {
                     print("\n🚨 Error: No flights available ‼️\n")
                 }
             } else {
-                ops2 = IO.readInt(prompt: "Enter destination Id : ")
+                ops2 = IO.readInt(prompt: "Enter destination id : ")
                 let flights = getFlightsBetween(
                     sourceId: ops1!,
                     destinationId: ops2
@@ -303,7 +303,7 @@ func groundStaffMenu() {
             }
 
         case .viewPassengerBookings:
-            let userId = IO.readInt(prompt: "Enter passenger Id : ")
+            let userId = IO.readInt(prompt: "Enter passenger id : ")
             if !passengers.keys.contains(userId) {
                 print("\n🚨 Error: Passenger not found ‼️\n")
                 continue
@@ -347,7 +347,7 @@ func passengerMenu() {
             let allAirports = getAllAirports()
             IO.displayTable(allAirports, heading: "Available Airports")
 
-            let sourceId = IO.readInt(prompt: "Enter the source airport Id: ")
+            let sourceId = IO.readInt(prompt: "Enter the source airport id: ")
             let destinationId = IO.readInt(
                 prompt: "Enter the destination airport Id: "
             )
