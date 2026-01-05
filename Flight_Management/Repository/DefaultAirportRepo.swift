@@ -2,7 +2,7 @@ func findAirportById(id: Int) -> Airport? {
     return airports[id]
 }
 
-func isAirportExist(withId id: Int) -> Bool {
+func isAirportExist(id: Int) -> Bool {
     return airports.keys.contains(id)
 }
 

@@ -18,8 +18,10 @@ var transactions: [Int: Transaction] = [:]
 
 func main() {
     while true {
+        let menu = MainMenu.allCases
+        
         IO.displayOptions(
-            options: MainMenu.allCases,
+            options: menu,
             msg:
                 """
                 ===============================
@@ -28,8 +30,8 @@ func main() {
                 """
         )
 
-        let choice = IO.readInt(size: MainMenu.allCases.count)
-        let option = MainMenu.allCases[choice - 1]
+        let choice = IO.readInt(size: menu.count)
+        let option = menu[choice - 1]
 
         switch option {
             

@@ -30,7 +30,7 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
         )
     }
 
-    guard var aircraft = findAircraftById(withId: flight.aircraftId) else {
+    guard var aircraft = findAircraftById(id: flight.aircraftId) else {
         throw DataError.invalidData(msg: "No aircraft exists for this flight")
     }
 
@@ -44,7 +44,7 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
         msg: "Select Y to provide meal preference",
         readValue: {
             IO.displayOptions(
-                options: MealPreference.allCases,
+                options: mealMenu,
                 msg: "Select meal preference : "
             )
             return IO.readInt(
@@ -61,11 +61,12 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
     var currBookings: [Booking] = []
     var i = 1
     while i <= count {
+        let seatMenu = SeatPreference.allCases
+        
         IO.displayOptions(
-            options: SeatPreference.allCases,
+            options: seatMenu,
             msg: "Select seat preference for passenger \(i) :"
         )
-        let seatMenu = SeatPreference.allCases
         let choice = IO.readInt(size: seatMenu.count)
         let seatPreference: SeatPreference = seatMenu[choice - 1]
 
@@ -76,10 +77,7 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
             continue
         }
 
-        let totalAmount =
-            flight.route.totalFare * seatPreference.rawValue
-            + (mealPreference?.rawValue ?? 0.0)
-        var booking = passenger.bookTkt(
+        let booking = passenger.bookTkt(
             flight: flight,
             bookingDate: bookingDate,
             mealPreference: mealPreference,

@@ -16,8 +16,10 @@ func crewMenu() {
 
 func flightManagerMenu() {
     while true {
+        let menu = FlightManagerMenu.allCases
+        
         IO.displayOptions(
-            options: FlightManagerMenu.allCases,
+            options: menu,
             msg:
                 """
                 ===============================
@@ -27,7 +29,6 @@ func flightManagerMenu() {
         )
 
         let route = AirportRouteGraph()
-        let menu = FlightManagerMenu.allCases
         let choice = IO.readInt(
             size: menu.count
         )
@@ -140,8 +141,10 @@ func flightManagerMenu() {
 
 func hrMenu() {
     while true {
+        let menu = HRMenu.allCases
+        
         IO.displayOptions(
-            options: HRMenu.allCases,
+            options: menu,
             msg:
                 """
                 ===============================
@@ -150,7 +153,6 @@ func hrMenu() {
                 """
         )
 
-        let menu = HRMenu.allCases
         let choice = IO.readInt(size: menu.count)
         let option = menu[choice - 1]
 
@@ -228,8 +230,10 @@ func hrMenu() {
 
 func groundStaffMenu() {
     while true {
+        let menu = GroundStaffMenu.allCases
+        
         IO.displayOptions(
-            options: GroundStaffMenu.allCases,
+            options: menu,
             msg:
                 """
                 ===============================
@@ -237,8 +241,7 @@ func groundStaffMenu() {
                 ===============================
                 """
         )
-
-        let menu = GroundStaffMenu.allCases
+        
         let choice = IO.readInt(size: menu.count)
         let option = menu[choice - 1]
 
@@ -291,7 +294,7 @@ func groundStaffMenu() {
             }
 
             for flight in currFlights {
-                guard let aircraft = findAircraftById(withId: flight.aircraftId)
+                guard let aircraft = findAircraftById(id: flight.aircraftId)
                 else {
                     continue
                 }
@@ -322,9 +325,12 @@ func passengerMenu() {
         print("You are not authenticated to access this menu. 🔐")
         return
     }
+
     while true {
+        let menu = PassengerMenu.allCases
+        
         IO.displayOptions(
-            options: PassengerMenu.allCases,
+            options: menu,
             msg:
                 """
                 ===============================
@@ -333,7 +339,6 @@ func passengerMenu() {
                 """
         )
 
-        let menu = PassengerMenu.allCases
         let choice = IO.readInt(size: menu.count)
         let option = menu[choice - 1]
 

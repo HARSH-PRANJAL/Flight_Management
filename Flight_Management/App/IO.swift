@@ -26,8 +26,7 @@ struct IO {
             choice = IO.readInt(prompt: prompt, terminator: " ")
 
             if choice <= 0 || choice > size {
-                print(" Wrong choice ‼️ ")
-                print(" Try again \n")
+                print("Please select a valid option.")
             } else {
                 return choice
             }

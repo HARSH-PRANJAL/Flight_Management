@@ -1,18 +1,14 @@
 import Foundation
 
-func isAircraftExist(witId id: Int) -> Bool {
+func isAircraftExist(id: Int) -> Bool {
     return aircrafts.keys.contains(id)
 }
 
-func isAircraftAvailable(withId id: Int) -> Bool {
-    if let aircraft = aircrafts[id] {
-        return aircraft.isAvailable
-    }
-
-    return false
+func isAircraftAvailable(id: Int) -> Bool {
+    aircrafts[id]?.isAvailable ?? false
 }
 
-func findAircraftById(withId id: Int) -> Aircraft? {
+func findAircraftById(id: Int) -> Aircraft? {
     return aircrafts[id]
 }
 
@@ -43,14 +39,14 @@ func registerMaintenanceLog(
     expectedCompletionDate: Date
 ) -> Int? {
 
-    guard var aircraft = findAircraftById(withId: aircraftId) else {
+    guard var aircraft = findAircraftById(id: aircraftId) else {
         return nil
     }
 
     if !aircraft.isAvailable {
         return nil
     } else {
-        aircraft.isAvailable = false
+        aircraft.markAsUnavailable()
         aircrafts[aircraft.id] = aircraft
     }
 

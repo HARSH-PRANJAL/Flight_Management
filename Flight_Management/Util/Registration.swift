@@ -140,8 +140,8 @@ func initiateRouteRegistration() throws -> Bool {
     let sourceId = IO.readInt(prompt: "Enter source airport id : ")
     let destinationId = IO.readInt(prompt: "Enter destination airport id : ")
 
-    if !isAirportExist(withId: sourceId)
-        || !isAirportExist(withId: destinationId)
+    if !isAirportExist(id: sourceId)
+        || !isAirportExist(id: destinationId)
     {
         throw DataError.dataNotFound(msg: "Airport dose not exist.")
     }
@@ -165,7 +165,7 @@ func initiateRouteRegistration() throws -> Bool {
 func initiateFlightRegistration(route: Route) throws -> Int {
     let aircraftId = IO.readInt(prompt: "Enter aircraft id for this flight : ")
 
-    if !isAircraftExist(witId: aircraftId) {
+    if !isAircraftExist(id: aircraftId) {
         throw DataError.dataNotFound(msg: "Aircraft dose not exist.")
     }
 
@@ -202,7 +202,7 @@ func initiateFlightRegistration(route: Route) throws -> Int {
 func initiateFlightMaintenanceLogRegistration() throws -> Int {
     let aircraftId = IO.readInt(prompt: "Enter aircraft id : ")
 
-    if !isAircraftExist(witId: aircraftId) {
+    if !isAircraftExist(id: aircraftId) {
         throw DataError.dataNotFound(msg: "Aircraft dose not exist.")
     }
 

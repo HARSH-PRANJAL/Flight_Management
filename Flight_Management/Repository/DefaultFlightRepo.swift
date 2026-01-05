@@ -5,7 +5,7 @@ func registerFlight(
     scheduledDeparture: Date,
     route: Route
 ) -> Int? {
-    guard var aircraft = findAircraftById(withId: aircraftId) else {
+    guard var aircraft = findAircraftById(id: aircraftId) else {
         return nil
     }
 

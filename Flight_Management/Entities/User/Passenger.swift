@@ -92,6 +92,7 @@ class Passenger: User {
             transactionId: transaction.id
         )
 
+        ticketIds.append(booking.tktNumber)
         bookings[booking.tktNumber] = booking
         return booking
     }
