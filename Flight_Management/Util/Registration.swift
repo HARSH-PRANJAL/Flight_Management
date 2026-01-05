@@ -180,7 +180,10 @@ func initiateFlightRegistration(route: Route) throws -> Int {
         to: Date()
     )
     let departureTime: Date = try checkDateTime(
-        dateTime: IO.readDate(dateFormat: "dd-MM-yyyy HH:mm", prompt: "Enter departure time : "),
+        dateTime: IO.readDate(
+            dateFormat: "dd-MM-yyyy HH:mm",
+            prompt: "Enter departure time : "
+        ),
         lowerLimit: earliestAllowedDeparture,
         upperLimit: latestAllowedDeparture
     )
@@ -204,11 +207,17 @@ func initiateFlightMaintenanceLogRegistration() throws -> Int {
     }
 
     let scheduledDate: Date = try checkDateTime(
-        dateTime: IO.readDate(dateFormat: "dd-MM-yyyy HH:mm", prompt: "Enter scheduled date : "),
+        dateTime: IO.readDate(
+            dateFormat: "dd-MM-yyyy HH:mm",
+            prompt: "Enter scheduled date : "
+        ),
         lowerLimit: Date()
     )
     let expectedCompletionDate: Date = try checkDateTime(
-        dateTime: IO.readDate(dateFormat: "dd-MM-yyyy HH:mm", prompt: "Enter expected completion date : "),
+        dateTime: IO.readDate(
+            dateFormat: "dd-MM-yyyy HH:mm",
+            prompt: "Enter expected completion date : "
+        ),
         lowerLimit: scheduledDate
     )
 

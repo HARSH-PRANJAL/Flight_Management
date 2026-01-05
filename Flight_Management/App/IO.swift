@@ -62,7 +62,11 @@ struct IO {
         }
     }
 
-    static func readDate(dateFormat: String, prompt: String, terminator: String = " ") -> Date {
+    static func readDate(
+        dateFormat: String,
+        prompt: String,
+        terminator: String = " "
+    ) -> Date {
         print(prompt, terminator: terminator)
 
         let dateFormatter = DateFormatter()
@@ -81,27 +85,6 @@ struct IO {
             }
         }
     }
-
-//    static func readDateTime(prompt: String, terminator: String = " ") -> Date {
-//        print(prompt, terminator: terminator)
-//
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "dd-MM-yyyy HH:mm"
-//        dateFormatter.locale = Locale(identifier: "hi_IN")
-//
-//        var input = readString(prompt: "(dd-MM-yyyy HH:mm)", terminator: " ")
-//
-//        while true {
-//            if let date = dateFormatter.date(from: input) {
-//                return date
-//            } else {
-//                input = readString(
-//                    prompt: "Please enter date in dd-MM-yyyy HH:mm format : ",
-//                    terminator: ""
-//                )
-//            }
-//        }
-//    }
 
     static func readOptional<T>(msg: String, readValue: () -> T) -> T? {
         let answer = IO.readString(
