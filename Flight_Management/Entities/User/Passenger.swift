@@ -18,7 +18,7 @@ class Passenger: User {
     var ticketIds: [Int] = []
     var luggageId: Int? = nil
     var mealPreference: MealPreference = .veg
-    
+
     init(
         dob: Date,
         gender: Gender,
@@ -70,11 +70,17 @@ class Passenger: User {
         sourceId: Int,
         destinationId: Int
     ) -> Booking {
-        let totalAmount = flight.route.totalFare * seatPreference.rawValue + (mealPreference?.rawValue ?? 0.0)
-        
-        let transaction = Transaction(amount: totalAmount, type: .payment, userId: self.id)
+        let totalAmount =
+            flight.route.totalFare * seatPreference.rawValue
+            + (mealPreference?.rawValue ?? 0.0)
+
+        let transaction = Transaction(
+            amount: totalAmount,
+            type: .payment,
+            userId: self.id
+        )
         transactions[transaction.id] = transaction
-        
+
         let booking = Booking(
             passengerId: self.id,
             flightId: flight.id,
@@ -82,18 +88,35 @@ class Passenger: User {
             mealPreference: mealPreference ?? self.mealPreference,
             seatPreference: seatPreference,
             sourceAirportId: sourceId,
-            destinationAirportId: destinationId
+            destinationAirportId: destinationId,
+            transactionId: transaction.id
         )
 
         bookings[booking.tktNumber] = booking
         return booking
     }
-    
-//    func cancelTkt(bookingId: Int) throws -> Bool {
-//        guard let bill = findBillById(id: bookingId) else {
-//            throw DataError.dataNotFound(msg: "Booking is not availabel")
-//        }
-//        let transaction = Transaction(amount: bill.total, type: .payment, userId: self.id)
-//        transactions[transaction.id] = transaction
-//    }
+
+    func cancelTkt(booking: Booking) throws -> Bool {
+        if booking.passengerId != self.id {
+            throw AuthError.unauthorised
+        }
+
+        if let transaction = findBillById(id: booking.transactionId) {
+            let returnTransaction = Transaction(
+                amount: transaction.amount,
+                type: .refund,
+                userId: transaction.userId,
+                refundToId: transaction.id
+            )
+
+            transactions[returnTransaction.id] = returnTransaction
+
+        }
+
+        if let deletedBooking = deleteBookingById(id: booking.tktNumber) {
+            return true
+        } else {
+            return false
+        }
+    }
 }

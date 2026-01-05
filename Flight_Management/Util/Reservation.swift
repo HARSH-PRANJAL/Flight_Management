@@ -43,8 +43,8 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
     let choice = IO.readOptional(
         msg: "Select Y to provide meal preference",
         readValue: {
-            IO.displayEnumOptions(
-                enumType: MealPreference.self,
+            IO.displayOptions(
+                options: MealPreference.allCases,
                 msg: "Select meal preference : "
             )
             return IO.readInt(
@@ -61,8 +61,8 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
     var currBookings: [Booking] = []
     var i = 1
     while i <= count {
-        IO.displayEnumOptions(
-            enumType: SeatPreference.self,
+        IO.displayOptions(
+            options: SeatPreference.allCases,
             msg: "Select seat preference for passenger \(i) :"
         )
         let seatMenu = SeatPreference.allCases

@@ -18,7 +18,7 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
         )
     )
 
-    IO.displayEnumOptions(enumType: Gender.self, msg: "Select gender")
+    IO.displayOptions(options: Gender.allCases, msg: "Select gender")
     let gender = Gender.allCases[
         IO.readInt(size: Gender.allCases.count) - 1
     ]
@@ -26,8 +26,8 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
     let crewOption: Int? = IO.readOptional(
         msg: "Do you want to provide crew type",
         readValue: {
-            IO.displayEnumOptions(
-                enumType: CrewType.self,
+            IO.displayOptions(
+                options: Gender.allCases,
                 msg: "Select crew type"
             )
             return IO.readInt(size: CrewType.allCases.count)

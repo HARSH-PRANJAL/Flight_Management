@@ -16,6 +16,7 @@ struct Booking: TableRepresentable {
     var totalAmount: Double = 0.0
     let sourceAirportId: Int
     let destinationAirportId: Int
+    let transactionId: Int
     
     static var tableHeaders: [String] {
         [

@@ -18,8 +18,8 @@ var transactions: [Int: Transaction] = [:]
 
 func main() {
     while true {
-        IO.displayEnumOptions(
-            enumType: MainMenu.self,
+        IO.displayOptions(
+            options: MainMenu.allCases,
             msg:
                 """
                 ===============================
@@ -74,11 +74,11 @@ func main() {
     }
 }
 
-//main()
-loadMockAirports()
-loadMockAircrafts()
-loadMockRoutes()
-flightManagerMenu()
+main()
+//loadMockAirports()
+//loadMockAircrafts()
+//loadMockRoutes()
+//flightManagerMenu()
 //loadMockMaintenance()
 //loadMockPassengers()
 //loadMockCrew()
@@ -86,3 +86,4 @@ flightManagerMenu()
 //IO.displayTable(getAllCrew())
 //IO.displayTable(getAllPassengers())
 //IO.displayTable(getAllAircrafts())
+

@@ -16,8 +16,8 @@ func crewMenu() {
 
 func flightManagerMenu() {
     while true {
-        IO.displayEnumOptions(
-            enumType: FlightManagerMenu.self,
+        IO.displayOptions(
+            options: FlightManagerMenu.allCases,
             msg:
                 """
                 ===============================
@@ -136,8 +136,8 @@ func flightManagerMenu() {
 
 func hrMenu() {
     while true {
-        IO.displayEnumOptions(
-            enumType: HRMenu.self,
+        IO.displayOptions(
+            options: HRMenu.allCases,
             msg:
                 """
                 ===============================
@@ -224,8 +224,8 @@ func hrMenu() {
 
 func groundStaffMenu() {
     while true {
-        IO.displayEnumOptions(
-            enumType: HRMenu.self,
+        IO.displayOptions(
+            options: GroundStaffMenu.allCases,
             msg:
                 """
                 ===============================
@@ -316,8 +316,8 @@ func passengerMenu() {
         return
     }
     while true {
-        IO.displayEnumOptions(
-            enumType: PassengerMenu.self,
+        IO.displayOptions(
+            options: PassengerMenu.allCases,
             msg:
                 """
                 ===============================
@@ -359,7 +359,6 @@ func passengerMenu() {
             }
 
         case .cancelTicket:
-            let bookingId = IO.readInt(prompt: "Enter the booking Id : ")
             guard let user = authenticatedUser,
             let passenger = user as? Passenger
             else {
@@ -367,8 +366,22 @@ func passengerMenu() {
                 continue
             }
             
-//            passenger.cancelTicket(bookingId: bookingId)
-            print("Not implemented")
+            let bookingId = IO.readInt(prompt: "Enter the Ticket number : ")
+            guard let booking = findBookingById(id: bookingId) else {
+                print("No booking found with the given id.")
+                continue
+            }
+            
+//            do{
+//                let isCancelled = try passenger.cancelTkt(booking: booking)
+//                
+//                if isCancelled {
+//                    print("Ticket Cancelled. 🚫")
+//                } else {
+//
+//                }
+//            }
+            
             
         case .viewBookings:
             let allBookings = getBookingsForPassenger(id: passenger.id)

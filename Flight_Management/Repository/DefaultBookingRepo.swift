@@ -9,6 +9,10 @@ func getBookingsForPassenger(id: Int) -> [Booking] {
     return result
 }
 
+func deleteBookingById(id: Int) -> Booking? {
+    return bookings.removeValue(forKey: id)
+}
+
 func findBillById(id: Int) -> Transaction? {
     return transactions[id]
 }

@@ -113,15 +113,13 @@ struct IO {
         return answer == "y" ? readValue() : nil
     }
 
-    static func displayEnumOptions<T: CaseIterable & CustomStringConvertible>(
-        enumType: T.Type,
+    static func displayOptions<T: CaseIterable & CustomStringConvertible>(
+        options: [T],
         msg: String = ""
     ) {
         print("\n\(msg)")
 
-        let menu = enumType.allCases
-
-        for (i, option) in menu.enumerated() {
+        for (i, option) in options.enumerated() {
             print("\(i+1) \(option.description)")
         }
     }
