@@ -17,7 +17,7 @@ func crewMenu() {
 func flightManagerMenu() {
     while true {
         let menu = FlightManagerMenu.allCases
-        
+
         IO.displayOptions(
             options: menu,
             msg:
@@ -48,25 +48,41 @@ func flightManagerMenu() {
                 }
             } else {
                 let allFlights = getAllFlights()
-                IO.displayTable(allFlights, heading: "Flights", failMsg: "No flights available.")
+                IO.displayTable(
+                    allFlights,
+                    heading: "Flights",
+                    failMsg: "No flights available."
+                )
             }
 
         case .scheduleFlight:
             let allAirports = getAllAirports().sorted(by: { a, b in a.id < b.id
-                })
+            })
             let allAircrafts = getAllAircrafts().sorted(by: { a, b in
                 a.id < b.id
             })
 
-            IO.displayTable(allAirports, heading: "Airports", failMsg: "No airports available.")
-            IO.displayTable(allAircrafts, heading: "Aircrafts", failMsg: "No aircrafts available.")
+            IO.displayTable(
+                allAirports,
+                heading: "Airports",
+                failMsg: "No airports available."
+            )
+            IO.displayTable(
+                allAircrafts,
+                heading: "Aircrafts",
+                failMsg: "No aircrafts available."
+            )
 
             let sourceId = IO.readInt(prompt: "Enter source airport id : ")
             let destinationId = IO.readInt(
                 prompt: "Enter destination airport id : "
             )
             let allRoutes = route.getRoutes(from: sourceId, to: destinationId)
-            IO.displayTable(allRoutes, heading: "Routes", failMsg: "No suitable routes available.")
+            IO.displayTable(
+                allRoutes,
+                heading: "Routes",
+                failMsg: "No suitable routes available."
+            )
 
             let routeChoice = IO.readInt(
                 prompt: "Enter route number : ",
@@ -96,8 +112,12 @@ func flightManagerMenu() {
 
         case .addRoute:
             let allAirports = getAllAirports().sorted(by: { a, b in a.id < b.id
-                })
-            IO.displayTable(allAirports, heading: "Airports", failMsg: "No airports available.")
+            })
+            IO.displayTable(
+                allAirports,
+                heading: "Airports",
+                failMsg: "No airports available."
+            )
 
             do {
                 let isCompleted = try initiateRouteRegistration()
@@ -142,7 +162,7 @@ func flightManagerMenu() {
 func hrMenu() {
     while true {
         let menu = HRMenu.allCases
-        
+
         IO.displayOptions(
             options: menu,
             msg:
@@ -160,7 +180,11 @@ func hrMenu() {
 
         case .viewAllEmployees:
             let allCrew = getAllCrew().sorted(by: { a, b in a.id < b.id })
-            IO.displayTable(allCrew, heading: "Crew", failMsg: "No crew members found.")
+            IO.displayTable(
+                allCrew,
+                heading: "Crew",
+                failMsg: "No crew members found."
+            )
 
         case .viewAllResignationRequests:
             for request in resignationRequests {
@@ -231,7 +255,7 @@ func hrMenu() {
 func groundStaffMenu() {
     while true {
         let menu = GroundStaffMenu.allCases
-        
+
         IO.displayOptions(
             options: menu,
             msg:
@@ -241,7 +265,7 @@ func groundStaffMenu() {
                 ===============================
                 """
         )
-        
+
         let choice = IO.readInt(size: menu.count)
         let option = menu[choice - 1]
 
@@ -250,7 +274,9 @@ func groundStaffMenu() {
         case .addPassenger:
             do {
                 let passengerId = try initiateUserRegistration(true)
-                print("Passenger with ID \(passengerId) has been added successfully.")
+                print(
+                    "Passenger with ID \(passengerId) has been added successfully."
+                )
             } catch let error as UserError {
                 print("\n🚨 Error: \(error.description) ‼️\n")
             } catch let error as DataError {
@@ -266,13 +292,19 @@ func groundStaffMenu() {
 
         case .viewAvailableFlights:
             let allFlights = getAllFlights()
-            IO.displayTable(allFlights, heading: "Flights", failMsg: "No flights available.")
+            IO.displayTable(
+                allFlights,
+                heading: "Flights",
+                failMsg: "No flights available."
+            )
 
         case .viewAvailableSeats:
             let ops1 = IO.readOptional(
                 msg:
                     "Do you want to view seats by source id (y/n) : ",
-                readValue: { IO.readInt(prompt: "Enter source id",terminator: "") }
+                readValue: {
+                    IO.readInt(prompt: "Enter source id", terminator: "")
+                }
             )
             let ops2: Int
             var currFlights: [Flight] = []
@@ -310,7 +342,11 @@ func groundStaffMenu() {
             }
 
             let allBookings = getBookingsForPassenger(id: userId)
-            IO.displayTable(allBookings, heading: "Passenger Bookings", failMsg: "No bookings found for this passenger.")
+            IO.displayTable(
+                allBookings,
+                heading: "Passenger Bookings",
+                failMsg: "No bookings found for this passenger."
+            )
 
         case .exit:
             return
@@ -328,7 +364,7 @@ func passengerMenu() {
 
     while true {
         let menu = PassengerMenu.allCases
-        
+
         IO.displayOptions(
             options: menu,
             msg:
@@ -345,7 +381,11 @@ func passengerMenu() {
         switch option {
         case .bookTicket:
             let allAirports = getAllAirports()
-            IO.displayTable(allAirports, heading: "Available Airports", failMsg: "No airports available.")
+            IO.displayTable(
+                allAirports,
+                heading: "Available Airports",
+                failMsg: "No airports available."
+            )
 
             let sourceId = IO.readInt(prompt: "Enter the source airport id: ")
             let destinationId = IO.readInt(
@@ -384,19 +424,25 @@ func passengerMenu() {
                 continue
             }
 
-        //            do{
-        //                let isCancelled = try passenger.cancelTkt(booking: booking)
-        //
-        //                if isCancelled {
-        //                    print("Ticket Cancelled. 🚫")
-        //                } else {
-        //
-        //                }
-        //            }
+            do {
+                let isCancelled = try passenger.cancelTkt(booking: booking)
+
+                if isCancelled {
+                    print("Ticket Cancelled. 🚫")
+                }
+            } catch let error {
+                print(
+                    "\n🚨 Error: \(error) You are not authorised to cancel this tkt. ‼️\n"
+                )
+            }
 
         case .viewBookings:
             let allBookings = getBookingsForPassenger(id: passenger.id)
-            IO.displayTable(allBookings, heading: "Your bookings", failMsg: "You have no bookings.")
+            IO.displayTable(
+                allBookings,
+                heading: "Your bookings",
+                failMsg: "You have no bookings."
+            )
 
         case .exit:
             return

@@ -97,7 +97,7 @@ class Passenger: User {
         return booking
     }
 
-    func cancelTkt(booking: Booking) throws -> Bool {
+    func cancelTkt(booking: Booking) throws(AuthError) -> Bool {
         if booking.passengerId != self.id {
             throw AuthError.unauthorised
         }
@@ -111,10 +111,9 @@ class Passenger: User {
             )
 
             transactions[returnTransaction.id] = returnTransaction
-
         }
 
-        if let deletedBooking = deleteBookingById(id: booking.tktNumber) {
+        if deleteBookingById(id: booking.tktNumber) != nil {
             return true
         } else {
             return false
