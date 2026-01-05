@@ -43,6 +43,8 @@ func main() {
                         userRole != nil
                         ? crews[userID]!
                         : passengers[userID]!
+
+                    crewMenu()
                 }
             } catch let error as UserError {
                 print("\n🚨 Error: \(error.description) ‼️\n")
@@ -54,8 +56,6 @@ func main() {
                 )
             }
 
-            crewMenu()
-
         case .passengerLogin:
             let userID = IO.readInt(prompt: "Enter your ID : ")
             let password = IO.readString(prompt: "Enter your password : ")
@@ -63,6 +63,8 @@ func main() {
             do {
                 if try authenticateUser(userId: userID, password: password) {
                     authenticatedUser = passengers[userID]!
+
+                    passengerMenu()
                 }
             } catch let error as UserError {
                 print("\n🚨 Error: \(error.description) ‼️\n")

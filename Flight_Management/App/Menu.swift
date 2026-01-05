@@ -48,7 +48,7 @@ func flightManagerMenu() {
                 }
             } else {
                 let allFlights = getAllFlights()
-                IO.displayTable(allFlights, heading: "Flights")
+                IO.displayTable(allFlights, heading: "Flights", failMsg: "No flights available.")
             }
 
         case .scheduleFlight:
@@ -58,15 +58,15 @@ func flightManagerMenu() {
                 a.id < b.id
             })
 
-            IO.displayTable(allAirports, heading: "Airports")
-            IO.displayTable(allAircrafts, heading: "Aircrafts")
+            IO.displayTable(allAirports, heading: "Airports", failMsg: "No airports available.")
+            IO.displayTable(allAircrafts, heading: "Aircrafts", failMsg: "No aircrafts available.")
 
             let sourceId = IO.readInt(prompt: "Enter source airport id : ")
             let destinationId = IO.readInt(
                 prompt: "Enter destination airport id : "
             )
             let allRoutes = route.getRoutes(from: sourceId, to: destinationId)
-            IO.displayTable(allRoutes, heading: "Routes")
+            IO.displayTable(allRoutes, heading: "Routes", failMsg: "No suitable routes available.")
 
             let routeChoice = IO.readInt(
                 prompt: "Enter route number : ",
@@ -97,7 +97,7 @@ func flightManagerMenu() {
         case .addRoute:
             let allAirports = getAllAirports().sorted(by: { a, b in a.id < b.id
                 })
-            IO.displayTable(allAirports, heading: "Airports")
+            IO.displayTable(allAirports, heading: "Airports", failMsg: "No airports available.")
 
             do {
                 let isCompleted = try initiateRouteRegistration()
@@ -160,7 +160,7 @@ func hrMenu() {
 
         case .viewAllEmployees:
             let allCrew = getAllCrew().sorted(by: { a, b in a.id < b.id })
-            IO.displayTable(allCrew, heading: "Crew")
+            IO.displayTable(allCrew, heading: "Crew", failMsg: "No crew members found.")
 
         case .viewAllResignationRequests:
             for request in resignationRequests {
@@ -266,7 +266,7 @@ func groundStaffMenu() {
 
         case .viewAvailableFlights:
             let allFlights = getAllFlights()
-            IO.displayTable(allFlights, heading: "Flights")
+            IO.displayTable(allFlights, heading: "Flights", failMsg: "No flights available.")
 
         case .viewAvailableSeats:
             let ops1 = IO.readOptional(
@@ -310,7 +310,7 @@ func groundStaffMenu() {
             }
 
             let allBookings = getBookingsForPassenger(id: userId)
-            IO.displayTable(allBookings, heading: "Passenger Bookings")
+            IO.displayTable(allBookings, heading: "Passenger Bookings", failMsg: "No bookings found for this passenger.")
 
         case .exit:
             return
@@ -345,7 +345,7 @@ func passengerMenu() {
         switch option {
         case .bookTicket:
             let allAirports = getAllAirports()
-            IO.displayTable(allAirports, heading: "Available Airports")
+            IO.displayTable(allAirports, heading: "Available Airports", failMsg: "No airports available.")
 
             let sourceId = IO.readInt(prompt: "Enter the source airport id: ")
             let destinationId = IO.readInt(
@@ -396,7 +396,7 @@ func passengerMenu() {
 
         case .viewBookings:
             let allBookings = getBookingsForPassenger(id: passenger.id)
-            IO.displayTable(allBookings, heading: "Your bookings")
+            IO.displayTable(allBookings, heading: "Your bookings", failMsg: "You have no bookings.")
 
         case .exit:
             return

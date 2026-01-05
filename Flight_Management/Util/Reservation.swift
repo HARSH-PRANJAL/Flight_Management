@@ -22,7 +22,7 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
         }
     }
 
-    IO.displayTable(allFlights, heading: "Available Flights")
+    IO.displayTable(allFlights, heading: "Available Flights", failMsg: "No flights available.")
     let flightId = IO.readInt(prompt: "Enter the flight ID : ")
     guard let flight = findFlightById(id: flightId) else {
         throw DataError.dataNotFound(

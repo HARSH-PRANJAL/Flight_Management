@@ -107,10 +107,11 @@ struct IO {
 
     static func displayTable<T: TableRepresentable>(
         _ data: [T],
-        heading: String
+        heading: String,
+        failMsg: String = "No data available"
     ) {
         guard !data.isEmpty else {
-            print("No data available")
+            print(failMsg)
             return
         }
 
