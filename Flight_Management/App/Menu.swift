@@ -381,10 +381,14 @@ func passengerMenu() {
         switch option {
         case .bookTicket:
             let allAirports = getAllAirports()
+            if allAirports.isEmpty {
+                print("No airports available for booking.")
+                continue
+            }
+            
             IO.displayTable(
                 allAirports,
-                heading: "Available Airports",
-                failMsg: "No airports available."
+                heading: "Available Airports"
             )
 
             let sourceId = IO.readInt(prompt: "Enter the source airport id: ")

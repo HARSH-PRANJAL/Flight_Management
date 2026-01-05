@@ -76,14 +76,16 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
             )
             continue
         }
-
+        
+        let name = IO.readString(prompt: "Enter passenger name : ")
         let booking = passenger.bookTkt(
             flight: flight,
             bookingDate: bookingDate,
             mealPreference: mealPreference,
             seatPreference: seatPreference,
             sourceId: sourceId,
-            destinationId: destinationId
+            destinationId: destinationId,
+            passengerName: name
         )
 
         currBookings.append(booking)

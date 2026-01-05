@@ -68,7 +68,8 @@ class Passenger: User {
         mealPreference: MealPreference?,
         seatPreference: SeatPreference,
         sourceId: Int,
-        destinationId: Int
+        destinationId: Int,
+        passengerName: String
     ) -> Booking {
         let totalAmount =
             flight.route.totalFare * seatPreference.rawValue
@@ -83,6 +84,7 @@ class Passenger: User {
 
         let booking = Booking(
             passengerId: self.id,
+            name: passengerName,
             flightId: flight.id,
             bookingDate: bookingDate ?? Date(),
             mealPreference: mealPreference ?? self.mealPreference,

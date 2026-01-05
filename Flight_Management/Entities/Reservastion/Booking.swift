@@ -8,12 +8,12 @@ struct Booking: TableRepresentable {
             return current
         }()
     let passengerId: Int
+    let name: String
     let flightId: Int
     let bookingDate: Date
     var cancellationDate: Date?
     var mealPreference: MealPreference
     var seatPreference: SeatPreference
-    var totalAmount: Double = 0.0
     let sourceAirportId: Int
     let destinationAirportId: Int
     let transactionId: Int
@@ -28,35 +28,27 @@ struct Booking: TableRepresentable {
             "Destination Airport",
             "Meal Preference",
             "Seat Preference",
-            "Total Amount"
+            "Ticket Amount"
         ]
     }
     
     var tableRow: [String] {
         [
             String(tktNumber),
-            String(passengerName),
+            String(name),
             String(flightId),
             String(formatDateTime(bookingDate)),
             String(sourceAirport),
             String(destinationAirport),
             String(mealPreference.description),
             String(seatPreference.description),
-            String(format: "%.2f", totalAmount)
+            String(format: "%.2f", amount)
         ]
-    }
-    
-    var passengerName: String {
-        if let passenger = findUserById(by: passengerId) {
-            return passenger.name
-        } else {
-            return "Unknown"
-        }
     }
     
     var sourceAirport: String {
         if let airport = findAirportById(id: sourceAirportId) {
-            return airport.name
+            return airport.airportCode
         } else {
             return "Unknown"
         }
@@ -64,9 +56,17 @@ struct Booking: TableRepresentable {
     
     var destinationAirport: String {
         if let airport = findAirportById(id: destinationAirportId) {
-            return airport.name
+            return airport.airportCode
         } else {
             return "Unknown"
         }
+    }
+    
+    var amount: Double {
+        guard let bill = findBillById(id: transactionId) else {
+            return 0.0
+        }
+        
+        return bill.amount
     }
 }

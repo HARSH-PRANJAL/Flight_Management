@@ -3,8 +3,17 @@ func findBookingById(id: Int) -> Booking? {
 }
 
 func getBookingsForPassenger(id: Int) -> [Booking] {
-    let allBookings: [Booking] = Array(bookings.values)
-    let result: [Booking] = allBookings.filter({$0.passengerId == id})
+    guard let user = findUserById(by: id),
+          let passenger = user as? Passenger else {
+        return []
+    }
+    
+    var result: [Booking] = []
+    for bookingId in passenger.ticketIds {
+        if let curr = findBookingById(id: bookingId) {
+            result.append(curr)
+        }
+    }
     
     return result
 }
