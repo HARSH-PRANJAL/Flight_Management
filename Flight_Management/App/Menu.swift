@@ -27,7 +27,7 @@ func flightManagerMenu() {
         )
 
         let route = AirportRouteGraph()
-        let choice = IO.readOptionNumber(
+        let choice = IO.readInt(
             size: FlightManagerMenu.allCases.count
         )
         let option = FlightManagerMenu.allCases[choice - 1]
@@ -64,9 +64,9 @@ func flightManagerMenu() {
             print("\n")
             IO.displayTable(allRoutes, heading: "Routes")
 
-            let routeChoice = IO.readOptionNumber(
-                size: allRoutes.count,
-                msg: "Enter route number : "
+            let routeChoice = IO.readInt(
+                prompt: "Enter route number : ",
+                size: allRoutes.count
             )
             let route = allRoutes[routeChoice - 1]
 
@@ -147,7 +147,7 @@ func hrMenu() {
         )
 
         let menu = HRMenu.allCases
-        let choice = IO.readOptionNumber(size: menu.count)
+        let choice = IO.readInt(size: menu.count)
         let option = menu[choice - 1]
 
         switch option {
@@ -235,7 +235,7 @@ func groundStaffMenu() {
         )
 
         let menu = GroundStaffMenu.allCases
-        let choice = IO.readOptionNumber(size: menu.count)
+        let choice = IO.readInt(size: menu.count)
         let option = menu[choice - 1]
 
         switch option {
@@ -327,7 +327,7 @@ func passengerMenu() {
         )
 
         let menu = PassengerMenu.allCases
-        let choice = IO.readOptionNumber(size: menu.count)
+        let choice = IO.readInt(size: menu.count)
         let option = menu[choice - 1]
 
         switch option {

@@ -15,12 +15,31 @@ struct IO {
         }
     }
 
+    static func readInt(
+        prompt: String = "Enter your choice : ",
+        terminator: String = " ",
+        size: Int
+    ) -> Int {
+        var choice: Int
+
+        while true {
+            choice = IO.readInt(prompt: prompt, terminator: " ")
+
+            if choice <= 0 || choice > size {
+                print(" Wrong choice ‼️ ")
+                print(" Try again \n")
+            } else {
+                return choice
+            }
+        }
+    }
+
     static func readDouble(prompt: String, terminator: String = " ") -> Double {
         print(prompt, terminator: terminator)
 
         while true {
             if let input = readLine(), let number = Double(input) {
-                return (number*100).rounded()/100
+                return (number * 100).rounded() / 100
             } else {
                 print(
                     "\nYour input is not a number provide correct input !!!!\n"
@@ -85,24 +104,6 @@ struct IO {
         }
     }
 
-    static func readOptionNumber(
-        size: Int,
-        msg: String = "Enter your choice : "
-    ) -> Int {
-        var choice: Int
-
-        while true {
-            choice = IO.readInt(prompt: msg, terminator: " ")
-
-            if choice <= 0 || choice > size {
-                print(" Wrong choice ‼️ ")
-                print(" Try again \n")
-            } else {
-                return choice
-            }
-        }
-    }
-
     static func readOptional<T>(msg: String, readValue: () -> T) -> T? {
         let answer = IO.readString(
             prompt: "\(msg) : (y/n)",
@@ -124,8 +125,11 @@ struct IO {
             print("\(i+1) \(option.description)")
         }
     }
-    
-    static func displayTable<T: TableRepresentable>(_ data: [T],heading: String) {
+
+    static func displayTable<T: TableRepresentable>(
+        _ data: [T],
+        heading: String
+    ) {
         guard !data.isEmpty else {
             print("No data available")
             return
@@ -140,14 +144,22 @@ struct IO {
 
         let printRow: ([String]) -> Void = { row in
             let padded = row.enumerated().map { index, value in
-                value.padding(toLength: columnWidths[index], withPad: " ", startingAt: 0)
+                value.padding(
+                    toLength: columnWidths[index],
+                    withPad: " ",
+                    startingAt: 0
+                )
             }
             print(padded.joined(separator: " | "))
         }
-        
+
         print("\n\t\t\(heading)\n")
         printRow(headers)
-        print(columnWidths.map { String(repeating: "-", count: $0) }.joined(separator: "-+-"))
+        print(
+            columnWidths.map { String(repeating: "-", count: $0) }.joined(
+                separator: "-+-"
+            )
+        )
 
         data.forEach {
             printRow($0.tableRow)

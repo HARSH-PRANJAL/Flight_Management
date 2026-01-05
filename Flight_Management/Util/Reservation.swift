@@ -40,16 +40,15 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
     )
 
     let mealMenu = MealPreference.allCases
-    var choice = IO.readOptional(
+    let choice = IO.readOptional(
         msg: "Select Y to provide meal preference",
         readValue: {
             IO.displayEnumOptions(
                 enumType: MealPreference.self,
                 msg: "Select meal preference : "
             )
-            return IO.readOptionNumber(
-                size: mealMenu.count,
-                msg: "Select meal preference :"
+            return IO.readInt(
+                size: mealMenu.count
             )
         }
     )
@@ -67,7 +66,7 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
             msg: "Select seat preference for passenger \(i) :"
         )
         let seatMenu = SeatPreference.allCases
-        let choice = IO.readOptionNumber(size: seatMenu.count)
+        let choice = IO.readInt(size: seatMenu.count)
         let seatPreference: SeatPreference = seatMenu[choice - 1]
 
         if !aircraft.allocateSeat(preference: seatPreference, count: 1) {
@@ -76,8 +75,10 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
             )
             continue
         }
-        
-        let totalAmount = flight.route.totalFare * seatPreference.rawValue + (mealPreference?.rawValue ?? 0.0)
+
+        let totalAmount =
+            flight.route.totalFare * seatPreference.rawValue
+            + (mealPreference?.rawValue ?? 0.0)
         var booking = passenger.bookTkt(
             flight: flight,
             bookingDate: bookingDate,
@@ -86,11 +87,11 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
             sourceId: sourceId,
             destinationId: destinationId
         )
-        
+
         currBookings.append(booking)
         i += 1
     }
-    
+
     IO.displayTable(currBookings, heading: "Current Bookings")
     return true
 }

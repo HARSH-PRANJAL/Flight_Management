@@ -28,7 +28,7 @@ func main() {
                 """
         )
 
-        let choice = IO.readOptionNumber(size: MainMenu.allCases.count)
+        let choice = IO.readInt(size: MainMenu.allCases.count)
         let option = MainMenu.allCases[choice - 1]
 
         switch option {
