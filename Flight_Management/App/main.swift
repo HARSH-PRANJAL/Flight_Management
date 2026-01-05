@@ -12,14 +12,14 @@ var airports: [Int: Airport] = [:]
 var aircrafts: [Int: Aircraft] = [:]
 var maintenanceLogs: [Int: MaintenanceLog] = [:]
 var resignationRequests: Set<Int> = []
-var leaveRequests: [Int : String] = [:]
-var bookings: [Int : Booking] = [:]
+var leaveRequests: [Int: String] = [:]
+var bookings: [Int: Booking] = [:]
 var transactions: [Int: Transaction] = [:]
 
 func main() {
     while true {
         let menu = MainMenu.allCases
-        
+
         IO.displayOptions(
             options: menu,
             msg:
@@ -34,7 +34,7 @@ func main() {
         let option = menu[choice - 1]
 
         switch option {
-            
+
         case .crewLogin:
             let userID = IO.readInt(prompt: "Enter your ID : ")
             let password = IO.readString(prompt: "Enter your password : ")
@@ -57,14 +57,26 @@ func main() {
             }
 
             crewMenu()
-            
+
         case .passengerLogin:
             print("Passenger login not implemented yet.")
-            
-        case .registerUser:
+
+        case .registerCrew:
             do {
                 let newId = try initiateUserRegistration()
-                print("\nUser registered with id : \(newId) ✅")
+                print("\nCrew registered with id : \(newId) ✅")
+            } catch let error as UserError {
+                print("\n🚨 Error: \(error.description) ‼️\n")
+            } catch {
+                print(
+                    "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
+                )
+            }
+            
+        case .registerPassenger:
+            do {
+                let newId = try initiateUserRegistration(true)
+                print("\nPassenger registered with id : \(newId) ✅")
             } catch let error as UserError {
                 print("\n🚨 Error: \(error.description) ‼️\n")
             } catch {
@@ -76,16 +88,15 @@ func main() {
     }
 }
 
-//main()
-loadMockAirports()
-loadMockAircrafts()
-loadMockRoutes()
-loadMockMaintenance()
-loadMockPassengers()
-loadMockCrew()
-flightManagerMenu()
-hrMenu()
-groundStaffMenu()
-authenticatedUser = passengers[1]!
-passengerMenu()
-
+main()
+//loadMockAirports()
+//loadMockAircrafts()
+//loadMockRoutes()
+//loadMockMaintenance()
+//loadMockPassengers()
+//loadMockCrew()
+//flightManagerMenu()
+//hrMenu()
+//groundStaffMenu()
+//authenticatedUser = passengers[1]!
+//passengerMenu()

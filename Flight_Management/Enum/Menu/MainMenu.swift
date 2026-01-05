@@ -1,7 +1,8 @@
 enum MainMenu: CaseIterable, CustomStringConvertible {
     case passengerLogin
     case crewLogin
-    case registerUser
+    case registerCrew
+    case registerPassenger
     
     var description: String {
         switch self {
@@ -9,8 +10,10 @@ enum MainMenu: CaseIterable, CustomStringConvertible {
             return "Passenger Login"
         case .crewLogin:
             return "Crew Login"
-        case .registerUser:
-            return "Register User"
+        case .registerCrew:
+            return "Register Crew"
+        case .registerPassenger:
+            return "Register Passenger"
         }
     }
 }
