@@ -37,7 +37,7 @@ func readNonIntString(prompt: String) -> String {
     while true {
         let rawAddress = IO.readString(prompt: prompt)
         
-        if !rawAddress.isEmpty || !rawAddress.allSatisfy(\.isNumber) {
+        if !rawAddress.isEmpty && !rawAddress.allSatisfy(\.isNumber) {
             return rawAddress
         } else {
             print("Please enter valid value...")
@@ -65,7 +65,7 @@ func checkDateTime(
         let lastValidDate = calendar.startOfDay(for: upper)
 
         throw DataError.invalidData(
-            msg: "Invalid date. Please enter a date1 before \(formatDateTime(lastValidDate))."
+            msg: "Invalid date. Please enter a date before \(formatDateTime(lastValidDate))."
         )
     }
 
