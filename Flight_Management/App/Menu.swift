@@ -338,6 +338,7 @@ func hrMenu() {
                 }
 
                 crew.isAvailable = false
+                crews[crew.id] = crew
             } else {
                 print("No leave request found for that ID")
             }
@@ -347,6 +348,7 @@ func hrMenu() {
                 prompt:
                     "Enter the ID of the crew member to approve a resignation request for: "
             )
+
             if resignationRequests.contains(crewId) {
                 guard let user = findUserById(by: crewId),
                     let crew = user as? Crew
@@ -358,10 +360,39 @@ func hrMenu() {
 
                 crew.isAvailable = false
                 crew.resignDate = Date()
+                crews[crew.id] = crew
             }
 
         case .addSalaryToCrew:
-            print("To be implemented")
+            let crewId = IO.readInt(
+                prompt:
+                    "Enter the ID of the crew member to add salary to : "
+            )
+
+            if let user = findUserById(by: crewId),
+                let crew = user as? Crew
+            {
+                print(
+                    """
+                    Name : \(crew.name)
+                    Ground Duty Pay Per Hour : \(crew.groundDutyPayRatePerHour)
+                                    In Air Pay Per Hour : \(crew.inAirPayRatePerHour)
+                    """
+                )
+
+                let groundDutyPayRatePerHour: Double = IO.readDouble(
+                    prompt: "Enter Ground Duty Pay Per Hour : "
+                )
+                let inAirPayRatePerHour = IO.readDouble(
+                    prompt: "Enter In Air Pay Per Hour : "
+                )
+
+                crew.groundDutyPayRatePerHour += groundDutyPayRatePerHour
+                crew.inAirPayRatePerHour += inAirPayRatePerHour
+                crews[crew.id] = crew
+            } else {
+                print("No crew found for id \(crewId).")
+            }
 
         case .exit:
             return
@@ -403,9 +434,81 @@ func groundStaffMenu() {
                     "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
                 )
             }
+        case .bookFlight:
+            let passengerId = IO.readInt(prompt: "Enter passenger ID : ")
+
+            guard let user = findUserById(by: passengerId),
+                let passenger = user as? Passenger
+            else {
+                print("Wrong passenger id or passenger does not exist.")
+                continue
+            }
+
+            let allAirports = getAllAirports()
+            if allAirports.isEmpty {
+                print("No airports available for booking.")
+                continue
+            }
+
+            let tableRows = allAirports.map(\.tableRow)
+            IO.displayTable(
+                heading: "All Airports",
+                headers: Airport.tableHeaders,
+                rows: tableRows,
+                failMsg: "No airports found."
+            )
+
+            let sourceId = IO.readInt(prompt: "Enter the source airport id: ")
+            let destinationId = IO.readInt(
+                prompt: "Enter the destination airport Id: "
+            )
+
+            do {
+                let isCompleted = try initiateTktBooking(
+                    for: passenger,
+                    sourceId: sourceId,
+                    destinationId: destinationId
+                )
+                if isCompleted {
+                    print("Booking Completed. ✅")
+                } else {
+                    print("No flights available for the selected airports. 😔")
+                }
+            } catch let error as DataError {
+                print("\n🚨 Error: \(error) ‼️\n")
+            } catch {
+                print(
+                    "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
+                )
+            }
 
         case .cancelBooking:
-            print("Not implemented")
+            let passengerId = IO.readInt(prompt: "Enter passenger ID : ")
+
+            guard let user = findUserById(by: passengerId),
+                let passenger = user as? Passenger
+            else {
+                print("Wrong passenger id or passenger does not exist.")
+                continue
+            }
+
+            let bookingId = IO.readInt(prompt: "Enter the Ticket number : ")
+            guard let booking = findBookingById(id: bookingId) else {
+                print("No booking found with the given id.")
+                continue
+            }
+
+            do {
+                let isCancelled = try passenger.cancelTkt(booking: booking)
+
+                if isCancelled {
+                    print("Ticket Cancelled. 🚫")
+                }
+            } catch let error {
+                print(
+                    "\n🚨 Error: \(error) This ticket is not booked by \(passenger.name). ‼️\n"
+                )
+            }
 
         case .viewAvailableFlights:
             let allFlights = getAllFlights()
@@ -524,17 +627,19 @@ func passengerMenu() {
 
             do {
                 let isCompleted = try initiateTktBooking(
+                    for: passenger,
                     sourceId: sourceId,
                     destinationId: destinationId
                 )
+
                 if isCompleted {
                     print("Booking Completed. ✅")
                 } else {
-                    print("No flights available for the selected airports. 😔")
+                    print(
+                        "No flights available for the selected airports or process exited by user. 😔"
+                    )
                 }
-            } catch let error as UserError {
-                print("\n🚨 Error: \(error.description) ‼️\n")
-            } catch let error as AuthError {
+            } catch let error as DataError {
                 print("\n🚨 Error: \(error) ‼️\n")
             } catch {
                 print(

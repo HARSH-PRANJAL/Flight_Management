@@ -1,31 +1,23 @@
-func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
-    guard
-        let passenger = authenticatedUser as? Passenger
-    else {
-        if let user = authenticatedUser {
-            throw DataError.dataNotFound(
-                msg: "Passenger not available with id : \(user.id)"
-            )
-        } else {
-            throw AuthError.unauthorised
-        }
-    }
-
+func initiateTktBooking(
+    for passenger: Passenger,
+    sourceId: Int,
+    destinationId: Int
+) throws -> Bool {
     let flights = getAllFlights()
-    
+
     if flights.isEmpty {
         return false
     }
-    
-    var allFlights: [Flight] = []
 
-    for flight in flights {
-        if flight.route.airportPath.first == sourceId
+    let allFlights = flights.filter { flight in
+        flight.route.airportPath.first == sourceId
             && flight.route.airportPath.last == destinationId
-        {
-            allFlights.append(flight)
-        }
     }
+
+    if allFlights.isEmpty {
+        return false
+    }
+
     let flightTableRows = allFlights.map(\.tableRow)
     IO.displayTable(
         heading: "Flights",
@@ -33,6 +25,7 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
         rows: flightTableRows,
         failMsg: "No aircrafts available."
     )
+
     let flightId = IO.readInt(prompt: "Enter the flight ID : ")
     guard let flight = findFlightById(id: flightId) else {
         throw DataError.dataNotFound(
@@ -46,7 +39,12 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
 
     let bookingDate = IO.readOptional(
         msg: "Do you want to enter a booking date (y/n) : ",
-        readValue: { IO.readDate(dateFormat: "dd-mm-yyyy",prompt: "Enter the booking date : ") }
+        readValue: {
+            IO.readDate(
+                dateFormat: "dd-mm-yyyy",
+                prompt: "Enter the booking date : "
+            )
+        }
     )
 
     let mealMenu = MealPreference.allCases
@@ -66,13 +64,27 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
     let mealPreference: MealPreference? =
         choice != nil ? mealMenu[choice! - 1] : nil
 
-    let count = IO.readInt(prompt: "Enter the number of tickets to book : ")
+    var count = IO.readInt(prompt: "Enter the number of tickets to book : ")
+    if count > 4 {
+        print("Maximum 4 tickets can be booked at a time. ‼️")
+        let choice = IO.readString(
+            prompt:
+                "Select y to continue booking 4 tickets or n to exit (y/n) :"
+        ).lowercased()
+        if choice == "y" {
+            count = 4
+        } else {
+            return false
+        }
+    } else {
+        count = max(count, 1)
+    }
 
     var currBookings: [Booking] = []
     var i = 1
     while i <= count {
         let seatMenu = SeatPreference.allCases
-        
+
         IO.displayOptions(
             options: seatMenu,
             msg: "Select seat preference for passenger \(i) :"
@@ -84,9 +96,10 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
             print(
                 "No seat available for passenger \(i) with seat preference \(seatPreference). ‼️"
             )
+            print("Book next ticket.")
             continue
         }
-        
+
         let name = IO.readString(prompt: "Enter passenger name : ")
         let booking = passenger.bookTkt(
             flight: flight,
@@ -101,7 +114,7 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
         currBookings.append(booking)
         i += 1
     }
-    
+
     let tableRows = currBookings.map(\.tableRow)
     IO.displayTable(
         heading: "Passenger Bookings",

@@ -21,14 +21,14 @@ struct Booking: TableRepresentable {
     static var tableHeaders: [String] {
         [
             "Ticket Number",
-            "Passenger name",
+            "Name",
             "Flight ID",
-            "Booking Date",
-            "Boarding Airport",
-            "Destination Airport",
-            "Meal Preference",
-            "Seat Preference",
-            "Ticket Amount"
+            "Booked on",
+            "Boarding",
+            "Destination",
+            "Meal",
+            "Seat",
+            "Amount"
         ]
     }
     
