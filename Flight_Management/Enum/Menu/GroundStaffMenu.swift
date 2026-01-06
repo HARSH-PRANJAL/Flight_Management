@@ -3,7 +3,6 @@ enum GroundStaffMenu: CaseIterable, CustomStringConvertible {
     case bookFlight
     case cancelBooking
     case viewAvailableFlights
-    case viewAvailableSeats
     case viewPassengerBookings
     case exit
     
@@ -17,8 +16,6 @@ enum GroundStaffMenu: CaseIterable, CustomStringConvertible {
             return "Cancel Booking"
         case .viewAvailableFlights:
             return "View Available Flights"
-        case .viewAvailableSeats:
-            return "View Available Seats"
         case .viewPassengerBookings:
             return "View Passenger Bookings"
         case .exit:

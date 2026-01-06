@@ -509,51 +509,45 @@ func groundStaffMenu() {
             }
 
         case .viewAvailableFlights:
-            let allFlights = getAllFlights()
-            let tableRows = allFlights.map(\.tableRow)
+            let choice = IO.readString(
+                prompt: "Do you want to view a specific flight (y/n) : "
+            ).lowercased()
 
-            IO.displayTable(
-                heading: "Flights",
-                headers: Flight.tableHeaders,
-                rows: tableRows,
-                failMsg: "No flights available."
-            )
-
-        case .viewAvailableSeats:
-            let ops1 = IO.readOptional(
-                msg:
-                    "Do you want to view seats by source id (y/n) : ",
-                readValue: {
-                    IO.readInt(prompt: "Enter source id", terminator: "")
-                }
-            )
-            let ops2: Int
-            var currFlights: [Flight] = []
-
-            if ops1 == nil {
-                ops2 = IO.readInt(prompt: "Enter flight Id : ")
-                if let flight = findFlightById(id: ops2) {
-                    currFlights.append(flight)
-                } else {
-                    print("\n🚨 Error: No flights available ‼️\n")
-                }
-            } else {
-                ops2 = IO.readInt(prompt: "Enter destination id : ")
-                let flights = getFlightsBetween(
-                    sourceId: ops1!,
-                    destinationId: ops2
-                )
-                currFlights.append(contentsOf: flights)
-            }
-
-            for flight in currFlights {
-                guard let aircraft = findAircraftById(id: flight.aircraftId)
-                else {
+            if choice.lowercased() == "y" {
+                let flightId = IO.readInt(prompt: "Enter the flight number : ")
+                guard let flight = findFlightById(id: flightId) else {
+                    print("No flight found with the given id.")
                     continue
                 }
 
-                print(aircraft.describeRemainingSeats)
+                displayFlightsRemainingSeats([flight])
+                continue
             }
+
+            let allAirports = getAllAirports()
+            if allAirports.isEmpty {
+                print("No airports available for booking.")
+                continue
+            }
+
+            let tableRows = allAirports.map(\.tableRow)
+            IO.displayTable(
+                heading: "All Airports",
+                headers: Airport.tableHeaders,
+                rows: tableRows,
+                failMsg: "No airports found."
+            )
+
+            let sourceId = IO.readInt(prompt: "Enter the source airport id: ")
+            let destinationId = IO.readInt(
+                prompt: "Enter the destination airport Id: "
+            )
+
+            let allFlights = getFlightsBetween(
+                sourceId: sourceId,
+                destinationId: destinationId
+            )
+            displayFlightsRemainingSeats(allFlights)
 
         case .viewPassengerBookings:
             let userId = IO.readInt(prompt: "Enter passenger id : ")
@@ -632,7 +626,7 @@ func passengerMenu() {
 
                 if isCompleted {
                     print("Booking Completed. ✅")
-                } 
+                }
             } catch let error as DataError {
                 print("\n🚨 Error: \(error) ‼️\n")
             } catch {
