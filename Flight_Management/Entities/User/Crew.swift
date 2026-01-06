@@ -67,7 +67,7 @@ class Crew: User {
         return """
             Crew id : \(id)
             Name : \(name)
-            Joined on : \(String(formatDateTime(joiningDate)))
+            Joined on : \(String(formatDateTime(joiningDate, format: "dd-MM-yyy")))
             Designation : \(crewType)
             """
     }

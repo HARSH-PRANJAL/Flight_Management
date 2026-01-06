@@ -9,7 +9,7 @@ func crewMenu() {
     }
 
     let ops = IO.readString(
-        prompt: "Do you want to go to profile menu? (y/n) : ",
+        prompt: "Do you want to go to profile menu ? (y/n) : ",
         options: ["y", "n"]
     )
 
@@ -322,8 +322,8 @@ func hrMenu() {
             for crew in allCrew {
                 let id = String(crew.id)
                 let name = crew.name
-                let from = String(formatDateTime(leaveRequests[crew.id]!.1))
-                let to = String(formatDateTime(leaveRequests[crew.id]!.2))
+                let from = String(formatDateTime(leaveRequests[crew.id]!.1, format: "dd-MM-yyyy"))
+                let to = String(formatDateTime(leaveRequests[crew.id]!.2, format: "dd-MM-yyyy"))
                 let designation = crew.crewType.description
 
                 let row: [String] = [id, name, from, to, designation]

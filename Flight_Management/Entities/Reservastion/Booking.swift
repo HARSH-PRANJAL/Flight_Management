@@ -37,7 +37,7 @@ struct Booking: TableRepresentable {
             String(tktNumber),
             String(name),
             String(flightId),
-            String(formatDateTime(bookingDate)),
+            String(formatDateTime(bookingDate, format: "dd-MM-yyyy")),
             String(sourceAirport),
             String(destinationAirport),
             String(mealPreference.description),

@@ -57,7 +57,7 @@ func checkDateTime(
         let nextValidDate = calendar.startOfDay(for: lower)
 
         throw DataError.invalidData(
-            msg: "Invalid date. Please enter a date after \(formatDateTime(nextValidDate))."
+            msg: "Invalid date. Please enter a date after \(formatDateTime(nextValidDate, format: "dd-MM-yyyy"))."
         )
     }
 
@@ -65,16 +65,16 @@ func checkDateTime(
         let lastValidDate = calendar.startOfDay(for: upper)
 
         throw DataError.invalidData(
-            msg: "Invalid date. Please enter a date before \(formatDateTime(lastValidDate))."
+            msg: "Invalid date. Please enter a date before \(formatDateTime(lastValidDate, format: "dd-MM-yyyy"))."
         )
     }
 
     return dateTime
 }
 
-func formatDateTime(_ date: Date) -> String {
+func formatDateTime(_ date: Date, format: String = "dd-MM-yyyy HH:mm") -> String {
     let formatter = DateFormatter()
-    formatter.dateFormat = "dd-MM-yyyy HH:mm"
+    formatter.dateFormat = format
     formatter.timeZone = TimeZone.current
     formatter.locale = Locale.current
     return formatter.string(from: date)

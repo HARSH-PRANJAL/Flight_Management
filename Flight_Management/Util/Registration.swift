@@ -8,6 +8,11 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
     let email: String = readCorrectEmail()
     let dob = try checkDateTime(
         dateTime: IO.readDate(dateFormat: "dd-MM-yyyy", prompt: "Enter DOB : "),
+        lowerLimit: Calendar.current.date(
+            byAdding: .year,
+            value: -90,
+            to: Date()
+        ),
         upperLimit: Calendar.current.date(
             byAdding: .year,
             value: -10,
@@ -215,4 +220,3 @@ func initiateLeaveApplication(for crew: Crew) throws -> Bool {
 
     return crew.applyLeave(reason: reason, from: fromDate, to: toDate)
 }
-
