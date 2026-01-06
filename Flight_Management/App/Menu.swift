@@ -2,75 +2,84 @@ import Foundation
 
 func crewMenu() {
     guard let user = authenticatedUser,
-        let crew = user as? Crew,
-        let role = userRole,
-        role == crew.crewType
+        let crew = user as? Crew
     else {
-        print("Unauthorised Please login first.")
+        print("Please login first.")
         return
     }
 
-    let ops = IO.readInt(
-        prompt:
-            "Press 1 to go to personal menu, or any other number to go to work menu : "
+    let ops = IO.readString(
+        prompt: "Do you want to go to profile menu? (y/n) : ",
+        options: ["y", "n"]
     )
 
-    if ops != 1 {
-        if role == .flightManager {
+    if ops == "n" {
+        if userRole == .flightManager {
             flightManagerMenu()
-        } else if role == .hr {
+        } else if userRole == .hr {
             hrMenu()
-        } else if role == .groundStaff {
+        } else if userRole == .groundStaff {
             groundStaffMenu()
         }
     }
 
-    let menu = ProfileMenu.allCases
-    IO.displayOptions(
-        options: menu,
-        msg:
-            """
-            ===============================
-                  Profile Menu
-            ===============================
-            """
-    )
+    while true {
+        if crew.resignDate != nil {
+            authenticatedUser = nil
+            userRole = nil
+            return
+        }
 
-    let choice = IO.readInt(size: menu.count)
-    let option = menu[choice - 1]
-
-    switch option {
-    case .applyForLeave:
-        let reason = IO.readString(prompt: "Enter reason for leave : ")
-        let fromDate = IO.readDate(
-            dateFormat: "dd-mm-yyyy",
-            prompt: "From (dd-mm-yyyy) : "
-        )
-        let toDate = IO.readDate(
-            dateFormat: "dd-mm-yyyy",
-            prompt: "To (dd-mm-yyyy) : "
+        let menu = ProfileMenu.allCases
+        IO.displayOptions(
+            options: menu,
+            msg:
+                """
+                ===============================
+                      Profile Menu
+                ===============================
+                """
         )
 
-        if crew.applyLeave(reason: reason, from: fromDate, to: toDate) {
-            print("Leave applied successfully.")
-        } else {
-            print(
-                "You have already applied for leave.\nHr will review it soon."
-            )
+        let choice = IO.readInt(size: menu.count)
+        let option = menu[choice - 1]
+
+        switch option {
+
+        case .applyForLeave:
+            do {
+                let isCompleted = try initiateLeaveApplication(for: crew)
+
+                if isCompleted {
+                    print("Leave applied successfully.")
+                } else {
+                    print(
+                        "You have already applied for leave.\nHr will review it soon."
+                    )
+                }
+            } catch let error as DataError {
+                print("\n🚨 Error: \(error) can not apply for leave. ‼️\n")
+            } catch {
+                print(
+                    "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
+                )
+            }
+
+        case .resign:
+            if crew.resign() {
+                print("Resignation applied successfully. See you soon!")
+            } else {
+                print(
+                    "You have already applied for resignation.\nHr will review it soon."
+                )
+            }
+
+        case .logout:
+            authenticatedUser = nil
+            userRole = nil
+            print("Logged out successfully.")
+            return
         }
-    case .resign:
-        if crew.resign() {
-            print("Resignation applied successfully. See you soon!")
-        } else {
-            print(
-                "You have already applied for resignation.\nHr will review it soon."
-            )
-        }
-    case .logout:
-        authenticatedUser = nil
-        userRole = nil
-        print("Logged out successfully.")
-        return
     }
 }
 
@@ -97,12 +106,14 @@ func flightManagerMenu() {
         switch option {
 
         case .viewFlights:
-            let ops = IO.readString(prompt: "Do you want to see specific flight ? (y/n)", options: ["n","y"])
-            
-            
+            let ops = IO.readString(
+                prompt: "Do you want to see specific flight ? (y/n)",
+                options: ["n", "y"]
+            )
+
             if ops == "y" {
                 let flightId = IO.readInt(prompt: "Enter flight id : ")
-                
+
                 if let flight = findFlightById(id: flightId) {
                     print(flight)
                 } else {
@@ -110,7 +121,7 @@ func flightManagerMenu() {
                 }
             } else {
                 let allFlights = getAllFlights()
-                
+
                 let tableRow = allFlights.map(\.tableRow)
                 IO.displayTable(
                     heading: "Flights",
@@ -145,17 +156,17 @@ func flightManagerMenu() {
                 prompt: "Enter destination airport id : "
             )
             let allRoutes = route.getRoutes(from: sourceId, to: destinationId)
-            
+
             var routeTableHeaders: [String] = ["ID"]
             routeTableHeaders.append(contentsOf: Route.tableHeaders)
-            
+
             var routeTableRows: [[String]] = []
-            for (i,route) in allRoutes.enumerated() {
+            for (i, route) in allRoutes.enumerated() {
                 var currentRow = ["\(i+1)"]
                 currentRow.append(contentsOf: route.tableRow)
                 routeTableRows.append(currentRow)
             }
-            
+
             IO.displayTable(
                 heading: "Routes",
                 headers: routeTableHeaders,
@@ -259,7 +270,10 @@ func hrMenu() {
         switch option {
 
         case .viewAllEmployees:
-            let allCrew = getAllCrew()
+            let allCrew = getAllCrew().filter({ crew in
+                crew.resignDate != nil
+            })
+
             let tableRows = allCrew.map(\.tableRow)
             IO.displayTable(
                 heading: "All crew",
@@ -270,9 +284,9 @@ func hrMenu() {
 
         case .viewAllResignationRequests:
             var allCrew: [Crew] = []
+
             for request in resignationRequests {
-                guard let user = findUserById(by: request),
-                    let crew = user as? Crew
+                guard let crew = findCrewById(id: request)
                 else {
                     continue
                 }
@@ -280,21 +294,10 @@ func hrMenu() {
                 allCrew.append(crew)
             }
 
-            let tableHeader: [String] = ["ID", "Name", "Designation"]
-            var tableRows: [[String]] = []
-
-            for crew in allCrew {
-                let id = String(crew.id)
-                let name = crew.name
-                let designation = crew.crewType.description
-
-                let row: [String] = [id, name, designation]
-                tableRows.append(row)
-            }
-
+            let tableRows = allCrew.map(\.tableRow)
             IO.displayTable(
                 heading: "Resignation Requests",
-                headers: tableHeader,
+                headers: Crew.tableHeaders,
                 rows: tableRows,
                 failMsg: "No registration requests found."
             )
@@ -303,8 +306,7 @@ func hrMenu() {
             var allCrew: [Crew] = []
 
             for request in leaveRequests {
-                guard let user = findUserById(by: request.key),
-                    let crew = user as? Crew
+                guard let crew = findCrewById(id: request.key)
                 else {
                     continue
                 }
@@ -342,8 +344,7 @@ func hrMenu() {
             )
 
             if leaveRequests.keys.contains(crewId) {
-                guard let user = findUserById(by: crewId),
-                    let crew = user as? Crew
+                guard let crew = findCrewById(id: crewId)
                 else {
                     print("Crew Id is invalid")
                     leaveRequests.removeValue(forKey: crewId)
@@ -352,6 +353,7 @@ func hrMenu() {
 
                 crew.isAvailable = false
                 crews[crew.id] = crew
+                print("Leave approved for \(crew.name).")
             } else {
                 print("No leave request found for that ID")
             }
@@ -363,8 +365,7 @@ func hrMenu() {
             )
 
             if resignationRequests.contains(crewId) {
-                guard let user = findUserById(by: crewId),
-                    let crew = user as? Crew
+                guard let crew = findCrewById(id: crewId)
                 else {
                     print("Crew Id is invalid")
                     resignationRequests.remove(crewId)
@@ -374,6 +375,7 @@ func hrMenu() {
                 crew.isAvailable = false
                 crew.resignDate = Date()
                 crews[crew.id] = crew
+                print("Resignation approved for \(crew.name).")
             }
 
         case .addSalaryToCrew:
@@ -382,9 +384,7 @@ func hrMenu() {
                     "Enter the ID of the crew member to add salary to : "
             )
 
-            if let user = findUserById(by: crewId),
-                let crew = user as? Crew
-            {
+            if let crew = findCrewById(id: crewId) {
                 print(
                     """
                     Name : \(crew.name)
@@ -450,8 +450,7 @@ func groundStaffMenu() {
         case .bookFlight:
             let passengerId = IO.readInt(prompt: "Enter passenger ID : ")
 
-            guard let user = findUserById(by: passengerId),
-                let passenger = user as? Passenger
+            guard let passenger = findPassengerById(id: passengerId)
             else {
                 print("Wrong passenger id or passenger does not exist.")
                 continue
@@ -496,8 +495,7 @@ func groundStaffMenu() {
         case .cancelBooking:
             let passengerId = IO.readInt(prompt: "Enter passenger ID : ")
 
-            guard let user = findUserById(by: passengerId),
-                let passenger = user as? Passenger
+            guard let passenger = findPassengerById(id: passengerId)
             else {
                 print("Wrong passenger id or passenger does not exist.")
                 continue
@@ -524,7 +522,7 @@ func groundStaffMenu() {
         case .viewAvailableFlights:
             let choice = IO.readString(
                 prompt: "Do you want to view a specific flight (y/n) : ",
-                options: ["y","n"]
+                options: ["y", "n"]
             )
 
             if choice == "y" {

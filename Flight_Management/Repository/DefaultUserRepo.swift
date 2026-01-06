@@ -1,15 +1,11 @@
 import Foundation
 
-func findUserById(by id: Int) -> User? {
-    if let passenger = passengers[id] {
-        return passenger
-    }
+func findCrewById(id: Int) -> Crew? {
+    return crews[id]
+}
 
-    if let crew = crews[id] {
-        return crew
-    }
-
-    return nil
+func findPassengerById(id: Int) -> Passenger? {
+    return passengers[id]
 }
 
 func getAllCrew() -> [Crew] {

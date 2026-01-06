@@ -1,12 +1,9 @@
 import Foundation
 
 func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
-    let userName = IO.readString(prompt: "Enter user name : ")
+    let userName = readNonIntString(prompt: "Enter username : ")
     let password = IO.readString(prompt: "Enter password : ")
-    let phone = IO.readString(
-        prompt: "Enter phone number : ",
-        terminator: " "
-    )
+    let phone = readCorrectPhone()
 
     let email: String = readCorrectEmail()
     let dob = try checkDateTime(
@@ -33,7 +30,7 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
             options: ["y", "n"]
         )
         if ops == "y" {
-            address = IO.readString(prompt: "Enter address : ", terminator: " ")
+            address = readNonIntString(prompt: "Enter address : ")
         }
     } else {
         let crews = CrewType.allCases
@@ -41,7 +38,7 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
 
         let crewOption = IO.readInt(size: crews.count)
         crewType = crews[crewOption - 1]
-        address = IO.readString(prompt: "Enter address : ", terminator: " ")
+        address = readNonIntString(prompt: "Enter address : ")
     }
 
     guard
@@ -60,44 +57,6 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
     }
 
     return newUserId
-}
-
-func readCorrectEmail() -> String {
-    while true {
-        let rawEmail = IO.readString(
-            prompt: "Enter email : "
-        )
-
-        let pattern = #"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.com$"#
-
-        if rawEmail.range(of: pattern, options: .regularExpression) != nil {
-            return rawEmail
-        } else {
-            print("\nWrong email format ‼️\nTry again. \n")
-            continue
-        }
-    }
-}
-
-func checkDateTime(
-    dateTime: Date,
-    lowerLimit: Date? = nil,
-    upperLimit: Date? = nil
-)
-    throws(DataError) -> Date
-{
-    if let lower = lowerLimit, dateTime <= lower {
-        throw DataError.invalidData(
-            msg: "Most oldest allowed date is \(formatDateTime(lower))."
-        )
-    }
-    if let upper = upperLimit, dateTime >= upper {
-        throw DataError.invalidData(
-            msg: "Most recent allowed date is \(formatDateTime(upper))."
-        )
-    }
-
-    return dateTime
 }
 
 func initiateAirportRegistration() -> Int {
@@ -229,3 +188,31 @@ func initiateFlightMaintenanceLogRegistration() throws -> Int {
         throw DataError.invalidData(msg: "Aircraft is not available.")
     }
 }
+
+func initiateLeaveApplication(for crew: Crew) throws -> Bool {
+    let reason = IO.readString(prompt: "Enter reason for leave : ")
+
+    let today = Date()
+    let maxDate = Calendar.current.date(byAdding: .day, value: 15, to: today)!
+
+    let fromDate = try checkDateTime(
+        dateTime: IO.readDate(
+            dateFormat: "dd-MM-yyyy",
+            prompt: "From : "
+        ),
+        lowerLimit: today,
+        upperLimit: maxDate
+    )
+
+    let toDate = try checkDateTime(
+        dateTime: IO.readDate(
+            dateFormat: "dd-MM-yyyy",
+            prompt: "To : "
+        ),
+        lowerLimit: fromDate,
+        upperLimit: maxDate
+    )
+
+    return crew.applyLeave(reason: reason, from: fromDate, to: toDate)
+}
+

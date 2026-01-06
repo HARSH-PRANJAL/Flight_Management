@@ -69,13 +69,11 @@ class Crew: User {
             Name : \(name)
             Joined on : \(String(formatDateTime(joiningDate)))
             Designation : \(crewType)
-            Total flight hours : \(totalFlightHours ?? 0)
-            Total ground hours : \(totalGroundHours ?? 0)
             """
     }
 
     static var tableHeaders: [String] {
-        ["ID", "Name", "Designation", "Flight Hrs", "Ground Hrs"]
+        ["ID", "Name", "Designation"]
     }
 
     var tableRow: [String] {

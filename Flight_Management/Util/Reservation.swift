@@ -22,7 +22,7 @@ func initiateTktBooking(
         var aircraft = findAircraftById(id: flight.aircraftId)
     else {
         throw DataError.dataNotFound(
-            msg: "Flight dose not exist."
+            msg: "Flight not exist."
         )
     }
     

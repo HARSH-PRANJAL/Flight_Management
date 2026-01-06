@@ -3,8 +3,7 @@ func findBookingById(id: Int) -> Booking? {
 }
 
 func getBookingsForPassenger(id: Int) -> [Booking] {
-    guard let user = findUserById(by: id),
-          let passenger = user as? Passenger else {
+    guard let passenger = findPassengerById(id: id) else {
         return []
     }
     

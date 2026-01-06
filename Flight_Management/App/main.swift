@@ -40,7 +40,7 @@ func main() {
             let password = IO.readString(prompt: "Enter your password : ")
 
             do {
-                if try authenticateUser(userId: userID, password: password) {
+                if try authenticateUser(userId: userID, password: password,crew: true) {
                     authenticatedUser = crews[userID]!
                     userRole = (authenticatedUser as! Crew).crewType
                     crewMenu()
