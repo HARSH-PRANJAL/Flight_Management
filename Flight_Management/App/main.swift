@@ -1,3 +1,4 @@
+import Foundation
 // store user role after auth for role based menu options
 var userRole: CrewType?
 var authenticatedUser: User?
@@ -10,7 +11,7 @@ var airports: [Int: Airport] = [:]
 var aircrafts: [Int: Aircraft] = [:]
 var maintenanceLogs: [Int: MaintenanceLog] = [:]
 var resignationRequests: Set<Int> = []
-var leaveRequests: [Int: String] = [:]
+var leaveRequests: [Int: (String,Date,Date)] = [:]
 var bookings: [Int: Booking] = [:]
 var transactions: [Int: Transaction] = [:]
 

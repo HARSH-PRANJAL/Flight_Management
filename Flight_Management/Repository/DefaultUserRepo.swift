@@ -78,12 +78,12 @@ func registerUser(
     return newUser.id
 }
 
-func registerLeaveRequest(leave: (Int,String)) -> Bool {
+func registerLeaveRequest(leave: (Int,(String,Date,Date))) -> Bool {
     if leaveRequests.keys.contains(leave.0) {
         return false
     }
     
-    leaveRequests[leave.0] = leave.1
+    leaveRequests[leave.0] = (leave.1.0, leave.1.1, leave.1.2)
     return true
 }
 

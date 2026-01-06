@@ -21,7 +21,14 @@ class Crew: User {
     var totalGroundHours: Double? = 0.0
     var totalFlightHours: Double? = 0.0
     var crewType: CrewType
-    var isAvailable: Bool = true
+    var availableAfter: Date
+    var isAvailable: Bool = true {
+        willSet {
+            if newValue == true {
+                availableAfter = Date()
+            }
+        }
+    }
 
     var joiningDate: Date {
         return createdAt
@@ -53,6 +60,7 @@ class Crew: User {
         self.email = email
         self.password = passwordHash(password: password)
         self.crewType = crewType
+        self.availableAfter = Date()
     }
 
     var description: String {
@@ -80,12 +88,8 @@ class Crew: User {
         ]
     }
 
-    func requestForResignation() {
-        resignationRequests.insert(self.id)
-    }
-
-    func applyLeave(reason: String) -> Bool {
-        return registerLeaveRequest(leave: (self.id, reason))
+    func applyLeave(reason: String,from: Date, to: Date) -> Bool {
+        return registerLeaveRequest(leave: (self.id, (reason, from, to)))
     }
     
     func resign() -> Bool {
