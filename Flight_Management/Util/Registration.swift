@@ -39,8 +39,8 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
         let crews = CrewType.allCases
         IO.displayOptions(options: crews, msg: "Select crew type")
 
-        let crewOption: Int = IO.readInt(size: crews.count)
-        crewType = CrewType.allCases[crewOption - 1]
+        let crewOption = IO.readInt(size: crews.count)
+        crewType = crews[crewOption - 1]
         address = IO.readString(prompt: "Enter address : ", terminator: " ")
     }
 
