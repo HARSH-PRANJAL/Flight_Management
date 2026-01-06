@@ -642,13 +642,6 @@ func passengerMenu() {
             }
 
         case .cancelTicket:
-            guard let user = authenticatedUser,
-                let passenger = user as? Passenger
-            else {
-                print("You are not authorised for this action. 🔐")
-                continue
-            }
-
             let bookingId = IO.readInt(prompt: "Enter the Ticket number : ")
             guard let booking = findBookingById(id: bookingId) else {
                 print("No booking found with the given id.")

@@ -88,4 +88,13 @@ struct Aircraft: CustomStringConvertible, TableRepresentable {
         self.seat[.business] = (businessSeat, businessSeat)
         self.seat[.firstClass] = (firstClassSeat, firstClassSeat)
     }
+    
+    mutating func addSeat(preference: SeatPreference, count: Int) -> Bool {
+        self.seat[preference] = (
+            (self.seat[preference]?.0 ?? 0) + count,
+            (self.seat[preference]?.1 ?? 0) + count
+        )
+        
+        return updateAircraft(aircraft: self)
+    }
 }
