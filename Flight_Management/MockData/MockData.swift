@@ -34,6 +34,38 @@ func loadMockAircrafts() {
             firstClassSeat: 20,
             fuelCapacity: 9000
         ),
+        Aircraft(
+            model: "Mock A33",
+            manufacturer: "Airbus",
+            economySeat: 100,
+            businessSeat: 30,
+            firstClassSeat: 20,
+            fuelCapacity: 9000
+        ),
+        Aircraft(
+            model: "Mock A33",
+            manufacturer: "Airbus",
+            economySeat: 100,
+            businessSeat: 30,
+            firstClassSeat: 20,
+            fuelCapacity: 9000
+        ),
+        Aircraft(
+            model: "Mock A33",
+            manufacturer: "Airbus",
+            economySeat: 100,
+            businessSeat: 30,
+            firstClassSeat: 20,
+            fuelCapacity: 9000
+        ),
+        Aircraft(
+            model: "Mock A33",
+            manufacturer: "Airbus",
+            economySeat: 100,
+            businessSeat: 30,
+            firstClassSeat: 20,
+            fuelCapacity: 9000
+        )
     ]
 
     for aircraft in mockAircraft {
@@ -89,19 +121,47 @@ func loadMockFlights() {
         return
     }
 
-    let route = AirportRouteGraph().getRoutes(from: 1, to: 5).first!
+    let route1 = AirportRouteGraph().getRoutes(from: 1, to: 5).first!
+    let route2 = AirportRouteGraph().getRoutes(from: 1, to: 2).first!
+    let route3 = AirportRouteGraph().getRoutes(from: 2, to: 3).first!
+    let route4 = AirportRouteGraph().getRoutes(from: 4, to: 3).first!
     let flight = [
-        Flight(aircraftId: 1, scheduledDeparture: departure, route: route),
+        Flight(aircraftId: 1, scheduledDeparture: departure, route: route2),
         Flight(
             aircraftId: 2,
             scheduledDeparture: departure + 10000,
-            route: route
+            route: route1
         ),
         Flight(
             aircraftId: 3,
             scheduledDeparture: departure + 5000,
-            route: route
+            route: route2
         ),
+        Flight(
+            aircraftId: 4,
+            scheduledDeparture: departure + 5000,
+            route: route4
+        ),
+        Flight(
+            aircraftId: 5,
+            scheduledDeparture: departure + 5000,
+            route: route1
+        ),
+        Flight(
+            aircraftId: 6,
+            scheduledDeparture: departure + 5000,
+            route: route3
+        ),
+        Flight(
+            aircraftId: 7,
+            scheduledDeparture: departure + 5000,
+            route: route4
+        ),
+        Flight(
+            aircraftId: 8,
+            scheduledDeparture: departure + 5000,
+            route: route3
+        )
     ]
 
     for item in flight {

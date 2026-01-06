@@ -18,15 +18,16 @@ struct IO {
     static func readInt(
         prompt: String = "Enter your choice : ",
         terminator: String = " ",
-        size: Int
+        size: Int,
+        failMsg: String = "Please select a valid option."
     ) -> Int {
         var choice: Int
 
         while true {
             choice = IO.readInt(prompt: prompt, terminator: " ")
 
-            if choice != -1 && (choice <= 0 || choice > size) {
-                print("Please select a valid option.")
+            if choice <= 0 || choice > size {
+                print(failMsg)
             } else {
                 return choice
             }
@@ -60,6 +61,18 @@ struct IO {
             }
         }
     }
+    
+    static func readString(prompt: String, terminator: String = " ",options: [String]) -> String {
+        
+        var choice = IO.readString(prompt: prompt, terminator: " ").lowercased()
+        
+        while !options.contains(choice) {
+            print("Chose correct option : ")
+            choice = IO.readString(prompt: prompt, terminator: " ").lowercased()
+        }
+        
+        return choice
+    }
 
     static func readDate(
         dateFormat: String,
@@ -84,16 +97,7 @@ struct IO {
             }
         }
     }
-
-    static func readOptional<T>(msg: String, readValue: () -> T) -> T? {
-        let answer = IO.readString(
-            prompt: "\(msg)",
-            terminator: " "
-        ).lowercased()
-
-        return answer == "y" ? readValue() : nil
-    }
-
+    
     static func displayOptions<T: CaseIterable & CustomStringConvertible>(
         options: [T],
         msg: String = ""

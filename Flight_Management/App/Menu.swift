@@ -97,10 +97,12 @@ func flightManagerMenu() {
         switch option {
 
         case .viewFlights:
-            if let flightId = IO.readOptional(
-                msg: "Do you want to see specific flight details? (y/n) : ",
-                readValue: { IO.readInt(prompt: "Enter flight id : ") }
-            ) {
+            let ops = IO.readString(prompt: "Do you want to see specific flight ? (y/n)", options: ["n","y"])
+            
+            
+            if ops == "y" {
+                let flightId = IO.readInt(prompt: "Enter flight id : ")
+                
                 if let flight = findFlightById(id: flightId) {
                     print(flight)
                 } else {
@@ -108,6 +110,7 @@ func flightManagerMenu() {
                 }
             } else {
                 let allFlights = getAllFlights()
+                
                 let tableRow = allFlights.map(\.tableRow)
                 IO.displayTable(
                     heading: "Flights",
@@ -142,10 +145,20 @@ func flightManagerMenu() {
                 prompt: "Enter destination airport id : "
             )
             let allRoutes = route.getRoutes(from: sourceId, to: destinationId)
-            let routeTableRows = allRoutes.map(\.tableRow)
+            
+            var routeTableHeaders: [String] = ["ID"]
+            routeTableHeaders.append(contentsOf: Route.tableHeaders)
+            
+            var routeTableRows: [[String]] = []
+            for (i,route) in allRoutes.enumerated() {
+                var currentRow = ["\(i+1)"]
+                currentRow.append(contentsOf: route.tableRow)
+                routeTableRows.append(currentRow)
+            }
+            
             IO.displayTable(
                 heading: "Routes",
-                headers: Route.tableHeaders,
+                headers: routeTableHeaders,
                 rows: routeTableRows,
                 failMsg: "No route found."
             )
@@ -171,9 +184,9 @@ func flightManagerMenu() {
             let flightId = IO.readInt(prompt: "Enter flight id to cancel : ")
 
             if let id = deleteFlightById(id: flightId) {
-                print("Flight deleted by id : \(id) ✅")
+                print("Flight cancelled with id : \(id) ✅")
             } else {
-                print("No flight with flight id : \(flightId)")
+                print("No flight with id : \(flightId)")
             }
 
         case .addRoute:
@@ -510,17 +523,18 @@ func groundStaffMenu() {
 
         case .viewAvailableFlights:
             let choice = IO.readString(
-                prompt: "Do you want to view a specific flight (y/n) : "
-            ).lowercased()
+                prompt: "Do you want to view a specific flight (y/n) : ",
+                options: ["y","n"]
+            )
 
-            if choice.lowercased() == "y" {
+            if choice == "y" {
                 let flightId = IO.readInt(prompt: "Enter the flight number : ")
                 guard let flight = findFlightById(id: flightId) else {
                     print("No flight found with the given id.")
                     continue
                 }
 
-                displayFlightsRemainingSeats([flight])
+                Flight.displayFlightsRemainingSeats([flight])
                 continue
             }
 
@@ -547,7 +561,7 @@ func groundStaffMenu() {
                 sourceId: sourceId,
                 destinationId: destinationId
             )
-            displayFlightsRemainingSeats(allFlights)
+            Flight.displayFlightsRemainingSeats(allFlights)
 
         case .viewPassengerBookings:
             let userId = IO.readInt(prompt: "Enter passenger id : ")
@@ -667,6 +681,7 @@ func passengerMenu() {
 
         case .Logout:
             authenticatedUser = nil
+            print("Successfully logged out.")
             return
         }
     }

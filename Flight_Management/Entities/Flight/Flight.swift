@@ -68,4 +68,28 @@ struct Flight: CustomStringConvertible, TableRepresentable {
             destinationAirport,
         ]
     }
+
+    static func displayFlightsRemainingSeats(_ allFlights: [Flight]) {
+        var flightTableHeaders: [String] = Flight.tableHeaders
+        flightTableHeaders.append("Remaining Seats")
+
+        var flightTableRows: [[String]] = []
+        for flight in allFlights {
+            var currentRow: [String] = flight.tableRow
+
+            guard let aircraft = findAircraftById(id: flight.aircraftId) else {
+                continue
+            }
+
+            currentRow.append(aircraft.describeRemainingSeats)
+            flightTableRows.append(currentRow)
+        }
+        IO.displayTable(
+            heading: "Flights",
+            headers: flightTableHeaders,
+            rows: flightTableRows,
+            failMsg: "No aircrafts available."
+        )
+    }
+
 }

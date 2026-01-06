@@ -13,55 +13,31 @@ func initiateTktBooking(
         return false
     }
 
-    displayFlightsRemainingSeats(allFlights)
+    Flight.displayFlightsRemainingSeats(allFlights)
 
     let flightId = IO.readInt(prompt: "Enter the flight ID : ")
     guard let flight = findFlightById(id: flightId),
+          flight.route.airportPath.first == sourceId,
+          flight.route.airportPath.last == destinationId,
         var aircraft = findAircraftById(id: flight.aircraftId)
     else {
         throw DataError.dataNotFound(
-            msg: "Flight/Aircraft not exist."
+            msg: "Flight dose not exist."
         )
     }
-
-    if aircraft.seatingCapacity == 0 {
+    
+    let remainingSeats = aircraft.seatingCapacity
+    if remainingSeats == 0 {
         print("No seats available in selected aircraft.")
         return false
     }
 
-    var count = IO.readInt(prompt: "Enter the number of tickets to book : ")
-    if count > 4 {
-        print("Maximum 4 tickets can be booked at a time. ‼️")
-        let choice = IO.readString(
-            prompt:
-                "Select y to continue booking 4 tickets or n to exit (y/n) :"
-        ).lowercased()
-        if choice == "y" {
-            count = 4
-        } else {
-            return false
-        }
-    } else {
-        count = max(count, 1)
-    }
-
-    if aircraft.seatingCapacity < count {
-        let choice = IO.readString(
-            prompt:
-                "Only available to book \(aircraft.seatingCapacity) tickets. Select y to continue or n to exit (y/n) : "
-        ).lowercased()
-
-        if choice == "n" {
-            return false
-        } else {
-            print("Continue Booking ....\n")
-        }
-    }
+    var count = IO.readInt(prompt: "Enter the number of tickets to book : ",size: remainingSeats)
 
     var currBookings: [Booking] = []
     var i = 1
     while i <= count {
-        if aircraft.seatingCapacity == 0 {
+        if remainingSeats == 0 {
             print(
                 "No more seats available. All previous bookings are confirmed. Exiting..."
             )
@@ -74,7 +50,7 @@ func initiateTktBooking(
             options: seatMenu,
             msg: "Select seat preference for passenger \(i) :"
         )
-        var choice = IO.readInt(size: seatMenu.count)
+        let choice = IO.readInt(size: seatMenu.count)
         let seatPreference: SeatPreference = seatMenu[choice - 1]
 
         if !aircraft.allocateSeat(preference: seatPreference, count: 1) {
@@ -85,22 +61,22 @@ func initiateTktBooking(
             continue
         }
 
-        let mealMenu = MealPreference.allCases
-        let mealChoice = IO.readOptional(
-            msg: "Do you want to provide a meal preference (y/n) :",
-            readValue: {
-                IO.displayOptions(
-                    options: mealMenu,
-                    msg: "Select meal preference : "
-                )
-                return IO.readInt(
-                    size: mealMenu.count
-                )
-            }
-        )
+        var mealPreference: MealPreference? = nil
 
-        let mealPreference: MealPreference? =
-            mealChoice != nil ? mealMenu[mealChoice! - 1] : nil
+        let ops = IO.readString(
+            prompt: "Do you want to provide meal preference ? (y/n) : ",
+            options: ["y", "n"]
+        )
+        if ops == "y" {
+            let mealMenu = MealPreference.allCases
+
+            IO.displayOptions(
+                options: mealMenu,
+                msg: "Select meal preference :"
+            )
+            let mealChoice = IO.readInt(size: mealMenu.count)
+            mealPreference = mealMenu[mealChoice - 1]
+        }
 
         let name = IO.readString(prompt: "Enter passenger name : ")
         let booking = passenger.bookTkt(
@@ -125,27 +101,4 @@ func initiateTktBooking(
     )
 
     return true
-}
-
-func displayFlightsRemainingSeats(_ allFlights: [Flight]) {
-    var flightTableHeaders: [String] = Flight.tableHeaders
-    flightTableHeaders.append("Remaining Seats")
-
-    var flightTableRows: [[String]] = []
-    for flight in allFlights {
-        var currentRow: [String] = flight.tableRow
-
-        guard let aircraft = findAircraftById(id: flight.aircraftId) else {
-            continue
-        }
-
-        currentRow.append(aircraft.describeRemainingSeats)
-        flightTableRows.append(currentRow)
-    }
-    IO.displayTable(
-        heading: "Flights",
-        headers: flightTableHeaders,
-        rows: flightTableRows,
-        failMsg: "No aircrafts available."
-    )
 }

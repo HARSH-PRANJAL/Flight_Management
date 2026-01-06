@@ -24,27 +24,25 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
     ]
 
     let crewType: CrewType?
+    var address: String? = nil
 
     if isPassenger {
         crewType = nil
+        let ops = IO.readString(
+            prompt: "Do you want to provide address ? (y/n) : ",
+            options: ["y", "n"]
+        )
+        if ops == "y" {
+            address = IO.readString(prompt: "Enter address : ", terminator: " ")
+        }
     } else {
         let crews = CrewType.allCases
         IO.displayOptions(options: crews, msg: "Select crew type")
-        
+
         let crewOption: Int = IO.readInt(size: crews.count)
         crewType = CrewType.allCases[crewOption - 1]
+        address = IO.readString(prompt: "Enter address : ", terminator: " ")
     }
-
-    let readAddress = {
-        IO.readString(prompt: "Enter address : ", terminator: " ")
-    }
-    let address: String? =
-        crewType != nil
-        ? readAddress()
-        : IO.readOptional(
-            msg: "Do you want to provide address (y/n) : ",
-            readValue: readAddress
-        )
 
     guard
         let newUserId = registerUser(
@@ -90,12 +88,12 @@ func checkDateTime(
 {
     if let lower = lowerLimit, dateTime <= lower {
         throw DataError.invalidData(
-            msg: "Date/time is earlier than the allowed limit."
+            msg: "Most oldest allowed date is \(formatDateTime(lower))."
         )
     }
     if let upper = upperLimit, dateTime >= upper {
         throw DataError.invalidData(
-            msg: "Date/time is later than the allowed limit."
+            msg: "Most recent allowed date is \(formatDateTime(upper))."
         )
     }
 
@@ -121,7 +119,9 @@ func initiateAircraftRegistration() -> Int {
     let manufacturer = IO.readString(prompt: "Enter manufacturer name : ")
     let economySeat = IO.readInt(prompt: "Enter number of economy seats : ")
     let businessSeat = IO.readInt(prompt: "Enter number of business seats : ")
-    let firstClassSeat = IO.readInt(prompt: "Enter number of first class seats : ")
+    let firstClassSeat = IO.readInt(
+        prompt: "Enter number of first class seats : "
+    )
     let fuelCapacity = IO.readDouble(prompt: "Enter total fuel capacity : ")
 
     return registerAircraft(
@@ -162,9 +162,6 @@ func initiateRouteRegistration() throws -> Bool {
 
 func initiateFlightRegistration(route: Route) throws -> Int {
     let aircraftId = IO.readInt(prompt: "Enter aircraft id for this flight : ")
-    if aircraftId == -1 {
-        throw DataError.invalidData(msg: "Exiting registration process.")
-    }
 
     if !isAircraftExist(id: aircraftId) {
         throw DataError.dataNotFound(msg: "Aircraft dose not exist.")
