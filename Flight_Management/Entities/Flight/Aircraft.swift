@@ -50,15 +50,15 @@ struct Aircraft: CustomStringConvertible, TableRepresentable {
     var describeRemainingSeats: String {
         var result = ""
         
-        for (pref, count) in seat {
-            result.append("\(pref) : \(count.1)\n")
-        }
+        result.append("\(SeatPreference.economy): \(seat[.economy]?.1 ?? 0), ")
+        result.append("\(SeatPreference.business): \(seat[.business]?.1 ?? 0), ")
+        result.append("\(SeatPreference.firstClass): \(seat[.firstClass]?.1 ?? 0)")
         
         return result
     }
     
     var seatingCapacity: Int {
-        return 0
+        return seat.values.reduce(0) { $0 + $1.1 }
     }
     
     mutating func allocateSeat(preference: SeatPreference, count: Int) -> Bool {
@@ -71,11 +71,12 @@ struct Aircraft: CustomStringConvertible, TableRepresentable {
         }
         
         self.seat[preference] = (total, available - count)
-        return true
+        return updateAircraft(aircraft: self)
     }
     
     mutating func markAsUnavailable() {
         self.isAvailable = false
+        updateAircraft(aircraft: self)
     }
     
     private mutating func createSeats(

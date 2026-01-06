@@ -64,3 +64,12 @@ func registerMaintenanceLog(
     maintenanceLogs[newMaintenanceLog.id] = newMaintenanceLog
     return newMaintenanceLog.id
 }
+
+func updateAircraft(aircraft: Aircraft) -> Bool {
+    if aircrafts.keys.contains(aircraft.id) {
+        aircrafts[aircraft.id] = aircraft
+        return true
+    } else {
+        return false
+    }
+}

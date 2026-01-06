@@ -299,7 +299,7 @@ func hrMenu() {
                 allCrew.append(crew)
             }
 
-            var tableHeader: [String] = [
+            let tableHeader: [String] = [
                 "ID", "Name", "From", "To", "Designation",
             ]
             var tableRows: [[String]] = []
@@ -471,8 +471,6 @@ func groundStaffMenu() {
                 )
                 if isCompleted {
                     print("Booking Completed. ✅")
-                } else {
-                    print("No flights available for the selected airports. 😔")
                 }
             } catch let error as DataError {
                 print("\n🚨 Error: \(error) ‼️\n")
@@ -634,11 +632,7 @@ func passengerMenu() {
 
                 if isCompleted {
                     print("Booking Completed. ✅")
-                } else {
-                    print(
-                        "No flights available for the selected airports or process exited by user. 😔"
-                    )
-                }
+                } 
             } catch let error as DataError {
                 print("\n🚨 Error: \(error) ‼️\n")
             } catch {

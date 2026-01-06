@@ -41,6 +41,7 @@ func main() {
             do {
                 if try authenticateUser(userId: userID, password: password) {
                     authenticatedUser = crews[userID]!
+                    userRole = (authenticatedUser as! Crew).crewType
                     crewMenu()
                 } else {
                     print("Wrong credentials. Try again.")

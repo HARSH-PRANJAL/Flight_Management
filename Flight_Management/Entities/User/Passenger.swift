@@ -64,7 +64,7 @@ class Passenger: User {
 
     func bookTkt(
         flight: Flight,
-        bookingDate: Date?,
+        bookingDate: Date = Date(),
         mealPreference: MealPreference?,
         seatPreference: SeatPreference,
         sourceId: Int,
@@ -86,7 +86,7 @@ class Passenger: User {
             passengerId: self.id,
             name: passengerName,
             flightId: flight.id,
-            bookingDate: bookingDate ?? Date(),
+            bookingDate: bookingDate,
             mealPreference: mealPreference ?? self.mealPreference,
             seatPreference: seatPreference,
             sourceAirportId: sourceId,

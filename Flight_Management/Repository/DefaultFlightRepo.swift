@@ -13,7 +13,7 @@ func registerFlight(
         return nil
     } else {
         aircraft.markAsUnavailable()
-        aircrafts[aircraft.id] = aircraft
+        updateAircraft(aircraft: aircraft)
     }
 
     let newFlight = Flight(

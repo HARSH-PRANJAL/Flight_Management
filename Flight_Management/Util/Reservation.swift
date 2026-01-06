@@ -3,66 +3,50 @@ func initiateTktBooking(
     sourceId: Int,
     destinationId: Int
 ) throws -> Bool {
-    let flights = getAllFlights()
-
-    if flights.isEmpty {
-        return false
-    }
-
-    let allFlights = flights.filter { flight in
+    let allFlights = getAllFlights().filter { flight in
         flight.route.airportPath.first == sourceId
             && flight.route.airportPath.last == destinationId
     }
 
     if allFlights.isEmpty {
+        print("No flights available.")
         return false
     }
 
-    let flightTableRows = allFlights.map(\.tableRow)
+    var flightTableHeaders: [String] = Flight.tableHeaders
+    flightTableHeaders.append("Remaining Seats")
+    
+    var flightTableRows: [[String]] = []
+    for flight in allFlights {
+        var currentRow: [String] = flight.tableRow
+
+        guard let aircraft = findAircraftById(id: flight.aircraftId) else {
+            continue
+        }
+
+        currentRow.append(aircraft.describeRemainingSeats)
+        flightTableRows.append(currentRow)
+    }
     IO.displayTable(
         heading: "Flights",
-        headers: Flight.tableHeaders,
+        headers: flightTableHeaders,
         rows: flightTableRows,
         failMsg: "No aircrafts available."
     )
 
     let flightId = IO.readInt(prompt: "Enter the flight ID : ")
-    guard let flight = findFlightById(id: flightId) else {
+    guard let flight = findFlightById(id: flightId),
+        var aircraft = findAircraftById(id: flight.aircraftId)
+    else {
         throw DataError.dataNotFound(
-            msg: "No flight exists with ID : \(flightId)"
+            msg: "Flight/Aircraft not exist."
         )
     }
 
-    guard var aircraft = findAircraftById(id: flight.aircraftId) else {
-        throw DataError.invalidData(msg: "No aircraft exists for this flight")
+    if aircraft.seatingCapacity == 0 {
+        print("No seats available in selected aircraft.")
+        return false
     }
-
-    let bookingDate = IO.readOptional(
-        msg: "Do you want to enter a booking date (y/n) : ",
-        readValue: {
-            IO.readDate(
-                dateFormat: "dd-mm-yyyy",
-                prompt: "Enter the booking date : "
-            )
-        }
-    )
-
-    let mealMenu = MealPreference.allCases
-    let choice = IO.readOptional(
-        msg: "Do you want to provide a meal preference (y/n) :",
-        readValue: {
-            IO.displayOptions(
-                options: mealMenu,
-                msg: "Select meal preference : "
-            )
-            return IO.readInt(
-                size: mealMenu.count
-            )
-        }
-    )
-
-    let mealPreference: MealPreference? =
-        choice != nil ? mealMenu[choice! - 1] : nil
 
     var count = IO.readInt(prompt: "Enter the number of tickets to book : ")
     if count > 4 {
@@ -80,16 +64,36 @@ func initiateTktBooking(
         count = max(count, 1)
     }
 
+    if aircraft.seatingCapacity < count {
+        let choice = IO.readString(
+            prompt:
+                "Only available to book \(aircraft.seatingCapacity) tickets. Select y to continue or n to exit (y/n) : "
+        ).lowercased()
+
+        if choice == "n" {
+            return false
+        } else {
+            print("Continue Booking ....\n")
+        }
+    }
+
     var currBookings: [Booking] = []
     var i = 1
     while i <= count {
+        if aircraft.seatingCapacity == 0 {
+            print(
+                "No more seats available. All previous bookings are confirmed. Exiting..."
+            )
+            break
+        }
+
         let seatMenu = SeatPreference.allCases
 
         IO.displayOptions(
             options: seatMenu,
             msg: "Select seat preference for passenger \(i) :"
         )
-        let choice = IO.readInt(size: seatMenu.count)
+        var choice = IO.readInt(size: seatMenu.count)
         let seatPreference: SeatPreference = seatMenu[choice - 1]
 
         if !aircraft.allocateSeat(preference: seatPreference, count: 1) {
@@ -100,10 +104,26 @@ func initiateTktBooking(
             continue
         }
 
+        let mealMenu = MealPreference.allCases
+        let mealChoice = IO.readOptional(
+            msg: "Do you want to provide a meal preference (y/n) :",
+            readValue: {
+                IO.displayOptions(
+                    options: mealMenu,
+                    msg: "Select meal preference : "
+                )
+                return IO.readInt(
+                    size: mealMenu.count
+                )
+            }
+        )
+
+        let mealPreference: MealPreference? =
+            mealChoice != nil ? mealMenu[mealChoice! - 1] : nil
+
         let name = IO.readString(prompt: "Enter passenger name : ")
         let booking = passenger.bookTkt(
             flight: flight,
-            bookingDate: bookingDate,
             mealPreference: mealPreference,
             seatPreference: seatPreference,
             sourceId: sourceId,

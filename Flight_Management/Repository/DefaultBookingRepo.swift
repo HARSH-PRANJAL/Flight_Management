@@ -26,3 +26,12 @@ func deleteBookingById(id: Int) -> Booking? {
 func findBillById(id: Int) -> Transaction? {
     return transactions[id]
 }
+
+func updateBooking(booking: Booking) -> Bool {
+    if bookings.keys.contains(booking.tktNumber) {
+        bookings[booking.tktNumber] = booking
+        return true
+    } else {
+        return false
+    }
+}
