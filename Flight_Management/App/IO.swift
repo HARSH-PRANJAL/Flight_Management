@@ -9,7 +9,7 @@ struct IO {
                 return number
             } else {
                 print(
-                    "\nYour input is not a number provide correct input !!!!\n"
+                    "Your input is not a number provide correct input !!!!"
                 )
             }
         }
@@ -19,7 +19,7 @@ struct IO {
         prompt: String = "Enter your choice : ",
         terminator: String = " ",
         size: Int,
-        failMsg: String = "Please select a valid option."
+        failMsg: String = "Please enter a valid option."
     ) -> Int {
         var choice: Int
 
@@ -42,7 +42,7 @@ struct IO {
                 return (number * 100).rounded() / 100
             } else {
                 print(
-                    "\nYour input is not a number provide correct input !!!!\n"
+                    "Your input is not a number provide correct input !!!!"
                 )
             }
         }
@@ -56,7 +56,7 @@ struct IO {
                 return input
             } else {
                 print(
-                    "\nSomething wrong with input please try again !!!!\n"
+                    "Something wrong with input please try again !!!!"
                 )
             }
         }

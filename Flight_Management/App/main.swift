@@ -82,6 +82,8 @@ func main() {
                 print("\nCrew registered with id : \(newId) ✅")
             } catch let error as UserError {
                 print("\n🚨 Error: \(error.description) ‼️\n")
+            } catch let error as DataError {
+                print("\n🚨 Error: \(error) ‼️\n")
             } catch {
                 print(
                     "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
@@ -94,6 +96,8 @@ func main() {
                 print("\nPassenger registered with id : \(newId) ✅")
             } catch let error as UserError {
                 print("\n🚨 Error: \(error.description) ‼️\n")
+            } catch let error as DataError {
+                print("\n🚨 Error: \(error) ‼️\n")
             } catch {
                 print(
                     "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
