@@ -122,7 +122,7 @@ func loadMockFlights() {
     }
 
     let route1 = AirportRouteGraph().getRoutes(from: 1, to: 5).first!
-    let route2 = AirportRouteGraph().getRoutes(from: 1, to: 2).first!
+    let route2 = AirportRouteGraph().getRoutes(from: 2, to: 5).first!
     let route3 = AirportRouteGraph().getRoutes(from: 2, to: 3).first!
     let route4 = AirportRouteGraph().getRoutes(from: 4, to: 3).first!
     let flight = [
