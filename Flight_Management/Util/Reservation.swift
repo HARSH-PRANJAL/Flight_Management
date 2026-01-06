@@ -26,8 +26,13 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
             allFlights.append(flight)
         }
     }
-
-    IO.displayTable(allFlights, heading: "Available Flights", failMsg: "No flights available.")
+    let flightTableRows = allFlights.map(\.tableRow)
+    IO.displayTable(
+        heading: "Flights",
+        headers: Flight.tableHeaders,
+        rows: flightTableRows,
+        failMsg: "No aircrafts available."
+    )
     let flightId = IO.readInt(prompt: "Enter the flight ID : ")
     guard let flight = findFlightById(id: flightId) else {
         throw DataError.dataNotFound(
@@ -96,7 +101,14 @@ func initiateTktBooking(sourceId: Int, destinationId: Int) throws -> Bool {
         currBookings.append(booking)
         i += 1
     }
+    
+    let tableRows = currBookings.map(\.tableRow)
+    IO.displayTable(
+        heading: "Passenger Bookings",
+        headers: Booking.tableHeaders,
+        rows: tableRows,
+        failMsg: "No bookings found for this passenger."
+    )
 
-    IO.displayTable(currBookings, heading: "Current Bookings")
     return true
 }

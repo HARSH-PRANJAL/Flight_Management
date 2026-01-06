@@ -42,16 +42,29 @@ func crewMenu() {
     switch option {
     case .applyForLeave:
         let reason = IO.readString(prompt: "Enter reason for leave : ")
-        if crew.applyLeave(reason: reason) {
+        let fromDate = IO.readDate(
+            dateFormat: "dd-mm-yyyy",
+            prompt: "From (dd-mm-yyyy) : "
+        )
+        let toDate = IO.readDate(
+            dateFormat: "dd-mm-yyyy",
+            prompt: "To (dd-mm-yyyy) : "
+        )
+
+        if crew.applyLeave(reason: reason, from: fromDate, to: toDate) {
             print("Leave applied successfully.")
         } else {
-            print("You have already applied for leave.\nHr will review it soon.")
+            print(
+                "You have already applied for leave.\nHr will review it soon."
+            )
         }
     case .resign:
         if crew.resign() {
             print("Resignation applied successfully. See you soon!")
         } else {
-            print("You have already applied for resignation.\nHr will review it soon.")
+            print(
+                "You have already applied for resignation.\nHr will review it soon."
+            )
         }
     case .logout:
         authenticatedUser = nil
@@ -95,9 +108,11 @@ func flightManagerMenu() {
                 }
             } else {
                 let allFlights = getAllFlights()
+                let tableRow = allFlights.map(\.tableRow)
                 IO.displayTable(
-                    allFlights,
                     heading: "Flights",
+                    headers: Flight.tableHeaders,
+                    rows: tableRow,
                     failMsg: "No flights available."
                 )
             }
@@ -106,14 +121,19 @@ func flightManagerMenu() {
             let allAirports = getAllAirports()
             let allAircrafts = getAllAircrafts()
 
+            let airportTableRows = allAirports.map(\.tableRow)
             IO.displayTable(
-                allAirports,
                 heading: "Airports",
+                headers: Airport.tableHeaders,
+                rows: airportTableRows,
                 failMsg: "No airports available."
             )
+
+            let aircraftTableRows = allAircrafts.map(\.tableRow)
             IO.displayTable(
-                allAircrafts,
                 heading: "Aircrafts",
+                headers: Aircraft.tableHeaders,
+                rows: aircraftTableRows,
                 failMsg: "No aircrafts available."
             )
 
@@ -122,10 +142,12 @@ func flightManagerMenu() {
                 prompt: "Enter destination airport id : "
             )
             let allRoutes = route.getRoutes(from: sourceId, to: destinationId)
+            let routeTableRows = allRoutes.map(\.tableRow)
             IO.displayTable(
-                allRoutes,
                 heading: "Routes",
-                failMsg: "No suitable routes available."
+                headers: Route.tableHeaders,
+                rows: routeTableRows,
+                failMsg: "No route found."
             )
 
             let routeChoice = IO.readInt(
@@ -156,9 +178,11 @@ func flightManagerMenu() {
 
         case .addRoute:
             let allAirports = getAllAirports()
+            let tableRows = allAirports.map(\.tableRow)
             IO.displayTable(
-                allAirports,
                 heading: "Airports",
+                headers: Airport.tableHeaders,
+                rows: tableRows,
                 failMsg: "No airports available."
             )
 
@@ -223,13 +247,16 @@ func hrMenu() {
 
         case .viewAllEmployees:
             let allCrew = getAllCrew()
+            let tableRows = allCrew.map(\.tableRow)
             IO.displayTable(
-                allCrew,
-                heading: "Crew",
-                failMsg: "No crew members found."
+                heading: "All crew",
+                headers: Crew.tableHeaders,
+                rows: tableRows,
+                failMsg: "No crew found."
             )
 
         case .viewAllResignationRequests:
+            var allCrew: [Crew] = []
             for request in resignationRequests {
                 guard let user = findUserById(by: request),
                     let crew = user as? Crew
@@ -237,10 +264,31 @@ func hrMenu() {
                     continue
                 }
 
-                print(crew, terminator: "\n\n")
+                allCrew.append(crew)
             }
 
+            let tableHeader: [String] = ["ID", "Name", "Designation"]
+            var tableRows: [[String]] = []
+
+            for crew in allCrew {
+                let id = String(crew.id)
+                let name = crew.name
+                let designation = crew.crewType.description
+
+                let row: [String] = [id, name, designation]
+                tableRows.append(row)
+            }
+
+            IO.displayTable(
+                heading: "Resignation Requests",
+                headers: tableHeader,
+                rows: tableRows,
+                failMsg: "No registration requests found."
+            )
+
         case .viewAllLeaveRequests:
+            var allCrew: [Crew] = []
+
             for request in leaveRequests {
                 guard let user = findUserById(by: request.key),
                     let crew = user as? Crew
@@ -248,14 +296,38 @@ func hrMenu() {
                     continue
                 }
 
-                print("\(crew.name) - \(request.value)", terminator: "\n")
+                allCrew.append(crew)
             }
+
+            var tableHeader: [String] = [
+                "ID", "Name", "From", "To", "Designation",
+            ]
+            var tableRows: [[String]] = []
+
+            for crew in allCrew {
+                let id = String(crew.id)
+                let name = crew.name
+                let from = String(formatDateTime(leaveRequests[crew.id]!.1))
+                let to = String(formatDateTime(leaveRequests[crew.id]!.2))
+                let designation = crew.crewType.description
+
+                let row: [String] = [id, name, from, to, designation]
+                tableRows.append(row)
+            }
+
+            IO.displayTable(
+                heading: "Leave Applications",
+                headers: tableHeader,
+                rows: tableRows,
+                failMsg: "No leave application."
+            )
 
         case .approveLeaveRequest:
             let crewId = IO.readInt(
                 prompt:
                     "Enter the ID of the crew member to approve a leave request for: "
             )
+
             if leaveRequests.keys.contains(crewId) {
                 guard let user = findUserById(by: crewId),
                     let crew = user as? Crew
@@ -266,6 +338,8 @@ func hrMenu() {
                 }
 
                 crew.isAvailable = false
+            } else {
+                print("No leave request found for that ID")
             }
 
         case .approveResignationRequest:
@@ -335,9 +409,12 @@ func groundStaffMenu() {
 
         case .viewAvailableFlights:
             let allFlights = getAllFlights()
+            let tableRows = allFlights.map(\.tableRow)
+
             IO.displayTable(
-                allFlights,
                 heading: "Flights",
+                headers: Flight.tableHeaders,
+                rows: tableRows,
                 failMsg: "No flights available."
             )
 
@@ -385,9 +462,12 @@ func groundStaffMenu() {
             }
 
             let allBookings = getBookingsForPassenger(id: userId)
+            let tableRows = allBookings.map(\.tableRow)
+
             IO.displayTable(
-                allBookings,
                 heading: "Passenger Bookings",
+                headers: Booking.tableHeaders,
+                rows: tableRows,
                 failMsg: "No bookings found for this passenger."
             )
 
@@ -429,9 +509,12 @@ func passengerMenu() {
                 continue
             }
 
+            let tableRows = allAirports.map(\.tableRow)
             IO.displayTable(
-                allAirports,
-                heading: "Available Airports"
+                heading: "All Airports",
+                headers: Airport.tableHeaders,
+                rows: tableRows,
+                failMsg: "No airports found."
             )
 
             let sourceId = IO.readInt(prompt: "Enter the source airport id: ")
@@ -487,10 +570,13 @@ func passengerMenu() {
 
         case .viewBookings:
             let allBookings = getBookingsForPassenger(id: passenger.id)
+            let tableRows = allBookings.map(\.tableRow)
+
             IO.displayTable(
-                allBookings,
-                heading: "Your bookings",
-                failMsg: "You have no bookings."
+                heading: "Passenger Bookings",
+                headers: Booking.tableHeaders,
+                rows: tableRows,
+                failMsg: "No bookings found for this passenger."
             )
 
         case .Logout:

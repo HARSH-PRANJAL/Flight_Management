@@ -105,26 +105,31 @@ struct IO {
         }
     }
 
-    static func displayTable<T: TableRepresentable>(
-        _ data: [T],
+    static func displayTable(
         heading: String,
-        failMsg: String = "No data available"
+        headers: [String],
+        rows: [[String]],
+        failMsg: String = "No data available."
     ) {
-        guard !data.isEmpty else {
+        guard !rows.isEmpty else {
             print(failMsg)
             return
         }
 
-        let headers = T.tableHeaders
-        let rows = [headers] + data.map { $0.tableRow }
+        let allRows = [headers] + rows
 
         let columnWidths = headers.indices.map { index in
-            rows.map { $0[index].count }.max() ?? 0
+            allRows
+                .compactMap { row in
+                    index < row.count ? row[index].count : nil
+                }
+                .max() ?? 0
         }
 
         let printRow: ([String]) -> Void = { row in
-            let padded = row.enumerated().map { index, value in
-                value.padding(
+            let padded = headers.indices.map { index in
+                let value = index < row.count ? row[index] : ""
+                return value.padding(
                     toLength: columnWidths[index],
                     withPad: " ",
                     startingAt: 0
@@ -136,14 +141,12 @@ struct IO {
         print("\n\t\t\(heading)\n")
         printRow(headers)
         print(
-            columnWidths.map { String(repeating: "-", count: $0) }.joined(
-                separator: "-+-"
-            )
+            columnWidths
+                .map { String(repeating: "-", count: $0) }
+                .joined(separator: "-+-")
         )
 
-        data.forEach {
-            printRow($0.tableRow)
-        }
+        rows.forEach { printRow($0) }
     }
 
 }
