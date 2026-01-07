@@ -78,3 +78,7 @@ func updateAircraft(aircraft: Aircraft) -> Bool {
         return false
     }
 }
+
+func totalNumberOfAircrafts() -> Int {
+    aircrafts.count
+}

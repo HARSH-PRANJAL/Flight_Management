@@ -32,7 +32,7 @@ func initiateTktBooking(
         return false
     }
 
-    let count = IO.readInt(prompt: "Enter the number of tickets to book : ",size: remainingSeats)
+    let count = IO.readInt(prompt: "Enter the number of tickets to book : ",upperLimit: remainingSeats)
 
     var currBookings: [Booking] = []
     var i = 1
@@ -50,7 +50,7 @@ func initiateTktBooking(
             options: seatMenu,
             msg: "Select seat preference for passenger \(i) :"
         )
-        let choice = IO.readInt(size: seatMenu.count)
+        let choice = IO.readInt(upperLimit: seatMenu.count)
         let seatPreference: SeatPreference = seatMenu[choice - 1]
 
         if !aircraft.allocateSeat(preference: seatPreference, count: 1) {
@@ -74,7 +74,7 @@ func initiateTktBooking(
                 options: mealMenu,
                 msg: "Select meal preference :"
             )
-            let mealChoice = IO.readInt(size: mealMenu.count)
+            let mealChoice = IO.readInt(upperLimit: mealMenu.count)
             mealPreference = mealMenu[mealChoice - 1]
         }
 

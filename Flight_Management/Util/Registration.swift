@@ -22,13 +22,14 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
         )
     )
 
-    IO.displayOptions(options: Gender.allCases, msg: "Select gender")
+    let options = Gender.allCases
+    IO.displayOptions(options: options, msg: "Select gender")
     let gender = Gender.allCases[
-        IO.readInt(size: Gender.allCases.count) - 1
+        IO.readInt(upperLimit: options.count) - 1
     ]
 
     let crewType: CrewType?
-    var address: String? = nil
+    let address: String?
     let readAddress = {
         readAlphaNumericString(
             prompt: "Enter address : ",
@@ -38,19 +39,19 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
 
     if isPassenger {
         crewType = nil
+        
         let ops = IO.readString(
             prompt: "Do you want to provide address ? (y/n) : ",
             options: ["y", "n"]
         )
-        if ops == "y" {
-            address = readAddress()
-        }
+        address = ops == "y" ? readAddress() : nil
     } else {
         let crews = CrewType.allCases
         IO.displayOptions(options: crews, msg: "Select crew type")
 
-        let crewOption = IO.readInt(size: crews.count)
+        let crewOption = IO.readInt(upperLimit: crews.count)
         crewType = crews[crewOption - 1]
+        
         address = readAddress()
     }
 
@@ -89,12 +90,13 @@ func initiateAirportRegistration() -> Int {
 func initiateAircraftRegistration() -> Int {
     let model = IO.readString(prompt: "Enter aircraft model : ")
     let manufacturer = IO.readString(prompt: "Enter manufacturer name : ")
-    let economySeat = IO.readInt(prompt: "Enter number of economy seats : ")
-    let businessSeat = IO.readInt(prompt: "Enter number of business seats : ")
+    let economySeat = IO.readInt(prompt: "Enter number of economy seats : ", failMsg: "Please enter correct number of seats.")
+    let businessSeat = IO.readInt(prompt: "Enter number of business seats : ", failMsg: "Please enter correct number of seats.")
     let firstClassSeat = IO.readInt(
-        prompt: "Enter number of first class seats : "
+        prompt: "Enter number of first class seats : ",
+        failMsg: "Please enter correct number of seats."
     )
-    let fuelCapacity = IO.readDouble(prompt: "Enter total fuel capacity : ")
+    let fuelCapacity = IO.readDouble(prompt: "Enter total fuel capacity : ", failMsg: "Please enter valid fuel capacity.")
 
     return registerAircraft(
         model: model,
@@ -107,19 +109,33 @@ func initiateAircraftRegistration() -> Int {
 }
 
 func initiateRouteRegistration() throws -> Bool {
-    let sourceId = IO.readInt(prompt: "Enter source airport id : ")
-    let destinationId = IO.readInt(prompt: "Enter destination airport id : ")
-
-    if !isAirportExist(id: sourceId)
-        || !isAirportExist(id: destinationId)
-    {
-        throw DataError.dataNotFound(msg: "Airport dose not exist.")
+    let readAirportID = { (prompt: String, failMsg: String) -> Int in
+        while true {
+            let rawId = IO.readInt(prompt: prompt, failMsg: "Please provide a valid airport id.")
+            if isAirportExist(id: rawId) {
+                return rawId
+            } else {
+                print("id \(failMsg)")
+            }
+        }
     }
-
-    let duration: Double = IO.readDouble(
-        prompt: "Enter estimated flight duration in hours : "
+    
+    let sourceId = readAirportID(
+        "Enter source airport id : ",
+        "Source airport does not exist with "
     )
-    let basePrice: Double = IO.readDouble(prompt: "Enter base fare price : ")
+    let destinationId = readAirportID(
+      "Enter destination airport id : ",
+      "Destination airport does not exist with "
+    )
+    
+    let duration = IO.readDouble(
+        prompt: "Enter estimated flight duration in hours : ",
+        failMsg: "Aircraft can not fly for more than 48.0 hours.",
+        lowerLimit: 0.0,
+        upperLimit: 48.0
+    )
+    let basePrice = IO.readDouble(prompt: "Enter base fare price : ", failMsg: "Please provide a valid fare price.", lowerLimit: 0.0)
 
     let route = AirportRouteGraph()
     route.addRoute(
@@ -133,29 +149,6 @@ func initiateRouteRegistration() throws -> Bool {
 }
 
 func initiateFlightRegistration(route: Route) throws -> Int? {
-    var aircraftId: Int
-
-    while true {
-        aircraftId = IO.readInt(prompt: "Enter aircraft id : ")
-
-        if !isAircraftExist(id: aircraftId) {
-            print("Aircraft does not exist.")
-
-            let ops = IO.readString(
-                prompt: "Do you want to try again ? (y/n) : ",
-                options: ["y", "n", "Y", "N"]
-            ).lowercased()
-
-            if ops == "y" {
-                continue
-            } else {
-                return nil
-            }
-        } else {
-            break
-        }
-    }
-
     guard
         let earliestAllowedDeparture = Calendar.current.date(
             byAdding: .day,
@@ -188,20 +181,39 @@ func initiateFlightRegistration(route: Route) throws -> Int? {
         lowerLimit: earliestAllowedDeparture,
         upperLimit: latestAllowedDeparture
     )
+    
+    var aircraftId: Int
 
-    if let newId = registerFlight(
+    while true {
+        aircraftId = IO.readInt(prompt: "Enter aircraft id : ", failMsg: "Please provide valid aircraft id.")
+
+        if !isAircraftAvailable(id: aircraftId) {
+            print("Aircraft does not exist or is not available.")
+
+            let ops = IO.readString(
+                prompt: "Do you want to try again ? (y/n) : ",
+                options: ["y", "n", "Y", "N"]
+            ).lowercased()
+
+            if ops == "y" {
+                continue
+            } else {
+                return nil
+            }
+        } else {
+            break
+        }
+    }
+
+    return registerFlight(
         aircraftId: aircraftId,
         scheduledDeparture: departureTime,
         route: route
-    ) {
-        return newId
-    } else {
-        throw DataError.invalidData(msg: "Aircraft is not available.")
-    }
+    )
 }
 
 func initiateFlightMaintenanceLogRegistration() throws -> Int {
-    let aircraftId = IO.readInt(prompt: "Enter aircraft id : ")
+    let aircraftId = IO.readInt(prompt: "Enter aircraft id : ", failMsg: "Please provide valid aircraft id.")
 
     if !isAircraftExist(id: aircraftId) {
         throw DataError.dataNotFound(msg: "Aircraft dose not exist.")

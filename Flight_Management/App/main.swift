@@ -18,7 +18,7 @@ func main() {
                 """
         )
 
-        let choice = IO.readInt(size: menu.count)
+        let choice = IO.readInt(upperLimit: menu.count)
         let option = menu[choice - 1]
 
         switch option {

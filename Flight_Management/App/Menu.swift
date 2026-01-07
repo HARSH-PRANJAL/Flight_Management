@@ -26,7 +26,7 @@ func crewMenu() {
                 """
         )
 
-        let choice = IO.readInt(size: menu.count)
+        let choice = IO.readInt(upperLimit: menu.count)
         let option = menu[choice - 1]
 
         switch option {
@@ -92,7 +92,7 @@ func flightManagerMenu() {
         )
 
         let choice = IO.readInt(
-            size: menu.count
+            upperLimit: menu.count
         )
         let option = menu[choice - 1]
 
@@ -130,7 +130,7 @@ func flightManagerMenu() {
         case .scheduleFlight:
             let allAirports = getAllAirports()
             let allAircrafts = getAllAircrafts().filter {
-                !maintenanceLogs.keys.contains($0.id)
+                isAircraftAvailable(id: $0.id)
             }
 
             let airportTableRows = allAirports.map(\.tableRow)
@@ -154,17 +154,29 @@ func flightManagerMenu() {
             var sourceId: Int
             var destinationId: Int
 
-            while true {
-                sourceId = IO.readInt(
-                    prompt: "Enter source airport id : ",
-                    size: allAirports.count,
-                    failMsg: "Please enter a valid airport id."
-                )
+            let readAirportId = { (prompt: String, failMsg: String) in
+                while true {
+                    let id = IO.readInt(
+                        prompt: prompt,
+                        failMsg: failMsg
+                    )
 
-                destinationId = IO.readInt(
-                    prompt: "Enter destination airport id : ",
-                    size: allAirports.count,
-                    failMsg: "Please enter a valid airport id."
+                    if isAirportExist(id: id) {
+                        return id
+                    } else {
+                        print(failMsg)
+                    }
+                }
+            }
+
+            while true {
+                sourceId = readAirportId(
+                    "Enter source airport id : ",
+                    "Please enter a valid airport id."
+                )
+                destinationId = readAirportId(
+                    "Enter destination airport id : ",
+                    "Please enter a valid airport id."
                 )
 
                 allRoutes = routeMaker.getRoutes(
@@ -214,7 +226,7 @@ func flightManagerMenu() {
 
             let routeChoice = IO.readInt(
                 prompt: "Enter route number : ",
-                size: allRoutes.count,
+                upperLimit: allRoutes.count,
                 failMsg: "Please enter a valid route number."
             )
             let route = allRoutes[routeChoice - 1]
@@ -309,7 +321,7 @@ func hrMenu() {
                 """
         )
 
-        let choice = IO.readInt(size: menu.count)
+        let choice = IO.readInt(upperLimit: menu.count)
         let option = menu[choice - 1]
 
         switch option {
@@ -491,7 +503,7 @@ func groundStaffMenu() {
                 """
         )
 
-        let choice = IO.readInt(size: menu.count)
+        let choice = IO.readInt(upperLimit: menu.count)
         let option = menu[choice - 1]
 
         switch option {
@@ -680,7 +692,7 @@ func passengerMenu() {
                 """
         )
 
-        let choice = IO.readInt(size: menu.count)
+        let choice = IO.readInt(upperLimit: menu.count)
         let option = menu[choice - 1]
 
         switch option {

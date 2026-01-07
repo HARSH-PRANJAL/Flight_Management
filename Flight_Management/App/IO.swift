@@ -20,15 +20,16 @@ struct IO {
     static func readInt(
         prompt: String = "Enter your choice : ",
         terminator: String = " ",
-        size: Int,
+        lowerLimit: Int = 0,
+        upperLimit: Int = Int.max,
         failMsg: String = "Please enter a valid option."
     ) -> Int {
         var choice: Int
 
         while true {
-            choice = IO.readInt(prompt: prompt, terminator: " ")
+            choice = IO.readInt(prompt: prompt, terminator: " ", failMsg: failMsg)
 
-            if choice <= 0 || choice > size {
+            if choice <= lowerLimit || choice > upperLimit {
                 print(failMsg)
             } else {
                 return choice
@@ -48,6 +49,26 @@ struct IO {
                 return (number * 100).rounded() / 100
             } else {
                 print(failMsg)
+            }
+        }
+    }
+    
+    static func readDouble(
+        prompt: String,
+        terminator: String = " ",
+        failMsg: String = "Your input is not a number provide correct input.",
+        lowerLimit: Double = -Double.infinity,
+        upperLimit: Double = Double.infinity
+    ) -> Double {
+        var rawValue: Double
+        
+        while true {
+            rawValue = IO.readDouble(prompt: prompt, terminator: " ", failMsg: failMsg)
+            
+            if rawValue < lowerLimit || rawValue > upperLimit {
+                print(failMsg)
+            } else {
+                return rawValue
             }
         }
     }

@@ -257,9 +257,9 @@ func loadMockPassengers() {
 
 func loadMockMaintenance() {
     let allAircrafts = getAllAircrafts()
-    let size = allAircrafts.count
+    let upperLimit = allAircrafts.count
 
-    guard size > 0 else { return }
+    guard upperLimit > 0 else { return }
 
     let formatter = DateFormatter()
     formatter.dateFormat = "dd-MM-yyyy"
@@ -267,7 +267,7 @@ func loadMockMaintenance() {
 
     var maintenanceRecords: [MaintenanceLog] = []
     var i = 0
-    while i < size {
+    while i < upperLimit {
         let aircraft = allAircrafts[i]
         if aircraft.isAvailable {
 
@@ -292,6 +292,8 @@ func loadMockMaintenance() {
 
     for record in maintenanceRecords {
         maintenanceLogs[record.id] = record
+        var aircraft = allAircrafts[record.id]
+        aircraft.markAsUnavailable()
     }
 }
 
