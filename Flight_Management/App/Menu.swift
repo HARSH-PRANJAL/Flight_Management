@@ -133,7 +133,9 @@ func flightManagerMenu() {
 
         case .scheduleFlight:
             let allAirports = getAllAirports()
-            let allAircrafts = getAllAircrafts()
+            let allAircrafts = getAllAircrafts().filter {
+                !maintenanceLogs.keys.contains($0.id)
+            }
 
             let airportTableRows = allAirports.map(\.tableRow)
             IO.displayTable(
@@ -151,11 +153,25 @@ func flightManagerMenu() {
                 failMsg: "No aircrafts available."
             )
 
-            let sourceId = IO.readInt(prompt: "Enter source airport id : ")
-            let destinationId = IO.readInt(
-                prompt: "Enter destination airport id : "
+            let sourceId = IO.readInt(
+                prompt: "Enter source airport id : ",
+                size: allAirports.count
             )
+            let destinationId = IO.readInt(
+                prompt: "Enter destination airport id : ",
+                size: allAirports.count
+            )
+
             let allRoutes = route.getRoutes(from: sourceId, to: destinationId)
+            if allRoutes.isEmpty {
+                print(
+                    """
+                    No route found for the provided source and destination.
+                    Try again ....
+                    """
+                )
+                continue
+            }
 
             var routeTableHeaders: [String] = ["ID"]
             routeTableHeaders.append(contentsOf: Route.tableHeaders)
@@ -322,8 +338,18 @@ func hrMenu() {
             for crew in allCrew {
                 let id = String(crew.id)
                 let name = crew.name
-                let from = String(formatDateTime(leaveRequests[crew.id]!.1, format: "dd-MM-yyyy"))
-                let to = String(formatDateTime(leaveRequests[crew.id]!.2, format: "dd-MM-yyyy"))
+                let from = String(
+                    formatDateTime(
+                        leaveRequests[crew.id]!.1,
+                        format: "dd-MM-yyyy"
+                    )
+                )
+                let to = String(
+                    formatDateTime(
+                        leaveRequests[crew.id]!.2,
+                        format: "dd-MM-yyyy"
+                    )
+                )
                 let designation = crew.crewType.description
 
                 let row: [String] = [id, name, from, to, designation]

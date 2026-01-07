@@ -63,11 +63,10 @@ struct IO {
     }
     
     static func readString(prompt: String, terminator: String = " ",options: [String]) -> String {
-        
         var choice = IO.readString(prompt: prompt, terminator: " ").lowercased()
         
         while !options.contains(choice) {
-            print("Chose correct option : ")
+            print("Chose correct option...")
             choice = IO.readString(prompt: prompt, terminator: " ").lowercased()
         }
         
