@@ -38,11 +38,9 @@ func main() {
                 ) {
                     crewMenu()
                 }
-            } catch let error as UserError {
-                print("\n🚨 Error: \(error.description) \n")
             } catch let error as AuthError {
                 print(
-                    "\n🚨 Error: \(error.description) wrong credentials. Try again.\n"
+                    "\n🚨 Error: \(error.description), you entered wrong credentials.\n"
                 )
             } catch {
                 print(
@@ -61,11 +59,9 @@ func main() {
                 if try authenticateUser(userId: userID, password: password) {
                     passengerMenu()
                 }
-            } catch let error as UserError {
-                print("\n🚨 Error: \(error.description)\n")
             } catch let error as AuthError {
                 print(
-                    "\n🚨 Error: \(error.description), wrong credentials. Try again.\n"
+                    "\n🚨 Error: \(error.description), you entered wrong credentials.\n"
                 )
             } catch {
                 print(

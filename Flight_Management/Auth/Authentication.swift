@@ -13,7 +13,7 @@ func authenticateUser(userId: Int, password: String, crew: Bool = false) throws 
     } else {
         guard let passenger = findPassengerById(id: userId)
         else {
-            throw UserError.userNotFound
+            throw AuthError.authenticationFailed
         }
         
         if !passenger.verifyPassword(password) {

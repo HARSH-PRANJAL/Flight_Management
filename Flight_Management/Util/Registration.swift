@@ -1,11 +1,10 @@
 import Foundation
 
 func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
-    let userName = readNonIntString(prompt: "Enter username : ")
+    let userName = readName()
     let password = IO.readString(prompt: "Enter password : ")
-    let phone = readCorrectPhone()
-
-    let email: String = readCorrectEmail()
+    let phone = readPhoneNumber()
+    let email: String = readEmail()
     let dob = try checkDateTime(
         dateTime: IO.readDate(dateFormat: "dd-MM-yyyy", prompt: "Enter DOB : "),
         lowerLimit: Calendar.current.date(
@@ -35,7 +34,7 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
             options: ["y", "n"]
         )
         if ops == "y" {
-            address = readNonIntString(prompt: "Enter address : ")
+            address = readAlphaNumericString("Enter address : ", "Please provide correct address.")
         }
     } else {
         let crews = CrewType.allCases
@@ -43,7 +42,7 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
 
         let crewOption = IO.readInt(size: crews.count)
         crewType = crews[crewOption - 1]
-        address = readNonIntString(prompt: "Enter address : ")
+        address = readAlphaNumericString("Enter address : ", "Please provide correct address.")
     }
 
     guard
