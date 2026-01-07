@@ -1,5 +1,10 @@
 import Foundation
 
+var crews: [Int: Crew] = [:]
+var passengers: [Int: Passenger] = [:]
+var resignationRequests: Set<Int> = []
+var leaveRequests: [Int: (String, Date, Date)] = [:]
+
 func findCrewById(id: Int) -> Crew? {
     return crews[id]
 }

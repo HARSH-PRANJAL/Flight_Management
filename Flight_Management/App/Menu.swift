@@ -10,8 +10,8 @@ func crewMenu() {
 
     let ops = IO.readString(
         prompt: "Do you want to go to profile menu ? (y/n) : ",
-        options: ["y", "n"]
-    )
+        options: ["y", "n", "Y", "N"]
+    ).lowercased()
 
     if ops == "n" {
         if userRole == .flightManager {
@@ -58,10 +58,10 @@ func crewMenu() {
                     )
                 }
             } catch let error as DataError {
-                print("\n🚨 Error: \(error) can not apply for leave. ‼️\n")
+                print("\n🚨 Error: \(error) can not apply for leave. \n")
             } catch {
                 print(
-                    "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
+                    "\n🚨 An unexpected error occurred. Please try again later. \n"
                 )
             }
 
@@ -108,16 +108,19 @@ func flightManagerMenu() {
         case .viewFlights:
             let ops = IO.readString(
                 prompt: "Do you want to see specific flight ? (y/n)",
-                options: ["n", "y"]
-            )
+                options: ["n", "y", "Y", "N"]
+            ).lowercased()
 
             if ops == "y" {
-                let flightId = IO.readInt(prompt: "Enter flight id : ")
+                let flightId = IO.readInt(
+                    prompt: "Enter flight id : ",
+                    failMsg: "Please enter a valid flight id."
+                )
 
                 if let flight = findFlightById(id: flightId) {
                     print(flight)
                 } else {
-                    print("\n🚨 Error: Flight not found ‼️\n")
+                    print("No flight exists with id \(flightId).\n")
                 }
             } else {
                 let allFlights = getAllFlights()
@@ -155,11 +158,13 @@ func flightManagerMenu() {
 
             let sourceId = IO.readInt(
                 prompt: "Enter source airport id : ",
-                size: allAirports.count
+                size: allAirports.count,
+                failMsg: "Please enter a valid airport id."
             )
             let destinationId = IO.readInt(
                 prompt: "Enter destination airport id : ",
-                size: allAirports.count
+                size: allAirports.count,
+                failMsg: "Please enter a valid airport id."
             )
 
             let allRoutes = route.getRoutes(from: sourceId, to: destinationId)
@@ -192,7 +197,8 @@ func flightManagerMenu() {
 
             let routeChoice = IO.readInt(
                 prompt: "Enter route number : ",
-                size: allRoutes.count
+                size: allRoutes.count,
+                failMsg: "Please enter a valid route number."
             )
             let route = allRoutes[routeChoice - 1]
 
@@ -200,20 +206,21 @@ func flightManagerMenu() {
                 let flightId = try initiateFlightRegistration(route: route)
                 print("Flight registered with id :  \(flightId) ✅")
             } catch let error as DataError {
-                print("\n🚨 Error: \(error) ‼️\n")
+                print("\n🚨 Error: \(error)\n")
             } catch {
                 print(
-                    "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
+                    "\n🚨 An unexpected error occurred. Please try again later.\n"
                 )
             }
 
         case .cancelFlight:
-            let flightId = IO.readInt(prompt: "Enter flight id to cancel : ")
+            let flightId = IO.readInt(prompt: "Enter flight id to cancel : ",
+            failMsg: "Please enter a valid flight id.")
 
             if let id = deleteFlightById(id: flightId) {
                 print("Flight cancelled with id : \(id) ✅")
             } else {
-                print("No flight with id : \(flightId)")
+                print("No flight exists with id : \(flightId) !")
             }
 
         case .addRoute:
@@ -232,10 +239,10 @@ func flightManagerMenu() {
                     print("New route added ✅")
                 }
             } catch let error as DataError {
-                print("\n🚨 Error: \(error) ‼️\n")
+                print("\n🚨 Error: \(error) \n")
             } catch {
                 print(
-                    "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
+                    "\n🚨 An unexpected error occurred. Please try again later. \n"
                 )
             }
 
@@ -253,10 +260,10 @@ func flightManagerMenu() {
                 print("Maintenance log created with id :  \(newLogId) ✅")
 
             } catch let error as DataError {
-                print("\n🚨 Error: \(error) ‼️\n")
+                print("\n🚨 Error: \(error) \n")
             } catch {
                 print(
-                    "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
+                    "\n🚨 An unexpected error occurred. Please try again later. \n"
                 )
             }
 
@@ -366,13 +373,14 @@ func hrMenu() {
         case .approveLeaveRequest:
             let crewId = IO.readInt(
                 prompt:
-                    "Enter the ID of the crew member to approve a leave request for: "
+                    "Enter the ID of the crew member to approve a leave request for : ",
+                failMsg: "Please enter a valid ID."
             )
 
             if leaveRequests.keys.contains(crewId) {
                 guard let crew = findCrewById(id: crewId)
                 else {
-                    print("Crew Id is invalid")
+                    print("Crew id is invalid")
                     leaveRequests.removeValue(forKey: crewId)
                     continue
                 }
@@ -387,13 +395,14 @@ func hrMenu() {
         case .approveResignationRequest:
             let crewId = IO.readInt(
                 prompt:
-                    "Enter the ID of the crew member to approve a resignation request for: "
+                    "Enter the ID of the crew member to approve a resignation request for : ",
+                failMsg: "Please enter a valid ID."
             )
 
             if resignationRequests.contains(crewId) {
                 guard let crew = findCrewById(id: crewId)
                 else {
-                    print("Crew Id is invalid")
+                    print("Crew id is invalid")
                     resignationRequests.remove(crewId)
                     continue
                 }
@@ -407,7 +416,8 @@ func hrMenu() {
         case .addSalaryToCrew:
             let crewId = IO.readInt(
                 prompt:
-                    "Enter the ID of the crew member to add salary to : "
+                    "Enter the ID of the crew member to add salary to : ",
+                failMsg: "Please enter a valid ID."
             )
 
             if let crew = findCrewById(id: crewId) {
@@ -415,15 +425,21 @@ func hrMenu() {
                     """
                     Name : \(crew.name)
                     Ground Duty Pay Per Hour : \(crew.groundDutyPayRatePerHour)
-                                    In Air Pay Per Hour : \(crew.inAirPayRatePerHour)
+                    Flight Duty Pay Per Hour : \(crew.inAirPayRatePerHour)
                     """
                 )
 
+                print(
+                    "\nAmounts you will enter will be added to the existing salary of \(crew.name)."
+                )
+
                 let groundDutyPayRatePerHour: Double = IO.readDouble(
-                    prompt: "Enter Ground Duty Pay Per Hour : "
+                    prompt: "Enter Ground Duty Pay Per Hour : ",
+                    failMsg: "Please enter a valid salary."
                 )
                 let inAirPayRatePerHour = IO.readDouble(
-                    prompt: "Enter In Air Pay Per Hour : "
+                    prompt: "Enter Flight Pay Per Hour : ",
+                    failMsg: "Please enter a valid salary."
                 )
 
                 crew.groundDutyPayRatePerHour += groundDutyPayRatePerHour
@@ -465,16 +481,16 @@ func groundStaffMenu() {
                     "Passenger with ID \(passengerId) has been added successfully."
                 )
             } catch let error as UserError {
-                print("\n🚨 Error: \(error.description) ‼️\n")
+                print("\n🚨 Error: \(error.description) \n")
             } catch let error as DataError {
-                print("\n🚨 Error: \(error) ‼️\n")
+                print("\n🚨 Error: \(error) \n")
             } catch {
                 print(
-                    "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
+                    "\n🚨 An unexpected error occurred. Please try again later. \n"
                 )
             }
         case .bookFlight:
-            let passengerId = IO.readInt(prompt: "Enter passenger ID : ")
+            let passengerId = IO.readInt(prompt: "Enter passenger ID : ", failMsg: "Please enter a valid passenger id.")
 
             guard let passenger = findPassengerById(id: passengerId)
             else {
@@ -496,9 +512,11 @@ func groundStaffMenu() {
                 failMsg: "No airports found."
             )
 
-            let sourceId = IO.readInt(prompt: "Enter the source airport id: ")
+            let sourceId = IO.readInt(prompt: "Enter the source airport id : ",
+                                      failMsg: "Please enter a valid airport id.")
             let destinationId = IO.readInt(
-                prompt: "Enter the destination airport Id: "
+                prompt: "Enter the destination airport id : ",
+                failMsg: "Please enter a valid airport id."
             )
 
             do {
@@ -511,10 +529,10 @@ func groundStaffMenu() {
                     print("Booking Completed. ✅")
                 }
             } catch let error as DataError {
-                print("\n🚨 Error: \(error) ‼️\n")
+                print("\n🚨 Error: \(error) \n")
             } catch {
                 print(
-                    "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
+                    "\n🚨 An unexpected error occurred. Please try again later. \n"
                 )
             }
 
@@ -541,7 +559,7 @@ func groundStaffMenu() {
                 }
             } catch let error {
                 print(
-                    "\n🚨 Error: \(error) This ticket is not booked by \(passenger.name). ‼️\n"
+                    "\n🚨 Error: \(error) This ticket is not booked by \(passenger.name). \n"
                 )
             }
 
@@ -576,9 +594,9 @@ func groundStaffMenu() {
                 failMsg: "No airports found."
             )
 
-            let sourceId = IO.readInt(prompt: "Enter the source airport id: ")
+            let sourceId = IO.readInt(prompt: "Enter the source airport id : ", failMsg: "Please enter a valid airport id.")
             let destinationId = IO.readInt(
-                prompt: "Enter the destination airport Id: "
+                prompt: "Enter the destination airport id : ", failMsg: "Please enter a valid airport id."
             )
 
             let allFlights = getFlightsBetween(
@@ -590,7 +608,7 @@ func groundStaffMenu() {
         case .viewPassengerBookings:
             let userId = IO.readInt(prompt: "Enter passenger id : ")
             if !passengers.keys.contains(userId) {
-                print("\n🚨 Error: Passenger not found ‼️\n")
+                print("\n🚨 Error: Passenger not found \n")
                 continue
             }
 
@@ -650,9 +668,9 @@ func passengerMenu() {
                 failMsg: "No airports found."
             )
 
-            let sourceId = IO.readInt(prompt: "Enter the source airport id: ")
+            let sourceId = IO.readInt(prompt: "Enter the source airport id : ", failMsg: "Please enter a valid airport id.")
             let destinationId = IO.readInt(
-                prompt: "Enter the destination airport Id: "
+                prompt: "Enter the destination airport id : ", failMsg: "Please enter a valid airport id."
             )
 
             do {
@@ -666,10 +684,10 @@ func passengerMenu() {
                     print("Booking Completed. ✅")
                 }
             } catch let error as DataError {
-                print("\n🚨 Error: \(error) ‼️\n")
+                print("\n🚨 Error: \(error) \n")
             } catch {
                 print(
-                    "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
+                    "\n🚨 An unexpected error occurred. Please try again later. \n"
                 )
             }
 
@@ -688,7 +706,7 @@ func passengerMenu() {
                 }
             } catch let error {
                 print(
-                    "\n🚨 Error: \(error) You are not authorised to cancel this tkt. ‼️\n"
+                    "\n🚨 Error: \(error) You are not authorised to cancel this tkt. \n"
                 )
             }
 

@@ -1,16 +1,18 @@
 import Foundation
 
 struct IO {
-    static func readInt(prompt: String, terminator: String = " ") -> Int {
-        print(prompt, terminator: terminator)
-
+    static func readInt(
+        prompt: String,
+        terminator: String = " ",
+        failMsg: String = "Your input is not a number provide correct input."
+    ) -> Int {
         while true {
+            print(prompt, terminator: terminator)
+
             if let input = readLine(), let number = Int(input) {
                 return number
             } else {
-                print(
-                    "Your input is not a number provide correct input !!!!"
-                )
+                print(failMsg)
             }
         }
     }
@@ -34,42 +36,51 @@ struct IO {
         }
     }
 
-    static func readDouble(prompt: String, terminator: String = " ") -> Double {
-        print(prompt, terminator: terminator)
-
+    static func readDouble(
+        prompt: String,
+        terminator: String = " ",
+        failMsg: String = "Your input is not a number provide correct input."
+    ) -> Double {
         while true {
+            print(prompt, terminator: terminator)
+
             if let input = readLine(), let number = Double(input) {
                 return (number * 100).rounded() / 100
             } else {
-                print(
-                    "Your input is not a number provide correct input !!!!"
-                )
+                print(failMsg)
             }
         }
     }
 
-    static func readString(prompt: String, terminator: String = " ") -> String {
-        print(prompt, terminator: terminator)
-
+    static func readString(
+        prompt: String,
+        terminator: String = " ",
+        failMsg: String = "Something wrong with input please try again."
+    ) -> String {
         while true {
+            print(prompt, terminator: terminator)
+
             if let input = readLine() {
                 return input
             } else {
-                print(
-                    "Something wrong with input please try again !!!!"
-                )
+                print(failMsg)
             }
         }
     }
-    
-    static func readString(prompt: String, terminator: String = " ",options: [String]) -> String {
+
+    static func readString(
+        prompt: String,
+        terminator: String = " ",
+        options: [String],
+        failMsg: String = "Chose correct option."
+    ) -> String {
         var choice = IO.readString(prompt: prompt, terminator: " ").lowercased()
-        
+
         while !options.contains(choice) {
-            print("Chose correct option...")
+            print(failMsg)
             choice = IO.readString(prompt: prompt, terminator: " ").lowercased()
         }
-        
+
         return choice
     }
 
@@ -96,7 +107,7 @@ struct IO {
             }
         }
     }
-    
+
     static func displayOptions<T: CaseIterable & CustomStringConvertible>(
         options: [T],
         msg: String = ""

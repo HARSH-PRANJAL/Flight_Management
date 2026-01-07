@@ -11,7 +11,7 @@ func readCorrectEmail() -> String {
         if rawEmail.range(of: pattern, options: .regularExpression) != nil {
             return rawEmail
         } else {
-            print("\nWrong email format ‼️\nTry again. \n")
+            print("\nWrong email format \nTry again. \n")
             continue
         }
     }

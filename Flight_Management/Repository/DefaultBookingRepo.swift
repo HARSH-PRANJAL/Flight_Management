@@ -1,3 +1,7 @@
+var bookings: [Int: Booking] = [:]
+var transactions: [Int: Transaction] = [:]
+
+
 func findBookingById(id: Int) -> Booking? {
     return bookings[id]
 }

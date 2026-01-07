@@ -2,7 +2,7 @@ func authenticateUser(userId: Int, password: String, crew: Bool = false) throws 
     if crew {
         guard let crew = findCrewById(id: userId)
         else {
-            throw UserError.userNotFound
+            throw AuthError.authenticationFailed
         }
         
         if !crew.verifyPassword(password) {

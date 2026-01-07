@@ -32,7 +32,7 @@ func initiateTktBooking(
         return false
     }
 
-    var count = IO.readInt(prompt: "Enter the number of tickets to book : ",size: remainingSeats)
+    let count = IO.readInt(prompt: "Enter the number of tickets to book : ",size: remainingSeats)
 
     var currBookings: [Booking] = []
     var i = 1
@@ -55,7 +55,7 @@ func initiateTktBooking(
 
         if !aircraft.allocateSeat(preference: seatPreference, count: 1) {
             print(
-                "No seat available for passenger \(i) with seat preference \(seatPreference). ‼️"
+                "No seat available for passenger \(i) with seat preference \(seatPreference). "
             )
             print("Book next ticket.")
             continue

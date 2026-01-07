@@ -20,16 +20,16 @@ struct Airport: CustomStringConvertible, TableRepresentable {
     }
     
     static var tableHeaders: [String] {
-            ["ID", "Code", "Name", "City", "Country"]
-        }
+        ["ID", "Code", "Name", "City", "Country"]
+    }
 
-        var tableRow: [String] {
-            [
-                String(id),
-                airportCode,
-                name,
-                city,
-                country
-            ]
-        }
+    var tableRow: [String] {
+        [
+            String(id),
+            airportCode,
+            name,
+            city,
+            country
+        ]
+    }
 }
