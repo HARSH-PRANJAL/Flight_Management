@@ -1,6 +1,7 @@
 enum ProfileMenu: CaseIterable, CustomStringConvertible {
     case applyForLeave
     case resign
+    case workMenu
     case logout
 
     var description: String {
@@ -11,6 +12,8 @@ enum ProfileMenu: CaseIterable, CustomStringConvertible {
             return "Resign"
         case .logout:
             return "Logout"
+        case .workMenu:
+            return "Open work menu"
         }
     }
 }

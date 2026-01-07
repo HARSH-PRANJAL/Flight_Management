@@ -5,8 +5,11 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
     let password = IO.readString(prompt: "Enter password : ")
     let phone = readPhoneNumber()
     let email: String = readEmail()
-    let dob = try checkDateTime(
-        dateTime: IO.readDate(dateFormat: "dd-MM-yyyy", prompt: "Enter DOB : "),
+
+    let dob: Date = readCorrectDateTime(
+        prompt: "Enter DOB : ",
+        failMsg: "User should be older then 10 and younger then 90 years.",
+        dateFormat: "dd-MM-yyyy",
         lowerLimit: Calendar.current.date(
             byAdding: .year,
             value: -90,
@@ -26,6 +29,12 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
 
     let crewType: CrewType?
     var address: String? = nil
+    let readAddress = {
+        readAlphaNumericString(
+            prompt: "Enter address : ",
+            failMsg: "Please provide correct address."
+        )
+    }
 
     if isPassenger {
         crewType = nil
@@ -34,7 +43,7 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
             options: ["y", "n"]
         )
         if ops == "y" {
-            address = readAlphaNumericString("Enter address : ", "Please provide correct address.")
+            address = readAddress()
         }
     } else {
         let crews = CrewType.allCases
@@ -42,7 +51,7 @@ func initiateUserRegistration(_ isPassenger: Bool = false) throws -> Int {
 
         let crewOption = IO.readInt(size: crews.count)
         crewType = crews[crewOption - 1]
-        address = readAlphaNumericString("Enter address : ", "Please provide correct address.")
+        address = readAddress()
     }
 
     guard
@@ -123,28 +132,59 @@ func initiateRouteRegistration() throws -> Bool {
     return true
 }
 
-func initiateFlightRegistration(route: Route) throws -> Int {
-    let aircraftId = IO.readInt(prompt: "Enter aircraft id for this flight : ")
+func initiateFlightRegistration(route: Route) throws -> Int? {
+    var aircraftId: Int
 
-    if !isAircraftExist(id: aircraftId) {
-        throw DataError.dataNotFound(msg: "Aircraft dose not exist.")
+    while true {
+        aircraftId = IO.readInt(prompt: "Enter aircraft id : ")
+
+        if !isAircraftExist(id: aircraftId) {
+            print("Aircraft does not exist.")
+
+            let ops = IO.readString(
+                prompt: "Do you want to try again ? (y/n) : ",
+                options: ["y", "n", "Y", "N"]
+            ).lowercased()
+
+            if ops == "y" {
+                continue
+            } else {
+                return nil
+            }
+        } else {
+            break
+        }
     }
 
-    let earliestAllowedDeparture: Date? = Calendar.current.date(
-        byAdding: .day,
-        value: 1,
-        to: Date()
-    )
-    let latestAllowedDeparture: Date? = Calendar.current.date(
-        byAdding: .day,
-        value: 30,
-        to: Date()
-    )
-    let departureTime: Date = try checkDateTime(
-        dateTime: IO.readDate(
-            dateFormat: "dd-MM-yyyy HH:mm",
-            prompt: "Enter departure time : "
-        ),
+    guard
+        let earliestAllowedDeparture = Calendar.current.date(
+            byAdding: .day,
+            value: 1,
+            to: Date()
+        )
+    else {
+        throw DataError.invalidData(
+            msg: "Can not calculate date for next flight scheduling."
+        )
+    }
+
+    guard
+        let latestAllowedDeparture = Calendar.current.date(
+            byAdding: .day,
+            value: 30,
+            to: Date()
+        )
+    else {
+        throw DataError.invalidData(
+            msg: "Can not calculate date for next flight scheduling."
+        )
+    }
+
+    let format = "dd-MM-yyyy HH:mm"
+    let departureTime = readCorrectDateTime(
+        prompt: "Enter departure date : ",
+        failMsg:
+            "You can only schedule a flight between \(formatDateTime(earliestAllowedDeparture, format: format)) and \(formatDateTime(latestAllowedDeparture, format: format))",
         lowerLimit: earliestAllowedDeparture,
         upperLimit: latestAllowedDeparture
     )
@@ -167,18 +207,17 @@ func initiateFlightMaintenanceLogRegistration() throws -> Int {
         throw DataError.dataNotFound(msg: "Aircraft dose not exist.")
     }
 
-    let scheduledDate: Date = try checkDateTime(
-        dateTime: IO.readDate(
-            dateFormat: "dd-MM-yyyy HH:mm",
-            prompt: "Enter scheduled date : "
-        ),
+    let scheduledDate: Date = readCorrectDateTime(
+        prompt: "Enter scheduled date : ",
+        failMsg: "You can not schedule maintenance in back date.",
+        dateFormat: "dd-MM-yyyy",
         lowerLimit: Date()
     )
-    let expectedCompletionDate: Date = try checkDateTime(
-        dateTime: IO.readDate(
-            dateFormat: "dd-MM-yyyy HH:mm",
-            prompt: "Enter expected completion date : "
-        ),
+    let expectedCompletionDate: Date = readCorrectDateTime(
+        prompt: "Enter scheduled date : ",
+        failMsg:
+            "Expected completion date must be after scheduled date (\(formatDateTime(scheduledDate,format: "dd-MM-yyyy"))).",
+        dateFormat: "dd-MM-yyyy",
         lowerLimit: scheduledDate
     )
 
@@ -193,26 +232,36 @@ func initiateFlightMaintenanceLogRegistration() throws -> Int {
     }
 }
 
-func initiateLeaveApplication(for crew: Crew) throws -> Bool {
+func initiateLeaveApplication(for crew: Crew, maxDays: Int = 15) throws -> Bool
+{
     let reason = IO.readString(prompt: "Enter reason for leave : ")
 
     let today = Date()
-    let maxDate = Calendar.current.date(byAdding: .day, value: 15, to: today)!
+    guard
+        let maxDate = Calendar.current.date(
+            byAdding: .day,
+            value: maxDays,
+            to: today
+        )
+    else {
+        throw DataError.invalidData(
+            msg: "Failed to calculate maximum days of leave."
+        )
+    }
 
-    let fromDate = try checkDateTime(
-        dateTime: IO.readDate(
-            dateFormat: "dd-MM-yyyy",
-            prompt: "From : "
-        ),
-        lowerLimit: today,
+    let fromDate: Date = readCorrectDateTime(
+        prompt: "From : ",
+        failMsg:
+            "You can only apply for a \(maxDays) days of leave from tomorrow.",
+        dateFormat: "dd-MM-yyyy",
+        lowerLimit: Date(),
         upperLimit: maxDate
     )
-
-    let toDate = try checkDateTime(
-        dateTime: IO.readDate(
-            dateFormat: "dd-MM-yyyy",
-            prompt: "To : "
-        ),
+    let toDate: Date = readCorrectDateTime(
+        prompt: "To : ",
+        failMsg:
+            "You can only apply for a \(maxDays) days of leave from tomorrow.",
+        dateFormat: "dd-MM-yyyy",
         lowerLimit: fromDate,
         upperLimit: maxDate
     )

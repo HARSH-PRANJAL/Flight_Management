@@ -8,21 +8,6 @@ func crewMenu() {
         return
     }
 
-    let ops = IO.readString(
-        prompt: "Do you want to go to profile menu ? (y/n) : ",
-        options: ["y", "n", "Y", "N"]
-    ).lowercased()
-
-    if ops == "n" {
-        if userRole == .flightManager {
-            flightManagerMenu()
-        } else if userRole == .hr {
-            hrMenu()
-        } else if userRole == .groundStaff {
-            groundStaffMenu()
-        }
-    }
-
     while true {
         if crew.resignDate != nil {
             authenticatedUser = nil
@@ -51,14 +36,14 @@ func crewMenu() {
                 let isCompleted = try initiateLeaveApplication(for: crew)
 
                 if isCompleted {
-                    print("Leave applied successfully.")
+                    print("Leave applied successfully. ✅")
                 } else {
                     print(
                         "You have already applied for leave.\nHr will review it soon."
                     )
                 }
             } catch let error as DataError {
-                print("\n🚨 Error: \(error) can not apply for leave. \n")
+                print("\n🚨 Error: \(error). Can not apply for leave. \n")
             } catch {
                 print(
                     "\n🚨 An unexpected error occurred. Please try again later. \n"
@@ -67,11 +52,20 @@ func crewMenu() {
 
         case .resign:
             if crew.resign() {
-                print("Resignation applied successfully. See you soon!")
+                print("Resignation applied successfully. See you soon. 👋")
             } else {
                 print(
                     "You have already applied for resignation.\nHr will review it soon."
                 )
+            }
+
+        case .workMenu:
+            if userRole == .flightManager {
+                flightManagerMenu()
+            } else if userRole == .hr {
+                hrMenu()
+            } else if userRole == .groundStaff {
+                groundStaffMenu()
             }
 
         case .logout:
@@ -97,7 +91,6 @@ func flightManagerMenu() {
                 """
         )
 
-        let route = AirportRouteGraph()
         let choice = IO.readInt(
             size: menu.count
         )
@@ -118,7 +111,7 @@ func flightManagerMenu() {
                 )
 
                 if let flight = findFlightById(id: flightId) {
-                    print(flight)
+                    print("\n\(flight)")
                 } else {
                     print("No flight exists with id \(flightId).\n")
                 }
@@ -156,25 +149,49 @@ func flightManagerMenu() {
                 failMsg: "No aircrafts available."
             )
 
-            let sourceId = IO.readInt(
-                prompt: "Enter source airport id : ",
-                size: allAirports.count,
-                failMsg: "Please enter a valid airport id."
-            )
-            let destinationId = IO.readInt(
-                prompt: "Enter destination airport id : ",
-                size: allAirports.count,
-                failMsg: "Please enter a valid airport id."
-            )
+            let routeMaker = AirportRouteGraph()
+            var allRoutes: [Route]
+            var sourceId: Int
+            var destinationId: Int
 
-            let allRoutes = route.getRoutes(from: sourceId, to: destinationId)
-            if allRoutes.isEmpty {
-                print(
-                    """
-                    No route found for the provided source and destination.
-                    Try again ....
-                    """
+            while true {
+                sourceId = IO.readInt(
+                    prompt: "Enter source airport id : ",
+                    size: allAirports.count,
+                    failMsg: "Please enter a valid airport id."
                 )
+
+                destinationId = IO.readInt(
+                    prompt: "Enter destination airport id : ",
+                    size: allAirports.count,
+                    failMsg: "Please enter a valid airport id."
+                )
+
+                allRoutes = routeMaker.getRoutes(
+                    from: sourceId,
+                    to: destinationId
+                )
+                if allRoutes.isEmpty {
+                    print(
+                        "No route found for the provided source and destination."
+                    )
+
+                    let ops = IO.readString(
+                        prompt: "Do you want to try again ? (y/n) : ",
+                        options: ["y", "n", "Y", "N"]
+                    ).lowercased()
+
+                    if ops == "y" {
+                        continue
+                    } else {
+                        break
+                    }
+                } else {
+                    break
+                }
+            }
+
+            if allRoutes.isEmpty {
                 continue
             }
 
@@ -203,8 +220,11 @@ func flightManagerMenu() {
             let route = allRoutes[routeChoice - 1]
 
             do {
-                let flightId = try initiateFlightRegistration(route: route)
-                print("Flight registered with id :  \(flightId) ✅")
+                if let flightId = try initiateFlightRegistration(route: route) {
+                    print("Flight registered with id :  \(flightId) ✅")
+                } else {
+                    print("Fight registration failed.")
+                }
             } catch let error as DataError {
                 print("\n🚨 Error: \(error)\n")
             } catch {
@@ -214,8 +234,10 @@ func flightManagerMenu() {
             }
 
         case .cancelFlight:
-            let flightId = IO.readInt(prompt: "Enter flight id to cancel : ",
-            failMsg: "Please enter a valid flight id.")
+            let flightId = IO.readInt(
+                prompt: "Enter flight id to cancel : ",
+                failMsg: "Please enter a valid flight id."
+            )
 
             if let id = deleteFlightById(id: flightId) {
                 print("Flight cancelled with id : \(id) ✅")
@@ -490,7 +512,10 @@ func groundStaffMenu() {
                 )
             }
         case .bookFlight:
-            let passengerId = IO.readInt(prompt: "Enter passenger ID : ", failMsg: "Please enter a valid passenger id.")
+            let passengerId = IO.readInt(
+                prompt: "Enter passenger ID : ",
+                failMsg: "Please enter a valid passenger id."
+            )
 
             guard let passenger = findPassengerById(id: passengerId)
             else {
@@ -512,8 +537,10 @@ func groundStaffMenu() {
                 failMsg: "No airports found."
             )
 
-            let sourceId = IO.readInt(prompt: "Enter the source airport id : ",
-                                      failMsg: "Please enter a valid airport id.")
+            let sourceId = IO.readInt(
+                prompt: "Enter the source airport id : ",
+                failMsg: "Please enter a valid airport id."
+            )
             let destinationId = IO.readInt(
                 prompt: "Enter the destination airport id : ",
                 failMsg: "Please enter a valid airport id."
@@ -594,9 +621,13 @@ func groundStaffMenu() {
                 failMsg: "No airports found."
             )
 
-            let sourceId = IO.readInt(prompt: "Enter the source airport id : ", failMsg: "Please enter a valid airport id.")
+            let sourceId = IO.readInt(
+                prompt: "Enter the source airport id : ",
+                failMsg: "Please enter a valid airport id."
+            )
             let destinationId = IO.readInt(
-                prompt: "Enter the destination airport id : ", failMsg: "Please enter a valid airport id."
+                prompt: "Enter the destination airport id : ",
+                failMsg: "Please enter a valid airport id."
             )
 
             let allFlights = getFlightsBetween(
@@ -668,9 +699,13 @@ func passengerMenu() {
                 failMsg: "No airports found."
             )
 
-            let sourceId = IO.readInt(prompt: "Enter the source airport id : ", failMsg: "Please enter a valid airport id.")
+            let sourceId = IO.readInt(
+                prompt: "Enter the source airport id : ",
+                failMsg: "Please enter a valid airport id."
+            )
             let destinationId = IO.readInt(
-                prompt: "Enter the destination airport id : ", failMsg: "Please enter a valid airport id."
+                prompt: "Enter the destination airport id : ",
+                failMsg: "Please enter a valid airport id."
             )
 
             do {
