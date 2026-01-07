@@ -80,9 +80,7 @@ class Crew: User {
         [
             String(id),
             name,
-            crewType.description,
-            String(format: "%.2f", totalFlightHours ?? 0),
-            String(format: "%.2f", totalGroundHours ?? 0),
+            crewType.description
         ]
     }
 

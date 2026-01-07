@@ -35,14 +35,14 @@ struct Booking: TableRepresentable {
     var tableRow: [String] {
         [
             String(tktNumber),
-            String(name),
+            name,
             String(flightId),
             String(formatDateTime(bookingDate, format: "dd-MM-yyyy")),
             String(sourceAirport),
             String(destinationAirport),
             String(mealPreference.description),
             String(seatPreference.description),
-            String(format: "%.2f", amount)
+            String(Int(amount).formatted(.currency(code: "INR")))
         ]
     }
     

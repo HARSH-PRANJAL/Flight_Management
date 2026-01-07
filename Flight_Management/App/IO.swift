@@ -162,5 +162,4 @@ struct IO {
 
         rows.forEach { printRow($0) }
     }
-
 }
