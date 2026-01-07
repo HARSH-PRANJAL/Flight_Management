@@ -5,19 +5,24 @@ func authenticateUser(userId: Int, password: String, crew: Bool = false) throws 
             throw UserError.userNotFound
         }
         
+        if !crew.verifyPassword(password) {
+            throw AuthError.authenticationFailed
+        }
         authenticatedUser = crew
         userRole = crew.crewType
-        
-        return crew.verifyPassword(password)
     } else {
         guard let passenger = findPassengerById(id: userId)
         else {
             throw UserError.userNotFound
         }
         
+        if !passenger.verifyPassword(password) {
+            throw AuthError.authenticationFailed
+        }
         authenticatedUser = passenger
-        return passenger.verifyPassword(password)
     }
+    
+    return true
 }
 
 func passwordHash(password: String) -> String {

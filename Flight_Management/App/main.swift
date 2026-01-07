@@ -41,8 +41,6 @@ func main() {
 
             do {
                 if try authenticateUser(userId: userID, password: password,crew: true) {
-                    authenticatedUser = crews[userID]!
-                    userRole = (authenticatedUser as! Crew).crewType
                     crewMenu()
                 } else {
                     print("Wrong credentials. Try again.")
@@ -50,7 +48,7 @@ func main() {
             } catch let error as UserError {
                 print("\n🚨 Error: \(error.description) ‼️\n")
             } catch let error as AuthError {
-                print("\n🚨 Error: \(error.description) ‼️\n")
+                print("\n🚨 Error: \(error.description) wrong credentials. Try again. ‼️\n")
             } catch {
                 print(
                     "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
@@ -63,14 +61,12 @@ func main() {
 
             do {
                 if try authenticateUser(userId: userID, password: password) {
-                    authenticatedUser = passengers[userID]!
-
                     passengerMenu()
                 }
             } catch let error as UserError {
                 print("\n🚨 Error: \(error.description) ‼️\n")
             } catch let error as AuthError {
-                print("\n🚨 Error: \(error.description) ‼️\n")
+                print("\n🚨 Error: \(error.description) wrong credentials. Try again. ‼️\n")
             } catch {
                 print(
                     "\n🚨 An unexpected error occurred. Please try again later. ‼️\n"
