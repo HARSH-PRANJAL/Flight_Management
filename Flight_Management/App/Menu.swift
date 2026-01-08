@@ -581,7 +581,7 @@ func groundStaffMenu() {
 
             guard let passenger = findPassengerById(id: passengerId)
             else {
-                print("Wrong passenger id or passenger does not exist.")
+                print("\n🚨 Error: Passenger does not exist. \n")
                 continue
             }
 
