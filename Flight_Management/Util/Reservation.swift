@@ -15,7 +15,12 @@ func initiateTktBooking(
 
     Flight.displayFlightsRemainingSeats(allFlights)
 
-    let flightId = IO.readInt(prompt: "Enter the flight ID : ")
+    let flightId = readFlightId(
+        "Enter the flight ID : ",
+        "Please enter a valid flight ID.",
+        allFlights
+    )
+    
     guard let flight = findFlightById(id: flightId),
         flight.route.airportPath.first == sourceId,
         flight.route.airportPath.last == destinationId,
@@ -34,7 +39,8 @@ func initiateTktBooking(
 
     let count = IO.readInt(
         prompt: "Enter the number of tickets to book : ",
-        upperLimit: remainingSeats
+        upperLimit: remainingSeats,
+        failMsg: "Only \(remainingSeats) are available."
     )
 
     var currBookings: [Booking] = []
@@ -54,7 +60,7 @@ func initiateTktBooking(
             msg: "Select seat preference for passenger \(i) :"
         )
         let choice = IO.readInt(upperLimit: seatMenu.count)
-        let seatPreference: SeatPreference = seatMenu[choice - 1]
+        let seatPreference = seatMenu[choice - 1]
 
         if !aircraft.allocateSeat(preference: seatPreference, count: 1) {
             print(
@@ -75,7 +81,7 @@ func initiateTktBooking(
 
             IO.displayOptions(
                 options: mealMenu,
-                msg: "Select meal preference :"
+                msg: "Select meal preference : "
             )
             let mealChoice = IO.readInt(upperLimit: mealMenu.count)
             mealPreference = mealMenu[mealChoice - 1]

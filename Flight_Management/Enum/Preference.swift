@@ -2,6 +2,7 @@ enum MealPreference: Double, CaseIterable, CustomStringConvertible {
     case veg = 300
     case nonVeg = 500
     case vegan = 1200
+    case none = 0
     
     var description: String {
         switch self {
@@ -11,6 +12,8 @@ enum MealPreference: Double, CaseIterable, CustomStringConvertible {
             return "Non-Vegetarian"
         case .vegan:
             return "Vegan"
+        case .none:
+            return "Don't want any meal"
         }
     }
 }

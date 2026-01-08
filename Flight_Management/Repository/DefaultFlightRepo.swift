@@ -34,6 +34,10 @@ func deleteFlightById(id: Int) -> Int? {
     }
 }
 
+func totalNumberOfFlights() -> Int {
+    return flights.count
+}
+
 func getFlightsBetween(sourceId: Int, destinationId: Int) -> [Flight] {
     let result = getAllFlights().filter({
         flight in

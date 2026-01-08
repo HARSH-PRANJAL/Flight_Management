@@ -96,3 +96,41 @@ func readAlphaNumericString(prompt: String, failMsg: String) -> String {
         }
     }
 }
+
+func readAirportId(
+    _ prompt: String,
+    _ failMsg: String,
+    _ allAirports: [Airport] = getAllAirports()
+) -> Int {
+    while true {
+        let id = IO.readInt(
+            prompt: prompt,
+            failMsg: failMsg
+        )
+
+        if allAirports.contains(where: { $0.id == id }) {
+            return id
+        } else {
+            print(failMsg)
+        }
+    }
+}
+
+func readFlightId(
+    _ prompt: String,
+    _ failMsg: String,
+    _ allFlights: [Flight]
+) -> Int {
+    while true {
+        let id = IO.readInt(
+            prompt: prompt,
+            failMsg: failMsg
+        )
+
+        if allFlights.contains(where: { $0.id == id }) {
+            return id
+        } else {
+            print(failMsg)
+        }
+    }
+}
