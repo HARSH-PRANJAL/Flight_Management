@@ -4,7 +4,6 @@ enum PassengerMenu: CaseIterable, CustomStringConvertible {
     case viewBookings
     case Logout
     
-    
     var description: String {
         switch self {
         case .bookTicket:

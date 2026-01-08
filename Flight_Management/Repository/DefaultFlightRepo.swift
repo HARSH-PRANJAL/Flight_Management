@@ -1,5 +1,7 @@
 import Foundation
 
+var flights: [Int: Flight] = [:]
+
 func registerFlight(
     aircraftId: Int,
     scheduledDeparture: Date,

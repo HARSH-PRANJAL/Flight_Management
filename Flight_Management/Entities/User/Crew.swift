@@ -80,14 +80,14 @@ class Crew: User {
         [
             String(id),
             name,
-            crewType.description
+            crewType.description,
         ]
     }
 
-    func applyLeave(reason: String,from: Date, to: Date) -> Bool {
+    func applyLeave(reason: String, from: Date, to: Date) -> Bool {
         return registerLeaveRequest(leave: (self.id, (reason, from, to)))
     }
-    
+
     func resign() -> Bool {
         return registerResignation(crewId: self.id)
     }

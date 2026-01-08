@@ -79,11 +79,15 @@ func registerUser(
     return newUser.id
 }
 
-func registerLeaveRequest(leave: (Int,(String,Date,Date))) -> Bool {
-    if leaveRequests.keys.contains(leave.0) {
+func registerLeaveRequest(leave: (Int, (String, Date, Date))) -> Bool {
+    if let prevLeave = leaveRequests[leave.0] {
+        if prevLeave.1 <= leave.1.1 && prevLeave.2 >= leave.1.1 {
+            return false
+        }
+    } else {
         return false
     }
-    
+
     leaveRequests[leave.0] = (leave.1.0, leave.1.1, leave.1.2)
     return true
 }
@@ -92,7 +96,7 @@ func registerResignation(crewId: Int) -> Bool {
     if resignationRequests.contains(crewId) {
         return false
     }
-    
+
     resignationRequests.insert(crewId)
     return true
 }

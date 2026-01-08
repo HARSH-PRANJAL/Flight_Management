@@ -65,7 +65,7 @@ func loadMockAircrafts() {
             businessSeat: 30,
             firstClassSeat: 20,
             fuelCapacity: 9000
-        )
+        ),
     ]
 
     for aircraft in mockAircraft {
@@ -161,7 +161,7 @@ func loadMockFlights() {
             aircraftId: 8,
             scheduledDeparture: departure + 5000,
             route: route3
-        )
+        ),
     ]
 
     for item in flight {

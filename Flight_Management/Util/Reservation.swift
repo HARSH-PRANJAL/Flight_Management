@@ -17,22 +17,25 @@ func initiateTktBooking(
 
     let flightId = IO.readInt(prompt: "Enter the flight ID : ")
     guard let flight = findFlightById(id: flightId),
-          flight.route.airportPath.first == sourceId,
-          flight.route.airportPath.last == destinationId,
+        flight.route.airportPath.first == sourceId,
+        flight.route.airportPath.last == destinationId,
         var aircraft = findAircraftById(id: flight.aircraftId)
     else {
         throw DataError.dataNotFound(
             msg: "Flight dose not exist."
         )
     }
-    
+
     let remainingSeats = aircraft.seatingCapacity
     if remainingSeats == 0 {
         print("No seats available in selected aircraft.")
         return false
     }
 
-    let count = IO.readInt(prompt: "Enter the number of tickets to book : ",upperLimit: remainingSeats)
+    let count = IO.readInt(
+        prompt: "Enter the number of tickets to book : ",
+        upperLimit: remainingSeats
+    )
 
     var currBookings: [Booking] = []
     var i = 1

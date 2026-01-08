@@ -2,7 +2,7 @@ enum AuthError: Error {
     case invalidPassword
     case authenticationFailed
     case unauthorised
-    
+
     var description: String {
         switch self {
         case .invalidPassword:

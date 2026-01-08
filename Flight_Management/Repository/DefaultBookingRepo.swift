@@ -1,7 +1,6 @@
 var bookings: [Int: Booking] = [:]
 var transactions: [Int: Transaction] = [:]
 
-
 func findBookingById(id: Int) -> Booking? {
     return bookings[id]
 }
@@ -10,14 +9,14 @@ func getBookingsForPassenger(id: Int) -> [Booking] {
     guard let passenger = findPassengerById(id: id) else {
         return []
     }
-    
+
     var result: [Booking] = []
     for bookingId in passenger.ticketIds {
         if let curr = findBookingById(id: bookingId) {
             result.append(curr)
         }
     }
-    
+
     return result.sorted(by: { a, b in a.bookingDate > b.bookingDate
     })
 }

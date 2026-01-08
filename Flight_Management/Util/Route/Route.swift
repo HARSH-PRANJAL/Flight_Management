@@ -12,8 +12,8 @@ struct Route: TableRepresentable {
     var tableRow: [String] {
         [
             pathDescription,
-            String(format:"%.2f" ,totalDuration),
-            String(format:"%.2f" ,totalFare),
+            String(format: "%.2f", totalDuration),
+            String(totalFare.formatted(.currency(code: "INR"))),
         ]
     }
 
@@ -26,7 +26,7 @@ struct Route: TableRepresentable {
                 result.append(" -> ")
             }
         }
-        
+
         result.removeLast(4)
         return result
     }

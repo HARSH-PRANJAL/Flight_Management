@@ -2,7 +2,7 @@ enum UserError: Error {
     case registrationFailed
     case dobBelowMinimum
     case userNotFound
-    
+
     var description: String {
         switch self {
         case .registrationFailed:

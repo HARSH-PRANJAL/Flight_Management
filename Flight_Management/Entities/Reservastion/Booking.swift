@@ -3,10 +3,11 @@ import Foundation
 struct Booking: TableRepresentable {
     static var nextTktNumber: Int = 1000
     let tktNumber: Int = {
-            let current = Self.nextTktNumber
-            Self.nextTktNumber += 1
-            return current
-        }()
+        let current = Self.nextTktNumber
+        Self.nextTktNumber += 1
+        return current
+    }()
+
     let passengerId: Int
     let name: String
     let flightId: Int
@@ -17,7 +18,7 @@ struct Booking: TableRepresentable {
     let sourceAirportId: Int
     let destinationAirportId: Int
     let transactionId: Int
-    
+
     static var tableHeaders: [String] {
         [
             "Ticket Number",
@@ -28,10 +29,10 @@ struct Booking: TableRepresentable {
             "Destination",
             "Meal",
             "Seat",
-            "Amount"
+            "Amount",
         ]
     }
-    
+
     var tableRow: [String] {
         [
             String(tktNumber),
@@ -42,10 +43,10 @@ struct Booking: TableRepresentable {
             String(destinationAirport),
             String(mealPreference.description),
             String(seatPreference.description),
-            String(Int(amount).formatted(.currency(code: "INR")))
+            String(Int(amount).formatted(.currency(code: "INR"))),
         ]
     }
-    
+
     var sourceAirport: String {
         if let airport = findAirportById(id: sourceAirportId) {
             return airport.airportCode
@@ -53,7 +54,7 @@ struct Booking: TableRepresentable {
             return "Unknown"
         }
     }
-    
+
     var destinationAirport: String {
         if let airport = findAirportById(id: destinationAirportId) {
             return airport.airportCode
@@ -61,12 +62,12 @@ struct Booking: TableRepresentable {
             return "Unknown"
         }
     }
-    
+
     var amount: Double {
         guard let bill = findBillById(id: transactionId) else {
             return 0.0
         }
-        
+
         return bill.amount
     }
 }

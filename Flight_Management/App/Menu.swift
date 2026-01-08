@@ -36,7 +36,7 @@ func crewMenu() {
                 let isCompleted = try initiateLeaveApplication(for: crew)
 
                 if isCompleted {
-                    print("Leave applied successfully. ✅")
+                    print("\nLeave applied successfully. ✅\n")
                 } else {
                     print(
                         "You have already applied for leave.\nHr will review it soon."
@@ -52,7 +52,7 @@ func crewMenu() {
 
         case .resign:
             if crew.resign() {
-                print("Resignation applied successfully. See you soon. 👋")
+                print("\nResignation applied successfully. See you soon. 👋\n")
             } else {
                 print(
                     "You have already applied for resignation.\nHr will review it soon."
@@ -252,9 +252,9 @@ func flightManagerMenu() {
             )
 
             if let id = deleteFlightById(id: flightId) {
-                print("Flight cancelled with id : \(id) ✅")
+                print("Flight cancelled with id : \(id) 🚫")
             } else {
-                print("No flight exists with id : \(flightId) !")
+                print("No flight exists with id : \(flightId)")
             }
 
         case .addRoute:

@@ -1,3 +1,5 @@
+var airports: [Int: Airport] = [:]
+
 func findAirportById(id: Int) -> Airport? {
     return airports[id]
 }

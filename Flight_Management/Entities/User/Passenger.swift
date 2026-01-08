@@ -103,9 +103,9 @@ class Passenger: User {
         if booking.passengerId != self.id {
             throw AuthError.unauthorised
         }
-        
+
         guard let flight = findFlightById(id: booking.flightId),
-              var aircraft = findAircraftById(id: flight.aircraftId)
+            var aircraft = findAircraftById(id: flight.aircraftId)
         else {
             return false
         }
@@ -120,10 +120,13 @@ class Passenger: User {
 
             transactions[returnTransaction.id] = returnTransaction
         }
-        
+
         let deletedBooking = deleteBookingById(id: booking.tktNumber)
         if deletedBooking != nil {
-            return aircraft.addSeat(preference: booking.seatPreference, count: 1)
+            return aircraft.addSeat(
+                preference: booking.seatPreference,
+                count: 1
+            )
         } else {
             return false
         }
