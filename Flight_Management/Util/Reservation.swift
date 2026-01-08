@@ -16,8 +16,8 @@ func initiateTktBooking(
     Flight.displayFlightsRemainingSeats(allFlights)
 
     let flightId = readFlightId(
-        "Enter the flight ID : ",
-        "Please enter a valid flight ID.",
+        "Enter the flight id : ",
+        "Please enter a valid flight id.",
         allFlights
     )
     

@@ -25,7 +25,7 @@ func main() {
 
         case .crewLogin:
             let userID = IO.readInt(
-                prompt: "Enter your ID : ",
+                prompt: "Enter your id : ",
                 failMsg: "Please enter a valid user id."
             )
             let password = IO.readString(prompt: "Enter your password : ")
@@ -50,7 +50,7 @@ func main() {
 
         case .passengerLogin:
             let userID = IO.readInt(
-                prompt: "Enter your ID : ",
+                prompt: "Enter your id : ",
                 failMsg: "Please enter a valid user id."
             )
             let password = IO.readString(prompt: "Enter your password : ")

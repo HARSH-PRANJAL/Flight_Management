@@ -80,15 +80,11 @@ func registerUser(
 }
 
 func registerLeaveRequest(leave: (Int, (String, Date, Date))) -> Bool {
-    if let prevLeave = leaveRequests[leave.0] {
-        if prevLeave.1 <= leave.1.1 && prevLeave.2 >= leave.1.1 {
-            return false
-        }
-    } else {
+    if leaveRequests.keys.contains(leave.0) {
         return false
     }
-
-    leaveRequests[leave.0] = (leave.1.0, leave.1.1, leave.1.2)
+    
+    leaveRequests[leave.0] = leave.1
     return true
 }
 

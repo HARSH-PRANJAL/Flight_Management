@@ -8,6 +8,21 @@ func crewMenu() {
         return
     }
 
+    let operation: (() -> Void)?
+    var menu: [ProfileMenu] = [.applyForLeave, .resign, .workMenu]
+
+    if userRole == .flightManager {
+        operation = { flightManagerMenu() }
+    } else if userRole == .hr {
+        operation = { hrMenu() }
+    } else if userRole == .groundStaff {
+        operation = { groundStaffMenu() }
+    } else {
+        operation = nil
+        menu.removeLast()
+    }
+    menu.append(.logout)
+
     while true {
         if crew.resignDate != nil {
             authenticatedUser = nil
@@ -15,7 +30,6 @@ func crewMenu() {
             return
         }
 
-        let menu = ProfileMenu.allCases
         IO.displayOptions(
             options: menu,
             msg:
@@ -60,12 +74,8 @@ func crewMenu() {
             }
 
         case .workMenu:
-            if userRole == .flightManager {
-                flightManagerMenu()
-            } else if userRole == .hr {
-                hrMenu()
-            } else if userRole == .groundStaff {
-                groundStaffMenu()
+            if let ops = operation {
+                ops()
             }
 
         case .logout:
@@ -374,11 +384,10 @@ func hrMenu() {
         switch option {
 
         case .viewAllEmployees:
-            let allCrew = getAllCrew().filter({ crew in
-                crew.resignDate != nil
-            })
+            let tableRows = getAllCrew().filter({ crew in
+                crew.resignDate == nil
+            }).map(\.tableRow)
 
-            let tableRows = allCrew.map(\.tableRow)
             IO.displayTable(
                 heading: "All crew",
                 headers: Crew.tableHeaders,
@@ -387,7 +396,7 @@ func hrMenu() {
             )
 
         case .viewAllResignationRequests:
-            var allCrew: [Crew] = []
+            var tableRows: [[String]] = []
 
             for request in resignationRequests {
                 guard let crew = findCrewById(id: request)
@@ -395,10 +404,9 @@ func hrMenu() {
                     continue
                 }
 
-                allCrew.append(crew)
+                tableRows.append(crew.tableRow)
             }
 
-            let tableRows = allCrew.map(\.tableRow)
             IO.displayTable(
                 heading: "Resignation Requests",
                 headers: Crew.tableHeaders,
@@ -407,7 +415,10 @@ func hrMenu() {
             )
 
         case .viewAllLeaveRequests:
-            var allCrew: [Crew] = []
+            let tableHeader: [String] = [
+                "ID", "Name", "From", "To", "Designation", "Reason",
+            ]
+            var tableRows: [[String]] = []
 
             for request in leaveRequests {
                 guard let crew = findCrewById(id: request.key)
@@ -415,15 +426,6 @@ func hrMenu() {
                     continue
                 }
 
-                allCrew.append(crew)
-            }
-
-            let tableHeader: [String] = [
-                "ID", "Name", "From", "To", "Designation",
-            ]
-            var tableRows: [[String]] = []
-
-            for crew in allCrew {
                 let id = String(crew.id)
                 let name = crew.name
                 let from = String(
@@ -438,9 +440,9 @@ func hrMenu() {
                         format: "dd-MM-yyyy"
                     )
                 )
-                let designation = crew.crewType.description
-
-                let row: [String] = [id, name, from, to, designation]
+                let designation = "\(crew.crewType)"
+                let reason = leaveRequests[crew.id]!.0
+                let row: [String] = [id, name, from, to, designation, reason]
                 tableRows.append(row)
             }
 
@@ -448,14 +450,14 @@ func hrMenu() {
                 heading: "Leave Applications",
                 headers: tableHeader,
                 rows: tableRows,
-                failMsg: "No leave application."
+                failMsg: "No leave applications found."
             )
 
         case .approveLeaveRequest:
             let crewId = IO.readInt(
                 prompt:
-                    "Enter the ID of the crew member to approve a leave request for : ",
-                failMsg: "Please enter a valid ID."
+                    "Enter the id of the crew member to approve a leave request for : ",
+                failMsg: "Please enter a valid id."
             )
 
             if leaveRequests.keys.contains(crewId) {
@@ -470,14 +472,14 @@ func hrMenu() {
                 crews[crew.id] = crew
                 print("Leave approved for \(crew.name).")
             } else {
-                print("No leave request found for that ID")
+                print("No leave request found for crew with id \(crewId).")
             }
 
         case .approveResignationRequest:
             let crewId = IO.readInt(
                 prompt:
-                    "Enter the ID of the crew member to approve a resignation request for : ",
-                failMsg: "Please enter a valid ID."
+                    "Enter the id of the crew member to approve a resignation request for : ",
+                failMsg: "Please enter a valid id."
             )
 
             if resignationRequests.contains(crewId) {
@@ -497,14 +499,15 @@ func hrMenu() {
         case .addSalaryToCrew:
             let crewId = IO.readInt(
                 prompt:
-                    "Enter the ID of the crew member to add salary to : ",
-                failMsg: "Please enter a valid ID."
+                    "Enter the id of the crew member to add salary to : ",
+                failMsg: "Please enter a valid id."
             )
 
             if let crew = findCrewById(id: crewId) {
                 print(
                     """
                     Name : \(crew.name)
+                    Designation : \(crew.crewType)
                     Ground Duty Pay Per Hour : \(crew.groundDutyPayRatePerHour)
                     Flight Duty Pay Per Hour : \(crew.inAirPayRatePerHour)
                     """
@@ -559,7 +562,7 @@ func groundStaffMenu() {
             do {
                 let passengerId = try initiateUserRegistration(true)
                 print(
-                    "Passenger with ID \(passengerId) has been added successfully."
+                    "Passenger with id \(passengerId) has been added successfully."
                 )
             } catch let error as UserError {
                 print("\n🚨 Error: \(error.description) \n")
@@ -572,7 +575,7 @@ func groundStaffMenu() {
             }
         case .bookFlight:
             let passengerId = IO.readInt(
-                prompt: "Enter passenger ID : ",
+                prompt: "Enter passenger id : ",
                 failMsg: "Please enter a valid passenger id."
             )
 
@@ -625,7 +628,7 @@ func groundStaffMenu() {
             }
 
         case .cancelBooking:
-            let passengerId = IO.readInt(prompt: "Enter passenger ID : ")
+            let passengerId = IO.readInt(prompt: "Enter passenger id : ")
 
             guard let passenger = findPassengerById(id: passengerId)
             else {
